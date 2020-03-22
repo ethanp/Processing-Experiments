@@ -10,6 +10,7 @@ libraryDependencies ++= Seq(
     "org.json4s" %% "json4s-native" % "3.7.0-M2",
     "org.jsoup" % "jsoup" % "1.13.1",
     "org.processing" % "core" % "3.3.6",
+    "org.jogamp.jogl" % "jogl-all-main" % "2.3.2",
 )
 
 // Use Java 8
