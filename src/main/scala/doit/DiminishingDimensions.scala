@@ -15,27 +15,42 @@ class DiminishingDimensions extends PApplet {
    * and has been modified for my personal clarity.
    * */
 
+  // Dimensions of the explosion.
   private val Height: Int = 600
   private val Width: Int = (Height * 1.8).toInt
+
   private val NumPoints: Int = 3000
+
+  // Point coordinates.
   private val xCoords: Array[Int] = zeroes
   private val yCoords: Array[Int] = zeroes
   private val zCoords: Array[Int] = zeroes
+
+  // How long the explosion lasts.
   private val ExplodeSteps: Int = 200
-  private var colors: Array[HsbValue] = randomColors
-  private var phase: Int = 0
+  /** How long we've exploded so far. */
   private var explodeStep: Int = 0
+
+  /** How var each point explodes. */
   private var explodeMultipliers: Array[Array[Float]] = calculateExplodeMultipliers
+
+  private var pointColors: Array[HsbValue] = randomColors
+
+  private var phase: Int = 0
+
   private var currRotationRadians: Float = 0f
   private var animationPaused: Boolean = false
   private var shouldRotateX: Boolean = true
   private var shouldRotateY: Boolean = true
   private var shouldRotateZ: Boolean = true
+
   override def settings(): Unit = fullScreen(PConstants.P3D)
+
   override def setup(): Unit = {
     frameRate(60)
     colorMode(HSB, 100)
   }
+
   override def draw(): Unit = if (!animationPaused) {
     background(15) // Clear the screen.
 
@@ -45,7 +60,7 @@ class DiminishingDimensions extends PApplet {
       if (shouldRotateY) rotateY(currRotationRadians)
       if (shouldRotateZ) rotateZ(currRotationRadians)
       forAllPointIndexes { pointIdx =>
-        val HsbValue(h, s, b) = colors(pointIdx)
+        val HsbValue(h, s, b) = pointColors(pointIdx)
         stroke(h, s, b)
         fill(h, s, b)
         withPushedMatrix {
@@ -67,7 +82,7 @@ class DiminishingDimensions extends PApplet {
       phase = (phase + 1) % 4
       if (phase == 0) {
         // Restarted.
-        colors = randomColors
+        pointColors = randomColors
         explodeStep = 0
         explodeMultipliers = calculateExplodeMultipliers
       }
@@ -124,9 +139,11 @@ class DiminishingDimensions extends PApplet {
     val z = radius * cos(φ)
     (x.toFloat, y.toFloat, z.toFloat)
   }
+
   /** HSB values in range [0, 100]. */
   private def randomColors: Array[HsbValue] =
     forAllPointIndexes { _ => HsbValue(Random.nextInt(101), 100, 80 + Random.nextInt(21)) }
+
   private def forAllPointIndexes[A: ClassTag](fn: Int => A): Array[A] =
     (0 until NumPoints).toArray.map(fn)
   /** Callback for each key press. */
