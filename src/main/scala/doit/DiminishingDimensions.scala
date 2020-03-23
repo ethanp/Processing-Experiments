@@ -21,22 +21,30 @@ class DiminishingDimensions extends PApplet {
   private val xCoords: Array[Int] = Array.fill(n = NumPoints)(elem = 0)
   private val yCoords: Array[Int] = Array.fill(n = NumPoints)(elem = 0)
   private val zCoords: Array[Int] = Array.fill(n = NumPoints)(elem = 0)
+
   /** How long the explosion lasts. */
   private val ExplodeSteps: Int = 200
   /** How var each point explodes. */
   private var explodeMultipliers: Array[Array[Float]] = generateNewExplodeMultipliers()
   /** How long we've exploded so far. */
   private var explodeStep: Int = 0
+
   private var pointColors: Array[HsbValue] = generateRandomColors()
+
   private var phase: Phase = Phases.Explode
+
   /** Slowly increments while animation is not paused. */
   private var currRotationRadians: Float = 0f
+
   /** Brings the whole simulation to a standstill. */
   private var animationPaused: Boolean = false
+
   private var shouldRotateX: Boolean = true
   private var shouldRotateY: Boolean = true
   private var shouldRotateZ: Boolean = true
+
   override def setup(): Unit = colorMode(HSB, 100)
+
   override def draw(): Unit = if (!animationPaused) {
     background(/*greyBrightness=*/ 15) // Clear the screen to a pretty dark color.
 
@@ -62,6 +70,7 @@ class DiminishingDimensions extends PApplet {
       }
     }
   }
+
   private def drawPoints(): Unit =
     forAllPointIndexes { pointIdx =>
       val HsbValue(h, s, b) = pointColors(pointIdx)
@@ -76,6 +85,12 @@ class DiminishingDimensions extends PApplet {
         box(/*sideLength=*/ 3)
       }
     }
+  /** Runs the given function within a pair of push/popMatrix calls */
+  private def withPushedMatrix(fn: => Unit): Unit = {
+    pushMatrix()
+    fn
+    popMatrix()
+  }
   /** @return false iff phase should change. */
   private def move(): Boolean = phase match {
     case Phases.Explode => explode(Seq((0, xCoords), (1, yCoords), (2, zCoords)))
@@ -113,45 +128,23 @@ class DiminishingDimensions extends PApplet {
       val (x, y, z) = sphericalToCartesian(r, randomAngle, randomAngle)
       Seq(x, y, z).toArray.map(_ / ExplodeSteps)
     }
-
-  /** Runs the given function within a pair of push/popMatrix calls */
-  private def withPushedMatrix(fn: => Unit): Unit = {
-    pushMatrix()
-    fn
-    popMatrix()
-  }
-  /** HSB values in range [0, 100]. */
-  private def generateRandomColors(): Array[HsbValue] =
-    forAllPointIndexes { _ => HsbValue(Random.nextInt(101), 100, 80 + Random.nextInt(21)) }
-  override def settings(): Unit = fullScreen(PConstants.P3D)
-  sealed trait Phase {def next: Phase }
-  object ExplosionDimensions {
-    val Height: Int = 600
-    val Width: Int = (Height * 1.8).toInt
-  }
-
   def sphericalToCartesian(radius: Double, θ: Double, φ: Double): (Float, Float, Float) = {
     val x: Double = radius * sin(φ) * cos(θ)
     val y = radius * sin(φ) * sin(θ)
     val z = radius * cos(φ)
     (x.toFloat, y.toFloat, z.toFloat)
   }
-  case object Phases {
-    case object Explode extends Phase {override def next: Phase = CoalesceY }
-    case object CoalesceY extends Phase {override def next: Phase = CoalesceZ }
-    case object CoalesceZ extends Phase {override def next: Phase = CoalesceX }
-    case object CoalesceX extends Phase {override def next: Phase = Explode }
-  }
-
   private def forAllPointIndexes[A: ClassTag](fn: Int => A): Array[A] =
     (0 until NumPoints).toArray.map(fn)
-
+  /** HSB values in range [0, 100]. */
+  private def generateRandomColors(): Array[HsbValue] =
+    forAllPointIndexes { _ => HsbValue(Random.nextInt(101), 100, 80 + Random.nextInt(21)) }
+  override def settings(): Unit = fullScreen(PConstants.P3D)
   /** Callback for each key press. */
   override def keyPressed(event: KeyEvent): Unit = {
     commonKeyPressed(event)
     super.keyPressed(event)
   }
-
   /** Processes a KeyEvent */
   private def commonKeyPressed(event: KeyEvent): Unit =
     event.getKey match {
@@ -161,8 +154,18 @@ class DiminishingDimensions extends PApplet {
       case ' ' => animationPaused = !animationPaused
       case _ => // ignore.
     }
-
+  sealed trait Phase {def next: Phase }
   private case class HsbValue(h: Int, s: Int, b: Int)
+  object ExplosionDimensions {
+    val Height: Int = 600
+    val Width: Int = (Height * 1.8).toInt
+  }
+  case object Phases {
+    case object Explode extends Phase {override def next: Phase = CoalesceY }
+    case object CoalesceY extends Phase {override def next: Phase = CoalesceZ }
+    case object CoalesceZ extends Phase {override def next: Phase = CoalesceX }
+    case object CoalesceX extends Phase {override def next: Phase = Explode }
+  }
 }
 
 object DiminishingDimensions {
