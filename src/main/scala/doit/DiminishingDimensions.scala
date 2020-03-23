@@ -140,6 +140,7 @@ class DiminishingDimensions extends PApplet {
   private def generateRandomColors(): Array[HsbValue] =
     forAllPointIndexes { _ => HsbValue(Random.nextInt(101), 100, 80 + Random.nextInt(21)) }
   override def settings(): Unit = fullScreen(PConstants.P3D)
+
   /** Callback for each key press. */
   override def keyPressed(event: KeyEvent): Unit = {
     commonKeyPressed(event)
