@@ -1,4 +1,4 @@
-package doit
+package given_examples
 
 import processing.core.PConstants.HSB
 import processing.core.{PApplet, PConstants}
@@ -25,7 +25,7 @@ class DiminishingDimensions extends PApplet {
   /** How long the explosion lasts. */
   private val ExplodeSteps: Int = 200
   /** How var each point explodes. */
-  private var explodeMultipliers: Array[Array[Float]] = generateNewExplodeMultipliers()
+  private var explodeMultipliers: Array[Point3dF] = generateNewExplodeMultipliers()
   /** How long we've exploded so far. */
   private var explodeStep: Int = 0
 
@@ -93,20 +93,21 @@ class DiminishingDimensions extends PApplet {
   }
   /** @return false iff phase should change. */
   private def move(): Boolean = phase match {
-    case Phases.Explode => explode(Seq((0, xCoords), (1, yCoords), (2, zCoords)))
+    case Phases.Explode => explode(Seq((_.x, xCoords), (_.y, yCoords), (_.z, zCoords)))
     case Phases.CoalesceY => coalesceToZero(yCoords)
     case Phases.CoalesceZ => coalesceToZero(zCoords)
     case Phases.CoalesceX => coalesceToZero(xCoords)
   }
-  private def explode(axes: Iterable[(Int, Array[Int])]): Boolean = {
+  private def explode(axes: Iterable[(Point3dF => Float, Array[Int])]): Boolean = {
     explodeStep += 1
     for {
       pointIdx <- 0 until NumPoints
         (axisIndex, coords) <- axes
-    } coords(pointIdx) = math round explodeStep * explodeMultipliers(pointIdx)(axisIndex)
+    } coords(pointIdx) = math round explodeStep * axisIndex(explodeMultipliers(pointIdx))
 
     explodeStep < ExplodeSteps
   }
+
   /** @return true iff a point moved. */
   private def coalesceToZero(coords: Array[Int]) = {
     var anyPointChanged = false
@@ -120,22 +121,30 @@ class DiminishingDimensions extends PApplet {
     }
     anyPointChanged
   }
-  private def generateNewExplodeMultipliers(): Array[Array[Float]] =
-    forAllPointIndexes { _ =>
-      def randomAngle = Random.nextDouble * math.Pi * 2
 
-      val r = Random.nextDouble * ExplosionDimensions.Width
-      val (x, y, z) = sphericalToCartesian(r, randomAngle, randomAngle)
-      Seq(x, y, z).toArray.map(_ / ExplodeSteps)
+  private def generateNewExplodeMultipliers(): Array[Point3dF] =
+    forAllPointIndexes { _ =>
+      def generateRandomAngle: Double = Random.nextDouble * math.Pi * 2
+
+      val finalPosition: Point3dF = sphericalToCartesian(
+        radius = Random.nextDouble * ExplosionDimensions.Width,
+        θ = generateRandomAngle,
+        φ = generateRandomAngle
+      )
+      val explodeStep = finalPosition / ExplodeSteps
+      explodeStep
     }
-  def sphericalToCartesian(radius: Double, θ: Double, φ: Double): (Float, Float, Float) = {
-    val x: Double = radius * sin(φ) * cos(θ)
-    val y = radius * sin(φ) * sin(θ)
-    val z = radius * cos(φ)
-    (x.toFloat, y.toFloat, z.toFloat)
-  }
+
+  private def sphericalToCartesian(radius: Double, θ: Double, φ: Double): Point3dF =
+    Point3dF(
+      x = radius * sin(φ) * cos(θ),
+      y = radius * sin(φ) * sin(θ),
+      z = radius * cos(φ)
+    )
+
   private def forAllPointIndexes[A: ClassTag](fn: Int => A): Array[A] =
     (0 until NumPoints).toArray.map(fn)
+
   /** HSB values in range [0, 100]. */
   private def generateRandomColors(): Array[HsbValue] =
     forAllPointIndexes { _ => HsbValue(Random.nextInt(101), 100, 80 + Random.nextInt(21)) }
@@ -146,6 +155,7 @@ class DiminishingDimensions extends PApplet {
     commonKeyPressed(event)
     super.keyPressed(event)
   }
+
   /** Processes a KeyEvent */
   private def commonKeyPressed(event: KeyEvent): Unit =
     event.getKey match {
@@ -155,13 +165,29 @@ class DiminishingDimensions extends PApplet {
       case ' ' => animationPaused = !animationPaused
       case _ => // ignore.
     }
-  sealed trait Phase {def next: Phase }
+
   private case class HsbValue(h: Int, s: Int, b: Int)
-  object ExplosionDimensions {
+
+  private case class Point3dF(x: Float, y: Float, z: Float) {
+    def /(s: Double): Point3dF = Point3dF(
+      x = x / s,
+      y = y / s,
+      z = z / s
+    )
+  }
+  private object Point3dF {
+    def apply(x: Double, y: Double, z: Double): Point3dF =
+      new Point3dF(x.toFloat, y.toFloat, z.toFloat)
+  }
+
+  private object ExplosionDimensions {
     val Height: Int = 600
     val Width: Int = (Height * 1.8).toInt
   }
-  case object Phases {
+
+  private sealed trait Phase {def next: Phase }
+
+  private case object Phases {
     case object Explode extends Phase {override def next: Phase = CoalesceY }
     case object CoalesceY extends Phase {override def next: Phase = CoalesceZ }
     case object CoalesceZ extends Phase {override def next: Phase = CoalesceX }

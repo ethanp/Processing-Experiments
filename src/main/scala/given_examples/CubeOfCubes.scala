@@ -1,4 +1,4 @@
-package doit
+package given_examples
 import processing.core.PConstants.PI
 import processing.core.{PApplet, PConstants}
 
