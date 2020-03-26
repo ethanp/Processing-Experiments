@@ -4,28 +4,31 @@ import helpers.{Runner, ThreeDimPApplet}
 import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.language.postfixOps
+import scala.util.Random
 
 /** Created 3/24/20 10:45 PM
  */
-class Corkscrew extends ThreeDimPApplet {
-
-  // TODO bennett has two notes
-  //  1: The screen should fill in shorter, like within 5 seconds
-  //  2: Once the screen fills it should stop emitting circles, and then
-  //     once the screen is empty start again.
+class Gummiworms extends ThreeDimPApplet {
 
   private val corkscrewBalls = mutable.ArrayBuffer.empty[CorkscrewBall]
   private val periodically = Every(300 milliseconds)
+  private val onOff = Every(7 seconds)
+  private var on = true
+  private var increment = 1f
 
   override def draw(): Unit = {
     darkBackground()
-    periodically run (corkscrewBalls += new CorkscrewBall)
+    onOff run {
+      on = !on
+      if (on) increment = Random.nextFloat() * 2
+    }
+    if (on) periodically run (corkscrewBalls += new CorkscrewBall)
     corkscrewBalls foreach (_.draw())
     corkscrewBalls foreach (_.update())
   }
 
   class CorkscrewBall {
-    private var curZ: Int = 0
+    private var curZ: Float = 0
     private var curRotationRadians: Float = 0f
     def draw(): Unit = {
       fromTheCenter {
@@ -44,11 +47,11 @@ class Corkscrew extends ThreeDimPApplet {
 
     def update(): Unit = {
       curRotationRadians += 0.005f
-      curZ += 1
+      curZ += increment
     }
   }
 }
 
-object Corkscrew extends Runner {
-  override def pAppletClass: Class[_] = classOf[Corkscrew]
+object Gummiworms extends Runner {
+  override def pAppletClass: Class[_] = classOf[Gummiworms]
 }
