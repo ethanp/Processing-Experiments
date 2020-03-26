@@ -9,6 +9,11 @@ import scala.language.postfixOps
  */
 class Corkscrew extends ThreeDimPApplet {
 
+  // TODO bennett has two notes
+  //  1: The screen should fill in shorter, like within 5 seconds
+  //  2: Once the screen fills it should stop emitting circles, and then
+  //     once the screen is empty start again.
+
   private val corkscrewBalls = mutable.ArrayBuffer.empty[CorkscrewBall]
   private val periodically = Every(300 milliseconds)
 
