@@ -1,7 +1,6 @@
 package mygo
 import helpers.{Runner, ThreeDimPApplet}
 
-import scala.collection.mutable
 import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.Random
@@ -10,32 +9,29 @@ import scala.util.Random
  */
 class Gummiworms extends ThreeDimPApplet {
 
-  private val corkscrewBalls = mutable.ArrayBuffer.empty[CorkscrewBall]
   private val periodically = Every(300 milliseconds)
   private val onOff = Every(7 seconds)
   private var on = true
   private var increment = 1f
 
   override def draw(): Unit = {
-    darkBackground()
     onOff run {
       on = !on
       if (on) increment = Random.nextFloat() * 2
     }
-    if (on) periodically run (corkscrewBalls += new CorkscrewBall)
-    corkscrewBalls foreach (_.draw())
-    corkscrewBalls foreach (_.update())
+    if (on) periodically run (gameObjects += new CorkscrewBall)
+    super.draw()
   }
 
-  class CorkscrewBall {
+  class CorkscrewBall extends GameObject {
     private var curZ: Float = 0
     private var curRotationRadians: Float = 0f
-    def draw(): Unit = {
+    override def draw(): Unit = {
       fromTheCenter {
         rotateX(curRotationRadians)
         rotateY(curRotationRadians)
-        Black.fill()
-        Hue(curZ % 100).stroke()
+        Hsb(h = curZ % 81, b = 50, a = 60).fill()
+        Hsb(h = curZ % 100, a = 70).stroke()
         translate(
           x = math.sin(curZ / 100.0) * 100,
           y = math.cos(curZ / 100.0) * 100,
@@ -45,7 +41,7 @@ class Gummiworms extends ThreeDimPApplet {
       }
     }
 
-    def update(): Unit = {
+    override def tick(): Unit = {
       curRotationRadians += 0.005f
       curZ += increment
     }

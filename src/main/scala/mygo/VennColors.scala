@@ -13,10 +13,10 @@ class VennColors extends ThreeDimPApplet {
   private val intensity = 60
 
   gameObjects ++= Seq(
-    StaticCircle(color = Rgba(intensity, 0, 0, intensity), givenDegrees = 0),
-    StaticCircle(color = Rgba(0, intensity, 0, intensity), givenDegrees = 120),
-    StaticCircle(color = Rgba(0, 0, intensity, intensity), givenDegrees = 240),
-    SpinningCircle(color = Rgba(intensity, intensity, intensity, intensity))
+    StaticCircle(color = Rgb(intensity, 0, 0, intensity), givenDegrees = 0),
+    StaticCircle(color = Rgb(0, intensity, 0, intensity), givenDegrees = 120),
+    StaticCircle(color = Rgb(0, 0, intensity, intensity), givenDegrees = 240),
+    SpinningCircle(color = Rgb(intensity, intensity, intensity, intensity))
   )
 
   trait VennCircle extends GameObject {

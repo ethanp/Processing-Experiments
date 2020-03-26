@@ -49,22 +49,22 @@ trait ThreeDimPApplet extends PApplet {
     final def strokeAndFill(): Unit = { stroke(); fill() }
   }
 
-  case class Hue(h: Float) extends Color {
+  case class Hsb(h: Float, s: Float = 100, b: Float = 100, a: Float = 100) extends Color {
     override def stroke(): Unit = {
       colorMode(PConstants.HSB, 100)
-      ThreeDimPApplet.this.stroke(h, 100, 100)
+      ThreeDimPApplet.this.stroke(h, s, b, a)
     }
     override def fill(): Unit = {
       colorMode(PConstants.HSB, 100)
-      ThreeDimPApplet.this.fill(h, 100, 100)
+      ThreeDimPApplet.this.fill(h, s, b, a)
     }
   }
 
-  object Green extends Rgba(0, 100, 0)
-  object Black extends Rgba(0, 0, 0)
-  object White extends Rgba(100, 100, 100)
+  object Green extends Rgb(0, 100, 0)
+  object Black extends Rgb(0, 0, 0)
+  object White extends Rgb(100, 100, 100)
 
-  sealed case class Rgba(r: Float, g: Float, b: Float, a: Float = 100) extends Color {
+  sealed case class Rgb(r: Float, g: Float, b: Float, a: Float = 100) extends Color {
     override def stroke(): Unit = {
       colorMode(PConstants.RGB, 100)
       ThreeDimPApplet.this.stroke(r, g, b, a)
