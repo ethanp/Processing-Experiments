@@ -30,13 +30,11 @@ class VennColors extends ThreeDimPApplet {
     private val Height = 400
 
     override def draw(): Unit = {
-      fromTheCenter {
-        rotateZ(curRadians.toFloat)
-        color.fill()
-        White.stroke()
-        ellipseMode(PConstants.CORNER)
-        ellipse(topLeft.x, topLeft.y, Width, Height)
-      }
+      rotateZ(curRadians.toFloat)
+      color.fill()
+      White.stroke()
+      ellipseMode(PConstants.CORNER)
+      ellipse(topLeft.x, topLeft.y, Width, Height)
     }
   }
 

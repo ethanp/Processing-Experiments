@@ -19,11 +19,18 @@ trait ThreeDimPApplet extends PApplet {
   /** Default implementation. Override as desired. */
   override def draw(): Unit = {
     darkBackground()
-    gameObjects.foreach(_.draw())
+    for (gameObj <- gameObjects) {
+      fromTheCenter {
+        gameObj.draw()
+      }
+    }
     gameObjects.foreach(_.tick())
   }
 
-  override def settings(): Unit = fullScreen(PConstants.P3D)
+  override def settings(): Unit = {
+    pixelDensity = 2 // This is better when displaying on retina
+    fullScreen(PConstants.P3D)
+  }
 
   // For the scala compiler, by 'lifting' this method into this class,
   // it disambiguates which overload should be called in the (Float, Float, Float)
@@ -36,11 +43,17 @@ trait ThreeDimPApplet extends PApplet {
 
   def darkBackground(): Unit = background(0f)
 
-  final protected def fromTheCenter(v: => Unit): Unit = {
+  final protected def withPushedMatrix(block: => Unit): Unit = {
     pushMatrix()
-    translate(width / 2, height / 2, 0)
-    v
+    block
     popMatrix()
+  }
+
+  final protected def fromTheCenter(block: => Unit): Unit = {
+    withPushedMatrix {
+      translate(width / 2, height / 2, 0)
+      block
+    }
   }
 
   sealed trait Color {
