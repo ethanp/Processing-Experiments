@@ -25,30 +25,56 @@ class FrankStella extends PApplet {
     fullScreen(PConstants.P2D)
   }
 
+  override def setup(): Unit = frameRate(1)
+
   private def fillRandom(): Unit = Random nextInt 4 match {
-    case 0 => fill(1, 200, 3, 255)
-    case 1 => fill(1, 200, 3, 255)
-    case 2 => fill(1, 200, 3, 255)
-    case 3 => fill(1, 200, 3, 255)
+    case 0 => fill(0, 43, 54)
+    case 1 => fill(211, 54, 130)
+    case 2 => fill(211, 1, 2)
+    case 3 => fill(181, 137, 0)
   }
+
+  /* TODO(feature) some of the arcs should be in the other pair of corners */
 
   override def draw(): Unit = {
     background(82, 0, 164)
-    for (r <- 0 until NumRows; c <- 0 until NumCols) {
-      noStroke()
-      val facesRight = Random.nextBoolean()
-      val hasTopArc = Random.nextBoolean()
-      val hasBottomArc = Random.nextBoolean()
-      def count(b: Boolean): Int = if (b) 1 else 0
-      val numShapes = 1 + count(hasTopArc) + count(hasBottomArc)
+    noStroke()
 
-      numShapes match {
-        case 1 => rect(c * colWidth, r * rowHeight, colWidth, rowHeight)
-        case _ =>
-          beginShape()
-          // TODO write this part
-          endShape(PConstants.CLOSE)
-      }
+    for (r <- 0 until NumRows; c <- 0 until NumCols) {
+      val xLeft = c * colWidth
+      val xRight = (c + 1) * colWidth
+      val yTop = r * rowHeight
+      val yBottom = (r + 1) * rowHeight
+
+      // TODO something in these curves is not quite right
+
+      /* Top fill */
+      fillRandom()
+      beginShape()
+      vertex(xLeft, yTop)
+      vertex(xRight, yTop)
+      bezierVertex(xLeft, yTop, xLeft, yTop, xLeft, yBottom)
+      endShape(PConstants.CLOSE)
+
+      /* Middle fill */
+      fillRandom()
+      beginShape()
+      vertex(xRight, yTop)
+      bezierVertex(xLeft, yTop, xLeft, yTop, xLeft, yBottom)
+      bezierVertex(xRight, yBottom, xRight, yBottom, xRight, yTop)
+      endShape(PConstants.CLOSE)
+
+      /* Bottom fill*/
+      fillRandom()
+      beginShape()
+      // 1. top left
+      vertex(xLeft, yTop)
+      // 2. top right
+      vertex(xRight, yTop)
+      // 3. arc to bottom left via bottom right
+      bezierVertex(xRight, yBottom, xLeft, yBottom, xLeft, yBottom)
+      // maybe we just need three points and then close it?
+      endShape(PConstants.CLOSE)
     }
   }
 }
