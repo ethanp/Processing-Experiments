@@ -1,8 +1,9 @@
 package emulations
 
-import helpers.Runner
-import processing.core.{PApplet, PConstants}
+import helpers.{MyPApplet, Runner}
+import processing.core.PConstants
 
+import scala.concurrent.duration._
 import scala.util.Random
 
 
@@ -13,9 +14,11 @@ import scala.util.Random
  *
  * Created 3/28/20 12:41 PM
  */
-class FrankStella extends PApplet {
-  private val NumRows = 4
-  private val NumCols = 4
+class FrankStella extends MyPApplet {
+  private val NumRows = 2
+  private val NumCols = 3
+
+  private val frameRate_ = Every(4.seconds)
 
   private def colWidth = width / NumCols
   private def rowHeight = height / NumRows
@@ -24,8 +27,6 @@ class FrankStella extends PApplet {
     pixelDensity = 2
     fullScreen(PConstants.P2D)
   }
-
-  override def setup(): Unit = frameRate(1)
 
   private def fillRandom(): Unit = Random nextInt 4 match {
     // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
@@ -38,7 +39,7 @@ class FrankStella extends PApplet {
   override def mouseClicked(): Unit =
     saveFrame(this.getClass.getSimpleName + ".jpg")
 
-  override def draw(): Unit = {
+  override def draw(): Unit = frameRate_ run {
     background(82, 0, 164)
     noStroke()
 

@@ -7,7 +7,7 @@ import scala.concurrent.duration.FiniteDuration
 /** Created 3/25/20 12:08 AM
  */
 //noinspection TypeAnnotation
-trait ThreeDimPApplet extends PApplet {
+trait ThreeDimPApplet extends MyPApplet {
 
   val gameObjects = mutable.ArrayBuffer.empty[GameObject]
 
@@ -88,16 +88,6 @@ trait ThreeDimPApplet extends PApplet {
     }
   }
 
-  case class Every(duration: FiniteDuration) {
-    private var lastTime = 0L
-    def run(block: => Unit): Unit = {
-      if (millis() / duration.toMillis > lastTime) {
-        block
-        lastTime = millis() / duration.toMillis
-      }
-    }
-  }
-
   object PVector {
     def apply(x: Double, y: Double, z: Double = 0) =
       new PVector(x.toFloat, y.toFloat, z.toFloat)
@@ -122,4 +112,16 @@ trait ThreeDimPApplet extends PApplet {
 
   def angleFractionToRadians(angleFraction: Double): Float =
     ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
+}
+
+trait MyPApplet extends PApplet {
+  case class Every(duration: FiniteDuration) {
+    private var lastTime = 0L
+    def run(block: => Unit): Unit = {
+      if (millis() / duration.toMillis > lastTime) {
+        block
+        lastTime = millis() / duration.toMillis
+      }
+    }
+  }
 }
