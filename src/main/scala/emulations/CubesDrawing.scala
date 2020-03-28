@@ -18,6 +18,9 @@ class CubesDrawing extends ThreeDimPApplet {
   for (r <- range; c <- range)
     gameObjects += Cube(r, c)
 
+  override def mouseClicked(): Unit =
+    saveFrame(this.getClass.getSimpleName + ".jpg")
+
   private case class Cube(r: Int, c: Int) extends GameObject {
     override def draw(): Unit = {
       ortho()
