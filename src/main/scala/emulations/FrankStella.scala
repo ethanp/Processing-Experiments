@@ -28,13 +28,15 @@ class FrankStella extends PApplet {
   override def setup(): Unit = frameRate(1)
 
   private def fillRandom(): Unit = Random nextInt 4 match {
-    case 0 => fill(0, 43, 54)
-    case 1 => fill(211, 54, 130)
-    case 2 => fill(211, 1, 2)
-    case 3 => fill(181, 137, 0)
+    // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
+    case 0 => fill(0, 54, 66) // black
+    case 3 => fill(181, 137, 0) // yellow
+    case 1 => fill(238, 232, 213) // white
+    case 2 => fill(220, 50, 47) // red
   }
 
-  /* TODO(feature) some of the arcs should be in the other pair of corners */
+  override def mouseClicked(): Unit =
+    saveFrame(this.getClass.getSimpleName + ".jpg")
 
   override def draw(): Unit = {
     background(82, 0, 164)
@@ -43,38 +45,65 @@ class FrankStella extends PApplet {
     for (r <- 0 until NumRows; c <- 0 until NumCols) {
       val xLeft = c * colWidth
       val xRight = (c + 1) * colWidth
+      val xHalf = (xLeft + xRight) / 2
       val yTop = r * rowHeight
       val yBottom = (r + 1) * rowHeight
+      val yHalf = (yTop + yBottom) / 2
 
-      // TODO something in these curves is not quite right
+      Random.nextBoolean() match {
+        case true => /* Bottom Left <-> Top Right */
 
-      /* Top fill */
-      fillRandom()
-      beginShape()
-      vertex(xLeft, yTop)
-      vertex(xRight, yTop)
-      bezierVertex(xLeft, yTop, xLeft, yTop, xLeft, yBottom)
-      endShape(PConstants.CLOSE)
+          /* Top fill */
+          fillRandom()
+          beginShape()
+          vertex(xLeft, yBottom)
+          bezierVertex(xLeft, yHalf, xHalf, yTop, xRight, yTop)
+          vertex(xLeft, yTop)
+          endShape(PConstants.CLOSE)
 
-      /* Middle fill */
-      fillRandom()
-      beginShape()
-      vertex(xRight, yTop)
-      bezierVertex(xLeft, yTop, xLeft, yTop, xLeft, yBottom)
-      bezierVertex(xRight, yBottom, xRight, yBottom, xRight, yTop)
-      endShape(PConstants.CLOSE)
+          /* Bottom fill*/
+          fillRandom()
+          beginShape()
+          vertex(xRight, yTop)
+          bezierVertex(xRight, yHalf, xHalf, yBottom, xLeft, yBottom)
+          vertex(xRight, yBottom)
+          endShape(PConstants.CLOSE)
 
-      /* Bottom fill*/
-      fillRandom()
-      beginShape()
-      // 1. top left
-      vertex(xLeft, yTop)
-      // 2. top right
-      vertex(xRight, yTop)
-      // 3. arc to bottom left via bottom right
-      bezierVertex(xRight, yBottom, xLeft, yBottom, xLeft, yBottom)
-      // maybe we just need three points and then close it?
-      endShape(PConstants.CLOSE)
+          /* Middle fill */
+          fillRandom()
+          beginShape()
+          vertex(xLeft, yBottom)
+          bezierVertex(xLeft, yHalf, xHalf, yTop, xRight, yTop)
+          bezierVertex(xRight, yHalf, xHalf, yBottom, xLeft, yBottom)
+          endShape(PConstants.CLOSE)
+
+
+        case false => /* Top Left <-> Bottom Right */
+
+          /* Top fill */
+          fillRandom()
+          beginShape()
+          vertex(xLeft, yTop)
+          bezierVertex(xHalf, yTop, xRight, yHalf, xRight, yBottom)
+          vertex(xRight, yTop)
+          endShape(PConstants.CLOSE)
+
+          /* Bottom fill*/
+          fillRandom()
+          beginShape()
+          vertex(xRight, yBottom)
+          bezierVertex(xHalf, yBottom, xLeft, yHalf, xLeft, yTop)
+          vertex(xRight, yTop)
+          endShape(PConstants.CLOSE)
+
+          /* Middle fill */
+          fillRandom()
+          beginShape()
+          vertex(xLeft, yTop)
+          bezierVertex(xHalf, yTop, xRight, yHalf, xRight, yBottom)
+          bezierVertex(xHalf, yBottom, xLeft, yHalf, xLeft, yTop)
+          endShape(PConstants.CLOSE)
+      }
     }
   }
 }
