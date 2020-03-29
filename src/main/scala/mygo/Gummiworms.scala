@@ -9,6 +9,8 @@ import scala.util.Random
  */
 class Gummiworms extends ThreeDimPApplet {
 
+  // TODO this one isn't working too well these days; not sure what's up
+
   private val atGenerationRate = Every(300 milliseconds)
   private val onOff = Every(7 seconds)
   private var isGenerating = true

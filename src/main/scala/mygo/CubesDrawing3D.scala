@@ -16,41 +16,14 @@ class CubesDrawing3D extends ThreeDimPApplet {
   private val depthLength = (rowHeight + colWidth) / 2
 
   for (r <- range; c <- range; t <- range)
-    gameObjects += Cube(r, c, t)
+    gameObjects += new Cube(r, c, t)
 
-  override def mouseClicked(): Unit = {
-    val className = this.getClass.getSimpleName
-    val idx: Int =
-      reflect.io.Directory(".")
-        .list
-        .map(_.name)
-        .filter(_ contains className)
-        .filter(_.endsWith(".jpg"))
-        .toSeq
-        .maxOption
-      match {
-        case None => 0
-        case Some(path) =>
-          "-(\\d+)".r findFirstMatchIn path match {
-            case Some(found) => found.group(1).toInt + 1
-            case None =>
-              System.err.println(s"WARNING: Couldn't parse file path: $path")
-              0
-          }
-      }
-    // TODO first we should check if the new one is gonna just be the same
-    //  as one of the ones we've already saved.
-    saveFrame(f"$className-$idx%02d.jpg")
-  }
+  override def moveCamera(): Unit = rotateX(.38f)
 
-  override def moveCamera(): Unit = {
-    rotateX(.38f)
-  }
-
-  private case class Cube(r: Int, c: Int, t: Int) extends GameObject {
+  private class Cube(r: Int, c: Int, t: Int) extends GameObject {
     override def draw(): Unit = {
       ortho()
-      val factor = 4
+      val factor = 8
       rotateX(4f)
       rotateY(7f)
       translate(
@@ -61,9 +34,9 @@ class CubesDrawing3D extends ThreeDimPApplet {
       rotateY(r / 10f)
       rotateX(c / 5f + 3.8f)
       rotateZ(t / 10f + 3.8f)
-      strokeWeight(3)
+      strokeWeight(2)
       Rgb(80, 70, 40).stroke()
-      Rgb((Span - r) * 20, (c + Span) * 10, (t / 2 + Span) * 15, 70).fill()
+      Rgb((Span - r) * 20, (c + Span) * 10, (t / 2 + Span) * 15, 50).fill()
       box(depthLength * factor / 1.3f)
     }
   }

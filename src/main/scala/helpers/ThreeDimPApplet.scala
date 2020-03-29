@@ -1,5 +1,5 @@
 package helpers
-import processing.core.{PApplet, PConstants, PVector}
+import processing.core.PConstants
 
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
@@ -36,6 +36,13 @@ trait ThreeDimPApplet extends MyPApplet {
     fullScreen(PConstants.P3D)
   }
 
+  override def setup(): Unit = {
+    // NB: These (and other) hints trade performance for visual quality.
+    //  https://processing.org/reference/hint_.html
+    hint(PConstants.DISABLE_DEPTH_TEST)
+    hint(PConstants.ENABLE_STROKE_PERSPECTIVE)
+  }
+
   // For the scala compiler, by 'lifting' this method into this class,
   // it disambiguates which overload should be called in the (Float, Float, Float)
   // case (i.e. it should be THIS overload).
@@ -44,58 +51,6 @@ trait ThreeDimPApplet extends MyPApplet {
 
   def translate(x: Double, y: Double, z: Double): Unit =
     ThreeDimPApplet.super.translate(x.toFloat, y.toFloat, z.toFloat)
-
-  def darkBackground(): Unit = background(0f)
-
-  final protected def withPushedMatrix(block: => Unit): Unit = {
-    pushMatrix()
-    block
-    popMatrix()
-  }
-
-  final protected def fromTheCenter(block: => Unit): Unit = {
-    withPushedMatrix {
-      translate(width / 2, height / 2, 0)
-      block
-    }
-  }
-
-  sealed trait Color {
-    def stroke(): Unit
-    def fill(): Unit
-    final def strokeAndFill(): Unit = { stroke(); fill() }
-  }
-
-  case class Hsb(h: Float, s: Float = 100, b: Float = 100, a: Float = 100) extends Color {
-    override def stroke(): Unit = {
-      colorMode(PConstants.HSB, 100)
-      ThreeDimPApplet.this.stroke(h, s, b, a)
-    }
-    override def fill(): Unit = {
-      colorMode(PConstants.HSB, 100)
-      ThreeDimPApplet.this.fill(h, s, b, a)
-    }
-  }
-
-  object Green extends Rgb(0, 100, 0)
-  object Black extends Rgb(0, 0, 0)
-  object White extends Rgb(100, 100, 100)
-
-  sealed case class Rgb(r: Float, g: Float, b: Float, a: Float = 100) extends Color {
-    override def stroke(): Unit = {
-      colorMode(PConstants.RGB, 100)
-      ThreeDimPApplet.this.stroke(r, g, b, a)
-    }
-    override def fill(): Unit = {
-      colorMode(PConstants.RGB, 100)
-      ThreeDimPApplet.this.fill(r, g, b, a)
-    }
-  }
-
-  object PVector {
-    def apply(x: Double, y: Double, z: Double = 0) =
-      new PVector(x.toFloat, y.toFloat, z.toFloat)
-  }
 
   case class Rotation(period: FiniteDuration) extends GameObject {
     private var rotationFraction = 0D
@@ -116,16 +71,4 @@ trait ThreeDimPApplet extends MyPApplet {
 
   def angleFractionToRadians(angleFraction: Double): Float =
     ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
-}
-
-trait MyPApplet extends PApplet {
-  case class Every(duration: FiniteDuration) {
-    private var lastTime = 0L
-    def run(block: => Unit): Unit = {
-      if (millis() / duration.toMillis > lastTime) {
-        block
-        lastTime = millis() / duration.toMillis
-      }
-    }
-  }
 }
