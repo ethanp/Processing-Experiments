@@ -32,7 +32,7 @@ class VennColors extends ThreeDimPApplet {
     override def draw(): Unit = {
       rotateZ(curRadians.toFloat)
       color.fill()
-      White.stroke()
+      Solarized.White.stroke()
       ellipseMode(PConstants.CORNER)
       ellipse(topLeft.x, topLeft.y, Width, Height)
     }

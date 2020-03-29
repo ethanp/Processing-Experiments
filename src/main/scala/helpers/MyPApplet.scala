@@ -51,9 +51,20 @@ trait MyPApplet extends PApplet {
     }
   }
 
-  object Green extends Rgb(0, 100, 0)
-  object Black extends Rgb(0, 0, 0)
-  object White extends Rgb(100, 100, 100)
+  // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
+  object Solarized {
+    object Black extends Rgb(0, 54, 66)
+    object Yellow extends Rgb(181, 137, 0)
+    object White extends Rgb(238, 232, 213)
+    object Red extends Rgb(220, 50, 47)
+  }
+
+  object Pure {
+    object Green extends Rgb(0, 100, 0)
+    object Red extends Rgb(100, 0, 0)
+    object Black extends Rgb(0, 0, 0)
+    object White extends Rgb(100, 100, 100)
+  }
 
   sealed case class Rgb(r: Float, g: Float, b: Float, a: Float = 100) extends Color {
     override def stroke(): Unit = {
@@ -88,6 +99,7 @@ trait MyPApplet extends PApplet {
   }
 
   final def sin(x: Double): Float = math.sin(x).toFloat
+  final def cos(x: Double): Float = math.cos(x).toFloat
 
   case class Every(duration: FiniteDuration) {
     private var lastTime = 0L

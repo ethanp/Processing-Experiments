@@ -9,19 +9,23 @@ class LinesTrail2 extends MyPApplet {
   override def draw(): Unit = {
     darkBackground()
     fromTheCenter {
-      strokeWeight(4)
-      White.stroke()
-      val lineLeft = -width / 3f
+      strokeWeight(5)
+      Solarized.White.stroke()
+      val lineLeft = -pixelWidth / 6f
       val lineRight = -lineLeft
       line(lineLeft, 0, lineRight, 0)
       val lineWidth: Float = lineRight - lineLeft
-      val steps = 100
+      val steps = 1000
       val stepWidth = lineWidth / steps
       for (step <- 0 to steps) {
+        Solarized.Yellow.stroke() // TODO lerp this color
         val x = lineLeft + step * stepWidth
-        val y = sin(x / 100f) * height / 3f
-        Green.stroke() // TODO lerp this color
+        val rate = 110f
+        val scale = pixelHeight / 10f
+        val y = (sin(x / rate) - 1) * scale
+        val y2 = (cos(x / rate) + 1) * scale
         line(x, 0, x, y)
+        line(x, 0, x, y2)
       }
     }
   }

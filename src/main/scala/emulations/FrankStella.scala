@@ -29,11 +29,10 @@ class FrankStella extends MyPApplet {
   }
 
   private def fillRandom(): Unit = Random nextInt 4 match {
-    // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
-    case 0 => fill(0, 54, 66) // black
-    case 3 => fill(181, 137, 0) // yellow
-    case 1 => fill(238, 232, 213) // white
-    case 2 => fill(220, 50, 47) // red
+    case 0 => Solarized.Black.fill()
+    case 3 => Solarized.Yellow.fill()
+    case 1 => Solarized.White.fill()
+    case 2 => Solarized.Red.fill()
   }
 
   override def mouseClicked(): Unit =
