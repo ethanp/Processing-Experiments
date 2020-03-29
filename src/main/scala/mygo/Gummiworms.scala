@@ -9,17 +9,19 @@ import scala.util.Random
  */
 class Gummiworms extends ThreeDimPApplet {
 
-  private val periodically = Every(300 milliseconds)
+  private val atGenerationRate = Every(300 milliseconds)
   private val onOff = Every(7 seconds)
-  private var on = true
+  private var isGenerating = true
   private var increment = 1f
 
   override def draw(): Unit = {
     onOff run {
-      on = !on
-      if (on) increment = Random.nextFloat() * 2
+      isGenerating = !isGenerating
+      if (isGenerating) increment = Random.nextFloat() * 2
     }
-    if (on) periodically run (gameObjects += new CorkscrewBall)
+    if (isGenerating) atGenerationRate run {
+      gameObjects += new CorkscrewBall
+    }
     super.draw()
   }
 

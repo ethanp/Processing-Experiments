@@ -12,6 +12,7 @@ class CubeOfCubes extends PApplet {
    */
 
   private val BoxSpacing = 50
+
   override def draw(): Unit = {
     background(0)
     translate(width / 2, height / 2, -HalfWidth)
@@ -32,7 +33,9 @@ class CubeOfCubes extends PApplet {
   }
 
   override def settings(): Unit = fullScreen(PConstants.P3D)
+
   private def HalfWidth = height / 2 - 300
+
   /** Returns a rotation angle (in radians) given a number of rotations per second, using the elapsed time */
   private def spin(revolutionsPerSecond: Double) =
     (revolutionsPerSecond / 1000 * PI * 2 * millis).toFloat
@@ -43,6 +46,7 @@ class CubeOfCubes extends PApplet {
     fn
     popMatrix()
   }
+
   /**
    * Returns a value in the range min to max, varied sinusoidally over time with period length periodSecs.
    *

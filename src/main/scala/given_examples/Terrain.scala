@@ -43,7 +43,6 @@ class Terrain extends PApplet {
 
 
 object Terrain {
-  def main(args: Array[String]): Unit = {
+  def main(args: Array[String]): Unit =
     PApplet.main(classOf[Terrain])
-  }
 }

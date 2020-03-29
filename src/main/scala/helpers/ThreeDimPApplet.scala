@@ -16,9 +16,13 @@ trait ThreeDimPApplet extends MyPApplet {
     def tick(): Unit = ()
   }
 
+  def moveCamera(): Unit = ()
+
   /** Default implementation. Override as desired. */
   override def draw(): Unit = {
     darkBackground()
+    moveCamera()
+    colorMode(PConstants.RGB, 100)
     for (gameObj <- gameObjects) {
       fromTheCenter {
         gameObj.draw()

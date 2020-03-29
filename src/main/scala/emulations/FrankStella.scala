@@ -18,10 +18,10 @@ class FrankStella extends MyPApplet {
   private val NumRows = 2
   private val NumCols = 3
 
-  private val frameRate_ = Every(4.seconds)
-
   private def colWidth = width / NumCols
   private def rowHeight = height / NumRows
+
+  private val atFrameRate = Every(4.seconds)
 
   override def settings(): Unit = {
     pixelDensity = 2
@@ -39,7 +39,7 @@ class FrankStella extends MyPApplet {
   override def mouseClicked(): Unit =
     saveFrame(this.getClass.getSimpleName + ".jpg")
 
-  override def draw(): Unit = frameRate_ run {
+  override def draw(): Unit = atFrameRate run {
     background(82, 0, 164)
     noStroke()
 
