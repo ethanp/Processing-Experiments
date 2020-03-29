@@ -7,7 +7,13 @@ import scala.concurrent.duration.FiniteDuration
  */
 trait MyPApplet extends PApplet {
 
+  /* ************** RENAMINGS ***************/
+
   def darkBackground(): Unit = background(0f)
+  final def is3D: Boolean = sketchRenderer() contains "3D"
+
+
+  /* ************** SAVING ***************/
 
   override def mouseClicked(): Unit = {
     val className = this.getClass.getSimpleName
@@ -33,6 +39,47 @@ trait MyPApplet extends PApplet {
     //  as one of the ones we've already saved and show a warning instead of saving
     saveFrame(f"$className-$idx%02d.jpg")
   }
+
+
+  /* ************** GEOMETRY ***************/
+
+  object PVector {
+    def apply(x: Double, y: Double, z: Double = 0) =
+      new PVector(x.toFloat, y.toFloat, z.toFloat)
+  }
+
+  final protected def withPushedMatrix(block: => Unit): Unit = {
+    pushMatrix()
+    block
+    popMatrix()
+  }
+
+  final protected def fromTheCenter(block: => Unit): Unit = {
+    withPushedMatrix {
+      if (is3D) translate(width / 2, height / 2, 0)
+      else translate(width / 2, height / 2)
+      block
+    }
+  }
+
+  final def sin(x: Double): Float = math.sin(x).toFloat
+  final def cos(x: Double): Float = math.cos(x).toFloat
+
+
+  /* ************** ANIMATION ***************/
+
+  case class Every(duration: FiniteDuration) {
+    private var lastTime = 0L
+    def run(block: => Unit): Unit = {
+      if (millis() / duration.toMillis > lastTime) {
+        block
+        lastTime = millis() / duration.toMillis
+      }
+    }
+  }
+
+
+  /* ************** COLOR ***************/
 
   sealed trait Color {
     def stroke(): Unit
@@ -74,40 +121,6 @@ trait MyPApplet extends PApplet {
     override def fill(): Unit = {
       colorMode(PConstants.RGB, 100)
       MyPApplet.this.fill(r, g, b, a)
-    }
-  }
-
-  object PVector {
-    def apply(x: Double, y: Double, z: Double = 0) =
-      new PVector(x.toFloat, y.toFloat, z.toFloat)
-  }
-
-  final protected def withPushedMatrix(block: => Unit): Unit = {
-    pushMatrix()
-    block
-    popMatrix()
-  }
-
-  final def is3D: Boolean = sketchRenderer() contains "3D"
-
-  final protected def fromTheCenter(block: => Unit): Unit = {
-    withPushedMatrix {
-      if (is3D) translate(width / 2, height / 2, 0)
-      else translate(width / 2, height / 2)
-      block
-    }
-  }
-
-  final def sin(x: Double): Float = math.sin(x).toFloat
-  final def cos(x: Double): Float = math.cos(x).toFloat
-
-  case class Every(duration: FiniteDuration) {
-    private var lastTime = 0L
-    def run(block: => Unit): Unit = {
-      if (millis() / duration.toMillis > lastTime) {
-        block
-        lastTime = millis() / duration.toMillis
-      }
     }
   }
 }
