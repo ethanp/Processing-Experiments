@@ -10,8 +10,47 @@ trait MyPApplet extends PApplet {
   /* ************** RENAMINGS ***************/
 
   def darkBackground(): Unit = background(0f)
+
   final def is3D: Boolean = sketchRenderer() contains "3D"
 
+  def mouse: MyPVector = PVector(mouseX, mouseY)
+
+  case class Rectangle(leftTop: PVector, dimensionLengths: PVector) {
+    def centerAt(center: Int): Rectangle = {
+      leftTop.x = center - width / 2
+      this
+    }
+
+    def within(rectangle: Rectangle): Rectangle = {
+      leftTop.x = left max rectangle.left
+      leftTop.x = (right min rectangle.right) - width
+      this
+    }
+
+    def left: Float = leftTop.x
+    def right: Float = bottomRight.x
+    def top: Float = leftTop.y
+    def bottom: Float = bottomRight.y
+
+    def width: Float = dimensionLengths.x
+    def height: Float = dimensionLengths.y
+
+    def bottomRight: PVector = leftTop.copy().add(dimensionLengths)
+    def draw(): Unit = rect(left, top, dimensionLengths.x, dimensionLengths.y)
+  }
+
+  class MyPVector(_x: Float, _y: Float, _z: Float = 0) extends PVector(_x, _y, _z) {
+    def isInside(rectangle: Rectangle): Boolean =
+      x > rectangle.left &&
+        y > rectangle.top &&
+        x < rectangle.right &&
+        y < rectangle.bottom
+  }
+
+  object PVector {
+    def apply(x: Double, y: Double, z: Double = 0) =
+      new MyPVector(x.toFloat, y.toFloat, z.toFloat)
+  }
 
   /* ************** SAVING ***************/
 
@@ -42,11 +81,6 @@ trait MyPApplet extends PApplet {
 
 
   /* ************** GEOMETRY ***************/
-
-  object PVector {
-    def apply(x: Double, y: Double, z: Double = 0) =
-      new PVector(x.toFloat, y.toFloat, z.toFloat)
-  }
 
   final protected def withPushedMatrix(block: => Unit): Unit = {
     pushMatrix()
