@@ -1,5 +1,6 @@
 package mygo
 
+import colors.Solarized
 import helpers.{MyPApplet, Runner}
 import processing.core.PConstants
 
@@ -7,7 +8,7 @@ import processing.core.PConstants
  */
 class LinesTrail2 extends MyPApplet {
   override def draw(): Unit = {
-    darkBackground()
+    blackBackground()
     fromTheCenter {
       strokeWeight(5)
       Solarized.White.stroke()

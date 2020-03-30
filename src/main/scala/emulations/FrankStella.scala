@@ -1,5 +1,6 @@
 package emulations
-
+import animation.Every
+import colors.Solarized
 import helpers.{MyPApplet, Runner}
 import processing.core.PConstants
 
@@ -29,10 +30,10 @@ class FrankStella extends MyPApplet {
   }
 
   private def fillRandom(): Unit = Random nextInt 4 match {
-    case 0 => Solarized.Black.fill()
-    case 3 => Solarized.Yellow.fill()
-    case 1 => Solarized.White.fill()
-    case 2 => Solarized.Red.fill()
+    case 0 => Solarized.Black.fill
+    case 3 => Solarized.Yellow.fill
+    case 1 => Solarized.White.fill
+    case 2 => Solarized.Red.fill
   }
 
   override def mouseClicked(): Unit =

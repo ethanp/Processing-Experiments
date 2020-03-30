@@ -1,4 +1,5 @@
 package emulations
+import colors.Rgb
 import helpers.{Runner, ThreeDimPApplet}
 
 

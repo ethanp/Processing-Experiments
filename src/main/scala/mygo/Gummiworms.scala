@@ -1,4 +1,6 @@
 package mygo
+import animation.Every
+import colors.Hsb
 import helpers.{Runner, ThreeDimPApplet}
 
 import scala.concurrent.duration._

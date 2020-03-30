@@ -1,4 +1,7 @@
 package mygo
+
+import colors.{Pure, Solarized}
+import geometry.{PVector, Rectangle, V}
 import helpers.{MyPApplet, Runner}
 import processing.core.PConstants
 import processing.event.MouseEvent
@@ -12,28 +15,46 @@ class MyScrollbar extends MyPApplet {
     size(Width, Height)
   }
 
+  val scrollbar = new Scrollbar(this)
+
+  override def setup(): Unit = {
+    frameRate(60)
+  }
+
+  override def mousePressed(click: MouseEvent): Unit = scrollbar.mousePressed(click)
+  override def mouseDragged(event: MouseEvent): Unit = scrollbar.mouseDragged(event)
+  override def mouseReleased(event: MouseEvent): Unit = scrollbar.mouseReleased(event)
+  override def draw(): Unit = scrollbar.draw()
+}
+
+object MyScrollbar extends Runner {
+  override def pAppletClass: Class[_] = classOf[MyScrollbar]
+}
+
+class Scrollbar(myPApplet: MyPApplet) {
+  implicit val app: MyPApplet = myPApplet
   private val outerRectangle = Rectangle(
-    leftTop = PVector(10, 10),
-    dimensionLengths = PVector(200, 100)
+    leftTop = V(10, 10),
+    widthHeight = V(200, 100)
   )
 
   private val innerRectangle = Rectangle(
-    leftTop = PVector(10, 10),
-    dimensionLengths = PVector(30, 100)
+    leftTop = V(10, 10),
+    widthHeight = V(30, 100)
   )
 
   var isDragging = false
 
-  override def mousePressed(mouseEvent: MouseEvent): Unit = {
-    if (mouseEvent.getButton == PConstants.LEFT) {
-      val clickLoc = PVector(mouseEvent.getX, mouseEvent.getY)
+  def mousePressed(click: MouseEvent): Unit = {
+    if (click.getButton == PConstants.LEFT) {
+      val clickLoc = PVector(click.getX, click.getY)
       if (clickLoc isInside innerRectangle) {
         isDragging = true
       }
     }
   }
 
-  private def innerRectDragged(): Unit = {
+  private def innerRectDragged(mouseX: Int): Unit = {
     if (isDragging) {
       innerRectangle centerAt mouseX within outerRectangle
       updateCurValue()
@@ -41,35 +62,37 @@ class MyScrollbar extends MyPApplet {
   }
 
   private def updateCurValue(): Unit = {
-    val width = outerRectangle.width - innerRectangle.width
     val extent = innerRectangle.left - outerRectangle.left
+    val width = outerRectangle.width - innerRectangle.width
     val prop = extent / width
     curValue = (prop * maxValue).toInt
-    println(s"INFO: curValue = $curValue")
-    // TODO there should be a label on the screen instead of a println
   }
 
-  override def mouseDragged(event: MouseEvent): Unit = innerRectDragged()
+  def mouseDragged(event: MouseEvent): Unit = innerRectDragged(event.getX)
 
   var curValue: Int = 0
   val minValue: Int = 0
   val maxValue: Int = 10
 
-  override def mouseReleased(event: MouseEvent): Unit = {
-    innerRectDragged()
+  def mouseReleased(event: MouseEvent): Unit = {
+    innerRectDragged(event.getX)
     isDragging = false
   }
 
-  override def draw(): Unit = {
-    // TODO should be linear gradient
+  def draw(): Unit = {
+    app.background(10)
+    app.strokeWeight(2)
+    Pure.Black.stroke()
     Solarized.Red.fill()
     outerRectangle.draw()
-    // TODO should be radial gradient
     Solarized.Yellow.fill()
     innerRectangle.draw()
+    Solarized.White.stroke().fill()
+    app.textSize(24)
+    app.text(
+      /*string=*/ curValue,
+      /*left=*/ outerRectangle.right + 10,
+      /*bottom??=*/ outerRectangle.bottom - outerRectangle.height / 3
+    )
   }
-}
-
-object MyScrollbar extends Runner {
-  override def pAppletClass: Class[_] = classOf[MyScrollbar]
 }

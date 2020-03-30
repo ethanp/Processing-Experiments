@@ -1,7 +1,7 @@
 package mygo
 
+import colors.Rgb
 import helpers.{Runner, ThreeDimPApplet}
-
 
 /**
  * This is based on [[emulations.CubesDrawing]]
@@ -35,8 +35,13 @@ class CubesDrawing3D extends ThreeDimPApplet {
       rotateX(c / 5f + 3.8f)
       rotateZ(t / 10f + 3.8f)
       strokeWeight(2)
-      Rgb(80, 70, 40).stroke()
-      Rgb((Span - r) * 20, (c + Span) * 10, (t / 2 + Span) * 15, 50).fill()
+      Rgb(80, 70, 40).stroke()(app)
+      Rgb(
+        r = (Span - r) * 20,
+        g = (c + Span) * 10,
+        b = (t / 2 + Span) * 15,
+        a = 50
+      ).fill()(app)
       box(depthLength * factor / 1.3f)
     }
   }

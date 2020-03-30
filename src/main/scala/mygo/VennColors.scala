@@ -1,10 +1,11 @@
 package mygo
 
+import colors.{Color, Rgb, Solarized}
+import geometry.V
 import helpers.{Runner, ThreeDimPApplet}
 import processing.core.PConstants
 
 import scala.concurrent.duration._
-import scala.language.postfixOps
 
 /** Created 3/24/20 10:45 PM
  */
@@ -25,7 +26,7 @@ class VennColors extends ThreeDimPApplet {
     def color: Color
 
     private val overlap = 100
-    private val topLeft = PVector(x = -overlap, y = -overlap)
+    private val topLeft = V(x = -overlap, y = -overlap)
     private val Width = 400
     private val Height = 400
 
@@ -43,7 +44,7 @@ class VennColors extends ThreeDimPApplet {
   }
 
   case class SpinningCircle(color: Color) extends VennCircle {
-    private val rotation = Rotation(period = 3 seconds)
+    private val rotation = Rotation(period = 3.seconds)
     override def curRadians: Double = rotation.curRadians()
   }
 }
