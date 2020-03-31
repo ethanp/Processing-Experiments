@@ -7,6 +7,38 @@ import javafx.beans.value.ChangeListener
 import processing.core.PConstants
 import processing.event.MouseEvent
 
+/** @inheritdoc
+ */
+class HScrollbar(
+  override protected val initial: Float,
+  override protected val min: Float,
+  override protected val max: Float,
+  override protected val listener: ChangeListener[Number],
+)(
+  implicit pApp: MyPApplet
+) extends Scrollbar {
+  override def app: MyPApplet = pApp
+  override protected def centerKnob(mouseX: Int): Unit = knob centerOnX mouseX withinWidth slider
+  override protected def mouseLoc(event: MouseEvent): Int = event.getX
+}
+
+// TODO the VScrollbar isn't working yet. more stuff needs to be extracted from the base.
+/** @inheritdoc
+ */
+class VScrollbar(
+  override protected val initial: Float,
+  override protected val min: Float,
+  override protected val max: Float,
+  override protected val listener: ChangeListener[Number],
+)(
+  implicit pApp: MyPApplet
+) extends Scrollbar {
+  override def app: MyPApplet = pApp
+
+  override protected def centerKnob(mouseCoord: Int): Unit = knob centerOnY mouseCoord withinHeight slider
+  override protected def mouseLoc(event: MouseEvent): Int = event.getY
+}
+
 /**
  * The following code is required when using this class
  *
@@ -19,30 +51,10 @@ import processing.event.MouseEvent
  *
  * }}}
  *
+ * Admittedly this class didn't quite turn out that good lol. Any suggestions welcome :)
+ * <p>
  * Created 3/29/20 11:23 PM
  */
-class HScrollbar(
-  override protected val initial: Float,
-  override protected val min: Float,
-  override protected val max: Float,
-  override protected val listener: ChangeListener[Number],
-)(
-  implicit pApp: MyPApplet
-) extends Scrollbar {
-  override def app: MyPApplet = pApp
-}
-
-class VScrollbar(
-  override protected val initial: Float,
-  override protected val min: Float,
-  override protected val max: Float,
-  override protected val listener: ChangeListener[Number],
-)(
-  implicit pApp: MyPApplet
-) extends Scrollbar {
-  override def app: MyPApplet = pApp
-}
-
 trait Scrollbar {
   protected def initial: Float
   protected def min: Float
@@ -59,12 +71,12 @@ trait Scrollbar {
   //noinspection NotImplementedCode
   if (min != 0) ???
 
-  private val outerRectangle = Rectangle(
+  protected val slider: Rectangle = Rectangle(
     leftTop = V(10, 35),
     widthHeight = V(200, 10)
   )
 
-  private val innerRectangle = Rectangle(
+  protected val knob: Rectangle = Rectangle(
     leftTop = V(10, 20),
     widthHeight = V(15, 40)
   )
@@ -74,30 +86,34 @@ trait Scrollbar {
   def mousePressed(click: MouseEvent): Unit = {
     if (click.getButton == PConstants.LEFT) {
       val clickLoc = PVector(click.getX, click.getY)
-      if (clickLoc isInside innerRectangle) {
+      if (clickLoc isInside knob) {
         isDragging = true
       }
     }
   }
 
-  private def innerRectDragged(mouseX: Int): Unit = {
+  protected def centerKnob(mouseX: Int): Unit
+
+  private def innerRectDragged(mouseX: Int): Unit =
     if (isDragging) {
-      innerRectangle centerAt mouseX within outerRectangle
+      centerKnob(mouseX)
       updateCurValue()
     }
-  }
 
+  // TODO this needs to be updated too.
   private def updateCurValue(): Unit = {
-    val extent: Float = innerRectangle.left - outerRectangle.left
-    val width: Float = outerRectangle.width - innerRectangle.width
+    val extent: Float = knob.left - slider.left
+    val width: Float = slider.width - knob.width
     val prop: Float = extent / width
     floatProperty.setValue(prop * max)
   }
 
-  def mouseDragged(event: MouseEvent): Unit = innerRectDragged(event.getX)
+  protected def mouseLoc(event: MouseEvent): Int
+
+  def mouseDragged(event: MouseEvent): Unit = innerRectDragged(mouseLoc(event))
 
   def mouseReleased(event: MouseEvent): Unit = {
-    innerRectDragged(event.getX)
+    innerRectDragged(mouseLoc(event))
     isDragging = false
   }
 
@@ -106,15 +122,15 @@ trait Scrollbar {
     app.strokeWeight(2)
     Pure.Black.stroke()
     Solarized.Red.fill()
-    outerRectangle.draw()
+    slider.draw()
     Solarized.Yellow.fill()
-    innerRectangle.draw()
+    knob.draw()
     Solarized.White.stroke().fill()
     app.textSize(24)
     app.text(
       /*string=*/ f"${ floatProperty.get.floatValue }%.2f",
-      /*left=*/ outerRectangle.right + 10,
-      /*bottom??=*/ outerRectangle.bottom - outerRectangle.height / 3
+      /*left=*/ slider.right + 10,
+      /*bottom??=*/ slider.bottom - slider.height / 3
     )
   }
 }

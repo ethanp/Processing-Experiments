@@ -5,14 +5,25 @@ import processing.core.PVector
  */
 package object geometry {
   case class Rectangle(leftTop: PVector, widthHeight: PVector) {
-    def centerAt(center: Int): Rectangle = {
+    def centerOnX(center: Int): Rectangle = {
       leftTop.x = center - width / 2
       this
     }
 
-    def within(rectangle: Rectangle): Rectangle = {
+    def centerOnY(center: Int): Rectangle = {
+      leftTop.y = center - height / 2
+      this
+    }
+
+    def withinWidth(rectangle: Rectangle): Rectangle = {
       leftTop.x = left max rectangle.left
       leftTop.x = (right min rectangle.right) - width
+      this
+    }
+
+    def withinHeight(rectangle: Rectangle): Rectangle = {
+      leftTop.y = top max rectangle.top
+      leftTop.y = (bottom min rectangle.bottom) - height
       this
     }
 
