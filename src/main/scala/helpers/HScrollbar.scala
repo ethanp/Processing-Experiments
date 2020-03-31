@@ -1,31 +1,75 @@
 package helpers
+
 import colors.{Pure, Solarized}
 import geometry.{PVector, Rectangle, V}
-import javafx.beans.property.FloatProperty
+import javafx.beans.property.SimpleFloatProperty
+import javafx.beans.value.ChangeListener
 import processing.core.PConstants
 import processing.event.MouseEvent
 
-/** Created 3/29/20 11:23 PM
+/**
+ * The following code is required when using this class
+ *
+ * {{{
+ *
+ * override def mousePressed(click: MouseEvent): Unit = scrollbar.mousePressed(click)
+ * override def mouseDragged(event: MouseEvent): Unit = scrollbar.mouseDragged(event)
+ * override def mouseReleased(event: MouseEvent): Unit = scrollbar.mouseReleased(event)
+ * override def draw(): Unit = scrollbar.draw()
+ *
+ * }}}
+ *
+ * Created 3/29/20 11:23 PM
  */
-class Scrollbar(floatProperty: FloatProperty, min: Float, max: Float)(implicit app: MyPApplet) {
+class HScrollbar(
+  override protected val initial: Float,
+  override protected val min: Float,
+  override protected val max: Float,
+  override protected val listener: ChangeListener[Number],
+)(
+  implicit pApp: MyPApplet
+) extends Scrollbar {
+  override def app: MyPApplet = pApp
+}
+
+class VScrollbar(
+  override protected val initial: Float,
+  override protected val min: Float,
+  override protected val max: Float,
+  override protected val listener: ChangeListener[Number],
+)(
+  implicit pApp: MyPApplet
+) extends Scrollbar {
+  override def app: MyPApplet = pApp
+}
+
+trait Scrollbar {
+  protected def initial: Float
+  protected def min: Float
+  protected def max: Float
+  protected def listener: ChangeListener[Number]
+  protected def app: MyPApplet
+  implicit val iApp: MyPApplet = app
+
+  private val floatProperty =
+    new SimpleFloatProperty(initial) {
+      addListener(listener)
+    }
 
   //noinspection NotImplementedCode
   if (min != 0) ???
 
   private val outerRectangle = Rectangle(
-    leftTop = V(10, 10),
-    widthHeight = V(200, 100)
+    leftTop = V(10, 35),
+    widthHeight = V(200, 10)
   )
 
   private val innerRectangle = Rectangle(
-    leftTop = V(10, 10),
-    widthHeight = V(30, 100)
+    leftTop = V(10, 20),
+    widthHeight = V(15, 40)
   )
 
   private var isDragging = false
-
-  def bindTo(floatProperty: FloatProperty): Unit = {
-  }
 
   def mousePressed(click: MouseEvent): Unit = {
     if (click.getButton == PConstants.LEFT) {

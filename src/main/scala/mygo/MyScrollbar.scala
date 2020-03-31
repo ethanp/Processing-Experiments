@@ -1,8 +1,6 @@
 package mygo
 
-import helpers.{MyPApplet, Runner, Scrollbar}
-import javafx.beans.property.SimpleFloatProperty
-import javafx.beans.value.{ChangeListener, ObservableValue}
+import helpers.{HScrollbar, MyPApplet, Runner, Scrollbar, VScrollbar}
 import processing.event.MouseEvent
 
 /** Created 3/29/20 8:20 PM
@@ -14,24 +12,25 @@ class MyScrollbar extends MyPApplet {
     size(Width, Height)
   }
 
-  val floatProperty = new SimpleFloatProperty(0)
-  floatProperty.addListener(new ChangeListener[Number] {
-    override def changed(
-      observable: ObservableValue[_ <: Number],
-      oldValue: Number,
-      newValue: Number
-    ): Unit = {
-      println("new value from main drawing.")
-    }
-  })
+  private val scrollbar = new HScrollbar(
+    initial = 0, min = 0, max = 10,
+    listener = (_, _, current: Number) =>
+      println(f"Horizontal Scrollbar from main drawing: ${ current.floatValue() }%.02f")
+  )
 
-  val scrollbar = new Scrollbar(floatProperty, min = 0, max = 10)
+  private val vScroller = new VScrollbar(
+    initial = 0, min = 0, max = 10,
+    listener = (_, _, current: Number) =>
+      println(f"Vertical Scrollbar from main drawing: ${ current.floatValue() }%.02f")
+  )
+
+  private val scrollbars: Seq[Scrollbar] = Seq(scrollbar, vScroller)
 
   override def setup(): Unit = frameRate(60)
 
-  override def mousePressed(click: MouseEvent): Unit = scrollbar.mousePressed(click)
-  override def mouseDragged(event: MouseEvent): Unit = scrollbar.mouseDragged(event)
-  override def mouseReleased(event: MouseEvent): Unit = scrollbar.mouseReleased(event)
+  override def mousePressed(click: MouseEvent): Unit = scrollbars foreach (_ mousePressed click)
+  override def mouseDragged(event: MouseEvent): Unit = scrollbars foreach (_ mouseDragged event)
+  override def mouseReleased(event: MouseEvent): Unit = scrollbars foreach (_ mouseReleased event)
   override def draw(): Unit = scrollbar.draw()
 }
 
