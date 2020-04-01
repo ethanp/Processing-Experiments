@@ -19,10 +19,19 @@ class HScrollbar(
 ) extends Scrollbar {
   override def app: MyPApplet = pApp
   override protected def centerKnob(mouseX: Int): Unit = knob centerOnX mouseX withinWidth slider
-  override protected def mouseLoc(event: MouseEvent): Int = event.getX
+  override protected def mouseDimLoc(event: MouseEvent): Int = event.getX
+
+  override protected val slider: Rectangle = Rectangle(
+    leftTop = V(10, 35),
+    widthHeight = V(200, 10)
+  )
+
+  override protected val knob: Rectangle = Rectangle(
+    leftTop = V(10, 20),
+    widthHeight = V(15, 40)
+  )
 }
 
-// TODO the VScrollbar isn't working yet. more stuff needs to be extracted from the base.
 /** @inheritdoc
  */
 class VScrollbar(
@@ -35,8 +44,20 @@ class VScrollbar(
 ) extends Scrollbar {
   override def app: MyPApplet = pApp
 
-  override protected def centerKnob(mouseCoord: Int): Unit = knob centerOnY mouseCoord withinHeight slider
-  override protected def mouseLoc(event: MouseEvent): Int = event.getY
+  override protected def centerKnob(mouseCoord: Int): Unit =
+    knob centerOnY mouseCoord withinHeight slider
+
+  override protected def mouseDimLoc(event: MouseEvent): Int = event.getY
+
+  override protected val slider: Rectangle = Rectangle(
+    leftTop = V(35, 10),
+    widthHeight = V(10, 200)
+  )
+
+  override protected val knob: Rectangle = Rectangle(
+    leftTop = V(20, 10),
+    widthHeight = V(40, 15)
+  )
 }
 
 /**
@@ -71,15 +92,8 @@ trait Scrollbar {
   //noinspection NotImplementedCode
   if (min != 0) ???
 
-  protected val slider: Rectangle = Rectangle(
-    leftTop = V(10, 35),
-    widthHeight = V(200, 10)
-  )
-
-  protected val knob: Rectangle = Rectangle(
-    leftTop = V(10, 20),
-    widthHeight = V(15, 40)
-  )
+  protected val slider: Rectangle
+  protected val knob: Rectangle
 
   private var isDragging = false
 
@@ -108,17 +122,16 @@ trait Scrollbar {
     floatProperty.setValue(prop * max)
   }
 
-  protected def mouseLoc(event: MouseEvent): Int
+  protected def mouseDimLoc(event: MouseEvent): Int
 
-  def mouseDragged(event: MouseEvent): Unit = innerRectDragged(mouseLoc(event))
+  def mouseDragged(event: MouseEvent): Unit = innerRectDragged(mouseDimLoc(event))
 
   def mouseReleased(event: MouseEvent): Unit = {
-    innerRectDragged(mouseLoc(event))
+    innerRectDragged(mouseDimLoc(event))
     isDragging = false
   }
 
   def draw(): Unit = {
-    app.background(10)
     app.strokeWeight(2)
     Pure.Black.stroke()
     Solarized.Red.fill()

@@ -31,7 +31,10 @@ class MyScrollbar extends MyPApplet {
   override def mousePressed(click: MouseEvent): Unit = scrollbars foreach (_ mousePressed click)
   override def mouseDragged(event: MouseEvent): Unit = scrollbars foreach (_ mouseDragged event)
   override def mouseReleased(event: MouseEvent): Unit = scrollbars foreach (_ mouseReleased event)
-  override def draw(): Unit = scrollbar.draw()
+  override def draw(): Unit = {
+    app.background(10)
+    scrollbars.foreach(_.draw())
+  }
 }
 
 object MyScrollbar extends Runner {
