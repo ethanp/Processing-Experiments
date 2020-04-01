@@ -14,9 +14,8 @@ class HScrollbar(
   override protected val min: Float,
   override protected val max: Float,
   override protected val listener: ChangeListener[Number],
-)(
-  implicit pApp: MyPApplet
-) extends Scrollbar {
+)(implicit pApp: MyPApplet)
+  extends Scrollbar {
   override def app: MyPApplet = pApp
   override protected def centerKnob(mouseX: Int): Unit = knob centerOnX mouseX withinWidth slider
   override protected def mouseDimLoc(event: MouseEvent): Int = event.getX
@@ -30,6 +29,13 @@ class HScrollbar(
     leftTop = V(10, 20),
     widthHeight = V(15, 40)
   )
+
+  override protected def updateCurValue(): Unit = {
+    val extent: Float = knob.left - slider.left
+    val width: Float = slider.width - knob.width
+    val prop: Float = extent / width
+    floatProperty.setValue(prop * max)
+  }
 }
 
 /** @inheritdoc
@@ -38,10 +44,9 @@ class VScrollbar(
   override protected val initial: Float,
   override protected val min: Float,
   override protected val max: Float,
-  override protected val listener: ChangeListener[Number],
-)(
-  implicit pApp: MyPApplet
-) extends Scrollbar {
+  override protected val listener: ChangeListener[Number]
+)(implicit pApp: MyPApplet)
+  extends Scrollbar {
   override def app: MyPApplet = pApp
 
   override protected def centerKnob(mouseCoord: Int): Unit =
@@ -58,6 +63,13 @@ class VScrollbar(
     leftTop = V(20, 10),
     widthHeight = V(40, 15)
   )
+
+  override protected def updateCurValue(): Unit = {
+    val extent: Float = knob.top - slider.top
+    val height: Float = slider.height - knob.height
+    val prop: Float = extent / height
+    floatProperty.setValue(prop * max)
+  }
 }
 
 /**
@@ -84,7 +96,7 @@ trait Scrollbar {
   protected def app: MyPApplet
   implicit val iApp: MyPApplet = app
 
-  private val floatProperty =
+  val floatProperty: SimpleFloatProperty =
     new SimpleFloatProperty(initial) {
       addListener(listener)
     }
@@ -114,13 +126,7 @@ trait Scrollbar {
       updateCurValue()
     }
 
-  // TODO this needs to be updated too.
-  private def updateCurValue(): Unit = {
-    val extent: Float = knob.left - slider.left
-    val width: Float = slider.width - knob.width
-    val prop: Float = extent / width
-    floatProperty.setValue(prop * max)
-  }
+  protected def updateCurValue(): Unit
 
   protected def mouseDimLoc(event: MouseEvent): Int
 
