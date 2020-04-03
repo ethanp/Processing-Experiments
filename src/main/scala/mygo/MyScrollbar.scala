@@ -15,7 +15,8 @@ class MyScrollbar extends MyPApplet {
   private val scrollbar = new HScrollbar(
     initial = 0, min = 0, max = 10,
     listener = (_, _, current: Number) =>
-      println(f"Horizontal Scrollbar from main drawing: ${ current.floatValue() }%.02f")
+      println(f"Horizontal Scrollbar from main drawing: ${ current.floatValue() }%.02f"),
+    ???
   )
 
   private val vScroller = new VScrollbar(

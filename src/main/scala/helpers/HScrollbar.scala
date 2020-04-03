@@ -14,20 +14,26 @@ class HScrollbar(
   override protected val min: Float,
   override protected val max: Float,
   override protected val listener: ChangeListener[Number],
+  bounds: Rectangle,
 )(implicit pApp: MyPApplet)
   extends Scrollbar {
   override def app: MyPApplet = pApp
-  override protected def centerKnob(mouseX: Int): Unit = knob centerOnX mouseX withinWidth slider
-  override protected def mouseDimLoc(event: MouseEvent): Int = event.getX
 
+  override protected def centerKnob(mouseX: Int): Unit =
+    knob centerOnX mouseX withinWidth slider
+
+  override protected def mouseDimLoc: MouseEvent => Int = _.getX
+
+  // TODO incorporate `bounds` into size choices of both rectangles and the value label
   override protected val slider: Rectangle = Rectangle(
     leftTop = V(10, 35),
     widthHeight = V(200, 10)
   )
 
+  val labelWidth = 20 // TODO use the real label-width instead of a random constant
   override protected val knob: Rectangle = Rectangle(
-    leftTop = V(10, 20),
-    widthHeight = V(15, 40)
+    leftTop = bounds.leftTop,
+    widthHeight = V(bounds.width - labelWidth, bounds.height)
   )
 
   override protected def updateCurValue(): Unit = {
@@ -52,7 +58,7 @@ class VScrollbar(
   override protected def centerKnob(mouseCoord: Int): Unit =
     knob centerOnY mouseCoord withinHeight slider
 
-  override protected def mouseDimLoc(event: MouseEvent): Int = event.getY
+  override protected def mouseDimLoc: MouseEvent => Int = _.getY
 
   override protected val slider: Rectangle = Rectangle(
     leftTop = V(35, 10),
@@ -128,7 +134,7 @@ trait Scrollbar {
 
   protected def updateCurValue(): Unit
 
-  protected def mouseDimLoc(event: MouseEvent): Int
+  protected def mouseDimLoc: MouseEvent => Int
 
   def mouseDragged(event: MouseEvent): Unit = innerRectDragged(mouseDimLoc(event))
 
@@ -146,6 +152,8 @@ trait Scrollbar {
     knob.draw()
     Solarized.White.stroke().fill()
     app.textSize(24)
+
+    // TODO the text location should differ for HScrollbar vs `VScrollbar`
     app.text(
       /*string=*/ f"${ floatProperty.get.floatValue }%.2f",
       /*left=*/ slider.right + 10,
