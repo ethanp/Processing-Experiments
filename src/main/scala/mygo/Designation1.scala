@@ -9,10 +9,10 @@ class Designation1 extends MyPApplet {
   private val NumRows = 10
   private val NumCols = 10
 
-  private val ColWidth = WindowSideLength / NumCols * (2f / 3)
+  private val ColWidth = WindowSideLength / NumCols - (WindowSideLength / 80f)
   private val RectRightSpace = ColWidth / 5f
 
-  private val RowHeight = WindowSideLength / NumRows * (2f / 3)
+  private val RowHeight = WindowSideLength / NumRows - (WindowSideLength / 80f)
   private val RectBottomSpace = RowHeight / 5f
 
   override def settings(): Unit = size(WindowSideLength, WindowSideLength)
