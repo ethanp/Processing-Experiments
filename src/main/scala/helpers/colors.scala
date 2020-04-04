@@ -79,7 +79,7 @@ package object colors {
     stroke.stroke()
   }
 
-  def lerp(from: Rgb, to: Rgb, ratio: Double): Color = {
+  def lerp(from: Rgb, to: Rgb, ratio: Double): Rgb = {
     def lerp(f: Rgb => Float): Float = PApplet.lerp(f(from), f(to), ratio.toFloat)
     Rgb(lerp(_.r), lerp(_.g), lerp(_.b))
   }

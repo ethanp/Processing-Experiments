@@ -6,14 +6,14 @@ import helpers.{MyPApplet, Runner}
 class Designation1 extends MyPApplet {
   private val WindowSideLength = 800
 
-  private val NumRows = 10
+  private val NumRows = 20
   private val NumCols = 10
 
   private val ColWidth = WindowSideLength / NumCols - (WindowSideLength / 80f)
   private val RectRightSpace = ColWidth / 5f
 
   private val RowHeight = WindowSideLength / NumRows - (WindowSideLength / 80f)
-  private val RectBottomSpace = RowHeight / 5f
+  private val RectBottomSpace = RowHeight / 3f
 
   override def settings(): Unit = size(WindowSideLength, WindowSideLength)
   override def draw(): Unit = {
@@ -23,7 +23,9 @@ class Designation1 extends MyPApplet {
         fill = colors.lerp(
           from = colors.Solarized.Cyan,
           to = colors.Solarized.Red,
-          ratio = row.toFloat / 10
+          ratio = row.toFloat / NumRows
+        ).copy(
+          a = (col + 3).toFloat / NumCols * 100
         ),
         stroke = colors.Empty
       )
