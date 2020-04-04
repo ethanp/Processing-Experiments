@@ -16,7 +16,7 @@ class SpiralDevEnv extends MyPApplet {
       center = geometry.V(width / 2, height / 2),
       numLoops = 20,
       radiusIncrement = .05f,
-      fillAtDeg = f => colors.Hsb(f / 10f % 100)
+      fillAtDeg = deg => colors.Hsb(deg / 10f % 100)
     ).draw()
   }
 }

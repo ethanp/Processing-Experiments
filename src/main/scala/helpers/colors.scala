@@ -39,9 +39,11 @@ package object colors {
   // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
   object Solarized {
     object Black extends Rgb(0, 54, 66)
-    object Yellow extends Rgb(181, 137, 0)
-    object White extends Rgb(238, 232, 213)
+    object Cyan extends Rgb(42, 161, 152)
+    object Orange extends Rgb(203, 75, 22)
     object Red extends Rgb(220, 50, 47)
+    object White extends Rgb(238, 232, 213)
+    object Yellow extends Rgb(181, 137, 0)
   }
 
   object Pure {

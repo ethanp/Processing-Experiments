@@ -31,8 +31,7 @@ class PillowCase extends MyPApplet {
   }
 
   private def drawOuterBackground(): Unit = {
-    /*TODO swap to a new Solarized.Orange */
-    colors.Solarized.Black.background()
+    colors.Solarized.Orange.background()
   }
 
   private def drawInnerBackground(): Unit = {
@@ -53,7 +52,7 @@ class PillowCase extends MyPApplet {
   // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
     colors.set(
-      fill = colors.Solarized.Black.copy(a = 50),
+      fill = colors.Solarized.Orange.copy(a = 50),
       stroke = colors.Empty
     )
     geometry.Rectangle(
