@@ -75,7 +75,8 @@ package object geometry {
     center: PVector,
     numLoops: Int,
     radiusIncrement: Float,
-    fillAtDeg: Float => colors.Color
+    fillAtDeg: Float => colors.Color,
+    width: Int,
   ) {
     val Smoothness = 4
     def draw()(implicit myPApplet: MyPApplet): Unit = {
@@ -91,8 +92,8 @@ package object geometry {
           myPApplet.ellipse(
             /*x*/ cosDeg(degrees = degrees) * radius,
             /*y*/ sinDeg(degrees = degrees) * radius,
-            /*w*/ 7,
-            /*h*/ 7
+            /*w*/ width,
+            /*h*/ width
           )
         }
       }

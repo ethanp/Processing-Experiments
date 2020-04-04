@@ -17,6 +17,8 @@ class PillowCase extends MyPApplet {
   val TriangleWidth: Float = (OverallSide - InnerMargin * 2) / NumTriangles
   val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
 
+  private val StripWidth = OverallSide - 2 * InnerMargin
+  private val StripHeight = MidSide - TriangleHeight - InnerMargin
 
   override def settings(): Unit = size(OverallSide, OverallSide)
 
@@ -84,9 +86,6 @@ class PillowCase extends MyPApplet {
     }
   }
 
-  private val StripWidth = OverallSide - 2 * InnerMargin
-  private val StripHeight = MidSide - TriangleHeight - InnerMargin
-
   private val topStrip = geometry.Rectangle(
     left = InnerMargin,
     top = InnerMargin,
@@ -106,21 +105,66 @@ class PillowCase extends MyPApplet {
       fill = colors.Solarized.Black,
       stroke = colors.Empty
     )
-
     topStrip.draw()
-
-    // bottom one
     bottomStrip.draw()
   }
 
   private def drawSpirals(): Unit = {
     // TODO draw a few of these on top and a few on bottom
 
+    val fadedOrange = colors.Solarized.Orange.copy(a = 4)
+
+    val offset1 = geometry.V(
+      x = OverallSide / 14,
+      y = OverallSide / 14
+    )
+    val offset2 = geometry.V(
+      x = OverallSide / 2,
+      y = OverallSide / 7
+    )
+    val offset3 = geometry.V(
+      x = OverallSide.toFloat * (2f / 3f),
+      y = OverallSide.toFloat * (4f / 5f)
+    )
+
     geometry.Spiral(
-      center = topStrip.leftTop.copy().add(geometry.V(50, 50)),
+      center = topStrip.leftTop.copy().add(offset1),
+      numLoops = 4,
+      radiusIncrement = .02f,
+      fillAtDeg = _ => fadedOrange,
+      width = 5,
+    ).draw()
+
+    geometry.Spiral(
+      center = topStrip.leftTop.copy().add(offset2),
       numLoops = 3,
       radiusIncrement = .03f,
-      fillAtDeg = _ => colors.Solarized.Orange
+      fillAtDeg = _ => fadedOrange,
+      width = 5,
+    ).draw()
+
+    geometry.Spiral(
+      center = topStrip.leftTop.copy().add(offset3),
+      numLoops = 3,
+      radiusIncrement = .03f,
+      fillAtDeg = _ => fadedOrange,
+      width = 5,
+    ).draw()
+
+    geometry.Spiral(
+      center = bottomStrip.leftTop.copy().add(offset1),
+      numLoops = 3,
+      radiusIncrement = .03f,
+      fillAtDeg = _ => fadedOrange,
+      width = 5,
+    ).draw()
+
+    geometry.Spiral(
+      center = bottomStrip.leftTop.copy().add(offset3),
+      numLoops = 3,
+      radiusIncrement = .03f,
+      fillAtDeg = _ => fadedOrange,
+      width = 5,
     ).draw()
   }
 }
