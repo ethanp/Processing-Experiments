@@ -39,14 +39,14 @@ package object colors {
   }
 
   // Based on values listed at: https://www.wikiwand.com/en/Solarized_(color_scheme)
-  //  TODO the problem here is that these are in 255, but I'm in 100!
   object Solarized {
-    object Black extends Rgb(0, 18, 21)
-    object Cyan extends Rgb(42, 161, 152)
-    object Orange extends Rgb(203, 75, 22)
-    object Red extends Rgb(220, 50, 47)
-    object White extends Rgb(238, 232, 213)
-    object Yellow extends Rgb(181, 137, 0)
+    private def scale(int: Int) = int / 255f * 100f
+    object Black extends Rgb(scale(0), scale(43), scale(54))
+    object Cyan extends Rgb(scale(42), scale(161), scale(152))
+    object Orange extends Rgb(scale(203), scale(75), scale(22))
+    object Red extends Rgb(scale(220), scale(50), scale(47))
+    object White extends Rgb(scale(238), scale(232), scale(213))
+    object Yellow extends Rgb(scale(181), scale(137), scale(0))
   }
 
   object Pure {
