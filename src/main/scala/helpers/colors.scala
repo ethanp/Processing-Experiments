@@ -5,15 +5,15 @@ import processing.core.PConstants
  */
 package object colors {
   abstract class Color(
-    protected val v1: Float,
-    protected val v2: Float,
-    protected val v3: Float,
-    protected val v4: Float,
+    v1: Float,
+    v2: Float,
+    v3: Float,
+    v4: Float,
   ) {
     protected def myColorMode: Int
 
-    final def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet.stroke)
-    final def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet.fill)
+    def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet.stroke)
+    def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet.fill)
     final def background()(implicit pApplet: MyPApplet): Color = apply(pApplet.background)
 
     private def apply(
@@ -64,16 +64,18 @@ package object colors {
 
   object Empty extends Color(0, 0, 0, 0) {
     override protected def myColorMode: Int = throw new UnsupportedOperationException
+    override def fill()(implicit pApplet: MyPApplet): Color = {
+      pApplet.noFill()
+      this
+    }
+    override def stroke()(implicit pApplet: MyPApplet): Color = {
+      pApplet.noStroke()
+      this
+    }
   }
 
   def set(fill: Color, stroke: Color)(implicit pApplet: MyPApplet): Unit = {
-    fill match {
-      case Empty => pApplet.noFill()
-      case color => color.fill()
-    }
-    stroke match {
-      case Empty => pApplet.noStroke()
-      case color => color.stroke()
-    }
+    fill.fill()
+    stroke.stroke()
   }
 }

@@ -18,9 +18,7 @@ class PillowCase extends MyPApplet {
   val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
 
 
-  override def settings(): Unit = {
-    size(OverallSide, OverallSide)
-  }
+  override def settings(): Unit = size(OverallSide, OverallSide)
 
   override def draw(): Unit = {
     drawOuterBackground()
@@ -28,6 +26,7 @@ class PillowCase extends MyPApplet {
     drawTriangles()
     drawMidBar()
     drawOuterStrips()
+    drawSpirals()
   }
 
   private def drawOuterBackground(): Unit = {
@@ -85,29 +84,43 @@ class PillowCase extends MyPApplet {
     }
   }
 
+  private val StripWidth = OverallSide - 2 * InnerMargin
+  private val StripHeight = MidSide - TriangleHeight - InnerMargin
+
+  private val topStrip = geometry.Rectangle(
+    left = InnerMargin,
+    top = InnerMargin,
+    width = StripWidth,
+    height = StripHeight
+  )
+
+  private val bottomStrip = geometry.Rectangle(
+    left = InnerMargin,
+    top = MidSide + TriangleHeight,
+    width = StripWidth,
+    height = StripHeight
+  )
+
   private def drawOuterStrips(): Unit = {
     colors.set(
-      fill = colors.Solarized.Red,
+      fill = colors.Solarized.Black,
       stroke = colors.Empty
     )
 
-    val width = OverallSide - 2 * InnerMargin
-    val height = MidSide - TriangleHeight - InnerMargin
-
-    // top one
-    geometry.Rectangle(
-      left = InnerMargin,
-      top = InnerMargin,
-      width = width,
-      height = height
-    ).draw()
+    topStrip.draw()
 
     // bottom one
-    geometry.Rectangle(
-      left = InnerMargin,
-      top = MidSide + TriangleHeight,
-      width = width,
-      height = height
+    bottomStrip.draw()
+  }
+
+  private def drawSpirals(): Unit = {
+    // TODO draw a few of these on top and a few on bottom
+
+    geometry.Spiral(
+      center = topStrip.leftTop.copy().add(geometry.V(50, 50)),
+      numLoops = 3,
+      radiusIncrement = .03f,
+      fillAtDeg = _ => colors.Solarized.Orange
     ).draw()
   }
 }
