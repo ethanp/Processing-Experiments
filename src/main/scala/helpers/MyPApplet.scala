@@ -58,6 +58,9 @@ trait MyPApplet extends PApplet {
     }
   }
 
-  final def sin(x: Double): Float = math.sin(x).toFloat
-  final def cos(x: Double): Float = math.cos(x).toFloat
+  final def sinRad(radians: Double): Float = math.sin(radians).toFloat
+  final def cosRad(radians: Double): Float = math.cos(radians).toFloat
+
+  final def sinDeg(degrees: Double): Float = sinRad(math.toRadians(degrees))
+  final def cosDeg(degrees: Double): Float = cosRad(math.toRadians(degrees))
 }

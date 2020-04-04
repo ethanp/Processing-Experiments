@@ -10,23 +10,25 @@ import helpers.{MyPApplet, Runner}
 class SpiralDevEnv extends MyPApplet {
   override def settings(): Unit = size(700, 700)
 
+  val NumLoops = 20
+  val Smoothness = 4
+
   override def draw(): Unit = {
     blackBackground()
     fromTheCenter {
-      var radius: Float = 1f
-      for (degrees <- 0 until (360 * 4)) {
+      for (notSmoothed <- 0 until (360 * NumLoops * Smoothness)) {
         colors.set(
-          fill = colors.Hsb(radius % 100),
+          fill = colors.Hsb((notSmoothed / 5f) % 100),
           stroke = colors.Empty
         )
-        val angle = math.toRadians(degrees)
+        val degrees = notSmoothed.toFloat / Smoothness
+        val radius = 1f + (degrees / 20f)
         ellipse(
-          /*x*/ math.cos(angle).toFloat * radius,
-          /*y*/ math.sin(angle).toFloat * radius,
+          /*x*/ cosDeg(degrees = degrees) * radius,
+          /*y*/ sinDeg(degrees = degrees) * radius,
           /*w*/ 7,
           /*h*/ 7
         )
-        radius += .2f
       }
     }
   }
