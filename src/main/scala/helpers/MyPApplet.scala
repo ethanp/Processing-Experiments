@@ -44,7 +44,7 @@ trait MyPApplet extends PApplet {
 
   /* ************** GEOMETRY ***************/
 
-  final protected def withPushedMatrix(block: => Unit): Unit = {
+  final def withPushedMatrix(block: => Unit): Unit = {
     pushMatrix()
     block
     popMatrix()
@@ -57,10 +57,4 @@ trait MyPApplet extends PApplet {
       block
     }
   }
-
-  final def sinRad(radians: Double): Float = math.sin(radians).toFloat
-  final def cosRad(radians: Double): Float = math.cos(radians).toFloat
-
-  final def sinDeg(degrees: Double): Float = sinRad(math.toRadians(degrees))
-  final def cosDeg(degrees: Double): Float = cosRad(math.toRadians(degrees))
 }

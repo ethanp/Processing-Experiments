@@ -70,4 +70,38 @@ package object geometry {
     def apply(x: Double, y: Double, z: Double = 0) =
       new Vector(x.toFloat, y.toFloat, z.toFloat)
   }
+
+  case class Spiral(
+    center: PVector,
+    numLoops: Int,
+    radiusIncrement: Float,
+    fillAtDeg: Float => colors.Color
+  ) {
+    val Smoothness = 4
+    def draw()(implicit myPApplet: MyPApplet): Unit = {
+      myPApplet.withPushedMatrix {
+        myPApplet.translate(center.x, center.y)
+        for (notSmoothed <- 0 until (360 * numLoops * Smoothness)) {
+          val degrees = notSmoothed.toFloat / Smoothness
+          colors.set(
+            fill = fillAtDeg(degrees),
+            stroke = colors.Empty
+          )
+          val radius = 1f + (degrees * radiusIncrement)
+          myPApplet.ellipse(
+            /*x*/ cosDeg(degrees = degrees) * radius,
+            /*y*/ sinDeg(degrees = degrees) * radius,
+            /*w*/ 7,
+            /*h*/ 7
+          )
+        }
+      }
+    }
+  }
+
+  final def sinRad(radians: Double): Float = math.sin(radians).toFloat
+  final def cosRad(radians: Double): Float = math.cos(radians).toFloat
+
+  final def sinDeg(degrees: Double): Float = sinRad(math.toRadians(degrees))
+  final def cosDeg(degrees: Double): Float = cosRad(math.toRadians(degrees))
 }

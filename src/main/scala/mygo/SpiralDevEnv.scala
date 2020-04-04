@@ -10,27 +10,14 @@ import helpers.{MyPApplet, Runner}
 class SpiralDevEnv extends MyPApplet {
   override def settings(): Unit = size(700, 700)
 
-  val NumLoops = 20
-  val Smoothness = 4
-
   override def draw(): Unit = {
     blackBackground()
-    fromTheCenter {
-      for (notSmoothed <- 0 until (360 * NumLoops * Smoothness)) {
-        colors.set(
-          fill = colors.Hsb((notSmoothed / 5f) % 100),
-          stroke = colors.Empty
-        )
-        val degrees = notSmoothed.toFloat / Smoothness
-        val radius = 1f + (degrees / 20f)
-        ellipse(
-          /*x*/ cosDeg(degrees = degrees) * radius,
-          /*y*/ sinDeg(degrees = degrees) * radius,
-          /*w*/ 7,
-          /*h*/ 7
-        )
-      }
-    }
+    geometry.Spiral(
+      center = geometry.V(width / 2, height / 2),
+      numLoops = 20,
+      radiusIncrement = .05f,
+      fillAtDeg = f => colors.Hsb(f / 10f % 100)
+    ).draw()
   }
 }
 
