@@ -110,8 +110,6 @@ class PillowCase extends MyPApplet {
   }
 
   private def drawSpirals(): Unit = {
-    // TODO draw a few of these on top and a few on bottom
-
     val fadedOrange = colors.Solarized.Orange.copy(a = 4)
 
     val offset1 = geometry.V(
@@ -120,11 +118,11 @@ class PillowCase extends MyPApplet {
     )
     val offset2 = geometry.V(
       x = OverallSide / 2,
-      y = OverallSide / 7
+      y = OverallSide / 10
     )
     val offset3 = geometry.V(
-      x = OverallSide.toFloat * (2f / 3f),
-      y = OverallSide.toFloat * (4f / 5f)
+      x = OverallSide.toFloat * (1f / 3f),
+      y = OverallSide.toFloat * (1f / 10f)
     )
 
     geometry.Spiral(
@@ -145,10 +143,10 @@ class PillowCase extends MyPApplet {
 
     geometry.Spiral(
       center = topStrip.leftTop.copy().add(offset3),
-      numLoops = 3,
-      radiusIncrement = .03f,
+      numLoops = 6,
+      radiusIncrement = .01f,
       fillAtDeg = _ => fadedOrange,
-      width = 5,
+      width = 3,
     ).draw()
 
     geometry.Spiral(
@@ -160,11 +158,11 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = bottomStrip.leftTop.copy().add(offset3),
-      numLoops = 3,
-      radiusIncrement = .03f,
+      center = bottomStrip.leftTop.copy().add(offset2),
+      numLoops = 4,
+      radiusIncrement = .02f,
       fillAtDeg = _ => fadedOrange,
-      width = 5,
+      width = 4,
     ).draw()
   }
 }

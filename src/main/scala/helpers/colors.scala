@@ -36,9 +36,9 @@ package object colors {
     override protected def myColorMode: Int = PConstants.HSB
   }
 
-  // source: https://www.wikiwand.com/en/Solarized_(color_scheme)
+  // Based on values listed at: https://www.wikiwand.com/en/Solarized_(color_scheme)
   object Solarized {
-    object Black extends Rgb(0, 54, 66)
+    object Black extends Rgb(0, 18, 21)
     object Cyan extends Rgb(42, 161, 152)
     object Orange extends Rgb(203, 75, 22)
     object Red extends Rgb(220, 50, 47)
