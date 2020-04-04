@@ -17,20 +17,23 @@ class PillowCase extends MyPApplet {
   }
 
   override def draw(): Unit = {
-    drawBackground()
+    drawOuterBackground()
     drawInnerBackground()
     drawMidBar()
-    drawTriangles()
+    drawOuterTriangles()
   }
 
-  private def drawBackground(): Unit = {
+  private def drawOuterBackground(): Unit = {
     /*TODO swap to a new Solarized.Orange */
     colors.Solarized.Yellow.background()
   }
 
   private def drawInnerBackground(): Unit = {
-    colors.Solarized.White.fill()
     noStroke()
+    colors.set(
+      fill = colors.Solarized.White,
+      stroke = colors.Empty
+    )
     geometry.Rectangle(
       left = InnerSideMargin,
       top = InnerTopMargin,
@@ -39,9 +42,13 @@ class PillowCase extends MyPApplet {
     ).draw()
   }
 
+  // Note: As desired, we could refactor to draw both the upper and lower inner
+  // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
-    colors.Solarized.Yellow.fill()
-    noStroke()
+    colors.set(
+      fill = colors.Solarized.Yellow,
+      stroke = colors.Empty
+    )
     geometry.Rectangle(
       left = 0,
       top = Height / 2 - MidBarHeight / 2,
@@ -50,7 +57,21 @@ class PillowCase extends MyPApplet {
     ).draw()
   }
 
-  private def drawTriangles(): Unit = {
+  private def drawOuterTriangles(): Unit = {
+    colors.set(
+      fill = colors.Solarized.Red,
+      stroke = colors.Empty
+    )
+    for (idx <- 0 until NumTriangles) {
+      triangle(
+        /*x1*/ 0,
+        /*y1*/ 0,
+        /*x2*/ 100,
+        /*y2*/ 100,
+        /*x3*/ 0,
+        /*y3*/ 200
+      )
+    }
   }
 }
 

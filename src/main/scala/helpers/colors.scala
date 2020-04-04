@@ -59,4 +59,19 @@ package object colors {
   ) extends Color(r, g, b, a) {
     override protected def myColorMode: Int = PConstants.RGB
   }
+
+  object Empty extends Color(0, 0, 0, 0) {
+    override protected def myColorMode: Int = throw new UnsupportedOperationException
+  }
+
+  def set(fill: Color, stroke: Color)(implicit pApplet: MyPApplet): Unit = {
+    fill match {
+      case Empty => pApplet.noFill()
+      case color => color.fill()
+    }
+    stroke match {
+      case Empty => pApplet.noStroke()
+      case color => color.stroke()
+    }
+  }
 }
