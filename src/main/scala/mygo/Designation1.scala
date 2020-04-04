@@ -6,26 +6,32 @@ import helpers.{MyPApplet, Runner}
 class Designation1 extends MyPApplet {
   private val WindowSideLength = 800
 
+  private val NumRows = 10
+  private val NumCols = 10
+
+  private val ColWidth = WindowSideLength / NumCols * (2f / 3)
+  private val RectRightSpace = ColWidth / 5f
+
+  private val RowHeight = WindowSideLength / NumRows * (2f / 3)
+  private val RectBottomSpace = RowHeight / 5f
+
   override def settings(): Unit = size(WindowSideLength, WindowSideLength)
   override def draw(): Unit = {
     colors.Solarized.Black.background()
-    for {
-      row <- 1 to 10
-        col <- 1 to 10
-    } {
+    for (row <- 1 to NumRows; col <- 1 to NumCols) {
       colors.set(
         fill = colors.lerp(
           from = colors.Solarized.Cyan,
           to = colors.Solarized.Red,
-          ratio = (row + col).toFloat / 20
+          ratio = row.toFloat / 10
         ),
         stroke = colors.Empty
       )
       geometry.Rectangle(
-        left = col * 30,
-        top = row * 15,
-        width = 20,
-        height = 5
+        left = col * ColWidth,
+        top = row * RowHeight,
+        width = ColWidth - RectRightSpace,
+        height = RowHeight - RectBottomSpace
       ).draw()
     }
   }
