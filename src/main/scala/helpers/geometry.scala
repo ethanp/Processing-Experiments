@@ -35,7 +35,7 @@ package object geometry {
     def width: Float = widthHeight.x
     def height: Float = widthHeight.y
 
-    def bottomRight: PVector = leftTop.copy().add(widthHeight)
+    def bottomRight: PVector = leftTop.copy() add widthHeight
 
     def draw()(implicit myPApplet: MyPApplet): Unit =
       myPApplet.rect(left, top, widthHeight.x, widthHeight.y)
@@ -47,6 +47,8 @@ package object geometry {
   }
 
   case class Triangle(p1: PVector, p2: PVector, p3: PVector) {
+    // Note it *might* matter which order the vectors are given, but most-likely it
+    //  it *does not* matter.
     def draw()(implicit myPApplet: MyPApplet): Unit = {
       myPApplet.triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)
     }

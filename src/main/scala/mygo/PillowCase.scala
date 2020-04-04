@@ -7,7 +7,7 @@ import helpers.{MyPApplet, Runner}
 class PillowCase extends MyPApplet {
 
   val OverallSide: Int = 700
-  val MidHeight: Int = OverallSide / 2
+  val MidSide: Int = OverallSide / 2
 
   val MidBarHeight: Float = 50f
 
@@ -27,6 +27,7 @@ class PillowCase extends MyPApplet {
     drawInnerBackground()
     drawMidBar()
     drawOuterTriangles()
+    drawOuterStrips()
   }
 
   private def drawOuterBackground(): Unit = {
@@ -70,23 +71,45 @@ class PillowCase extends MyPApplet {
     )
 
     for (idx <- 0 until NumTriangles) {
-      val top: Float = MidHeight + TriangleHeight
-      val bottom: Float = MidHeight - TriangleHeight
+      val top: Float = MidSide + TriangleHeight
+      val bottom: Float = MidSide - TriangleHeight
 
-      val centerLeft = geometry.Vector(idx * TriangleWidth + InnerMargin, MidHeight)
-      val centerRight = geometry.Vector((idx + 1) * TriangleWidth + InnerMargin, MidHeight)
+      val centerLeft = geometry.Vector(idx * TriangleWidth + InnerMargin, MidSide)
+      val centerRight = geometry.Vector((idx + 1) * TriangleWidth + InnerMargin, MidSide)
       val downLeft = geometry.Vector(centerLeft.x, top)
       val upRight = geometry.Vector(centerRight.x, bottom)
 
       idx match {
-        // TODO does it matter if they are drawn counter/clockwise?
-        //  I'm drawing them both the same order just in case.
-        case _ if idx % 2 == 0 =>
-          Triangle(centerLeft, centerRight, downLeft).draw()
-        case _ =>
-          Triangle(centerLeft, upRight, centerRight).draw()
+        case _ if idx % 2 == 0 => Triangle(centerLeft, centerRight, downLeft).draw()
+        case _ => Triangle(centerLeft, upRight, centerRight).draw()
       }
     }
+  }
+
+  private def drawOuterStrips(): Unit = {
+    colors.set(
+      fill = colors.Solarized.Red,
+      stroke = colors.Empty
+    )
+
+    val width = OverallSide - 2 * InnerMargin
+    val height = MidSide - TriangleHeight - InnerMargin
+
+    // top one
+    geometry.Rectangle(
+      left = InnerMargin,
+      top = InnerMargin,
+      width = width,
+      height = height
+    ).draw()
+
+    // bottom one
+    geometry.Rectangle(
+      left = InnerMargin,
+      top = MidSide + TriangleHeight,
+      width = width,
+      height = height
+    ).draw()
   }
 }
 
