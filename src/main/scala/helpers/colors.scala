@@ -1,5 +1,5 @@
 import helpers.MyPApplet
-import processing.core.PConstants
+import processing.core.{PApplet, PConstants}
 
 /** Created 3/29/20 11:16 PM
  */
@@ -77,5 +77,10 @@ package object colors {
   def set(fill: Color, stroke: Color)(implicit pApplet: MyPApplet): Unit = {
     fill.fill()
     stroke.stroke()
+  }
+
+  def lerp(from: Rgb, to: Rgb, ratio: Double): Color = {
+    def lerp(f: Rgb => Float): Float = PApplet.lerp(f(from), f(to), ratio.toFloat)
+    Rgb(lerp(_.r), lerp(_.g), lerp(_.b))
   }
 }
