@@ -4,6 +4,8 @@ import processing.core.{PApplet, PConstants}
 /** Created 3/29/20 11:16 PM
  */
 package object colors {
+  val MaxVal = 100
+
   abstract class Color(
     v1: Float,
     v2: Float,
@@ -21,7 +23,7 @@ package object colors {
     )(
       implicit pApplet: MyPApplet
     ): Color = {
-      pApplet.colorMode(myColorMode, 100)
+      pApplet.colorMode(myColorMode, MaxVal)
       f(v1, v2, v3, v4)
       this
     }
@@ -29,14 +31,15 @@ package object colors {
 
   case class Hsb(
     h: Float,
-    s: Float = 100,
-    b: Float = 100,
-    a: Float = 100,
+    s: Float = MaxVal,
+    b: Float = MaxVal,
+    a: Float = MaxVal,
   ) extends Color(h, s, b, a) {
     override protected def myColorMode: Int = PConstants.HSB
   }
 
   // Based on values listed at: https://www.wikiwand.com/en/Solarized_(color_scheme)
+  //  TODO the problem here is that these are in 255, but I'm in 100!
   object Solarized {
     object Black extends Rgb(0, 18, 21)
     object Cyan extends Rgb(42, 161, 152)
@@ -47,17 +50,17 @@ package object colors {
   }
 
   object Pure {
-    object Green extends Rgb(0, 100, 0)
-    object Red extends Rgb(100, 0, 0)
+    object Green extends Rgb(0, MaxVal, 0)
+    object Red extends Rgb(MaxVal, 0, 0)
     object Black extends Rgb(0, 0, 0)
-    object White extends Rgb(100, 100, 100)
+    object White extends Rgb(MaxVal, MaxVal, MaxVal)
   }
 
   sealed case class Rgb(
     r: Float,
     g: Float,
     b: Float,
-    a: Float = 100
+    a: Float = MaxVal
   ) extends Color(r, g, b, a) {
     override protected def myColorMode: Int = PConstants.RGB
   }

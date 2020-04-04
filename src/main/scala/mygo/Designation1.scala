@@ -25,7 +25,7 @@ class Designation1 extends MyPApplet {
           to = colors.Solarized.Red,
           ratio = row.toFloat / NumRows
         ).copy(
-          a = (col + 3).toFloat / NumCols * 100
+          a = (col + 3).toFloat / NumCols * colors.MaxVal
         ),
         stroke = colors.Empty
       )
