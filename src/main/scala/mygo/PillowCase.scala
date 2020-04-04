@@ -9,7 +9,7 @@ class PillowCase extends MyPApplet {
   val OverallSide: Int = 700
   val MidSide: Int = OverallSide / 2
 
-  val MidBarHeight: Float = 50f
+  val MidBarHeight: Float = 100f
 
   val InnerMargin: Float = 75f
 
@@ -25,8 +25,8 @@ class PillowCase extends MyPApplet {
   override def draw(): Unit = {
     drawOuterBackground()
     drawInnerBackground()
+    drawTriangles()
     drawMidBar()
-    drawOuterTriangles()
     drawOuterStrips()
   }
 
@@ -53,7 +53,7 @@ class PillowCase extends MyPApplet {
   // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
     colors.set(
-      fill = colors.Solarized.Black,
+      fill = colors.Solarized.Black.copy(a = 50),
       stroke = colors.Empty
     )
     geometry.Rectangle(
@@ -64,7 +64,7 @@ class PillowCase extends MyPApplet {
     ).draw()
   }
 
-  private def drawOuterTriangles(): Unit = {
+  private def drawTriangles(): Unit = {
     colors.set(
       fill = colors.Solarized.Red,
       stroke = colors.Empty
