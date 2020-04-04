@@ -1,5 +1,5 @@
 package helpers
-import geometry.MyPVector
+import geometry.Vector
 import processing.core.PApplet
 
 /** Created 3/29/20 11:28 AM
@@ -12,7 +12,7 @@ trait MyPApplet extends PApplet {
 
   final def is3D: Boolean = sketchRenderer() contains "3D"
 
-  def mouse: MyPVector = geometry.PVector(mouseX, mouseY)
+  def mouse: Vector = geometry.Vector(mouseX, mouseY)
 
   /* ************** SAVING ***************/
 

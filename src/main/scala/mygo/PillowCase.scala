@@ -1,19 +1,25 @@
 package mygo
+import geometry.Triangle
 import helpers.{MyPApplet, Runner}
 
 /** Created 4/3/20 7:07 PM
  */
 class PillowCase extends MyPApplet {
-  val Width: Int = 700
-  val Height: Int = 700
-  val MidBarHeight = 50
-  val InnerSideMargin = 50
-  val InnerTopMargin = 50
-  val NumTriangles = 10
+
+  val OverallSide: Int = 700
+  val MidHeight: Int = OverallSide / 2
+
+  val MidBarHeight: Float = 50f
+
+  val InnerMargin: Float = 75f
+
+  val NumTriangles: Int = 10
+  val TriangleWidth: Float = (OverallSide - InnerMargin * 2) / NumTriangles
+  val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
 
 
   override def settings(): Unit = {
-    size(Width, Height)
+    size(OverallSide, OverallSide)
   }
 
   override def draw(): Unit = {
@@ -25,7 +31,7 @@ class PillowCase extends MyPApplet {
 
   private def drawOuterBackground(): Unit = {
     /*TODO swap to a new Solarized.Orange */
-    colors.Solarized.Yellow.background()
+    colors.Solarized.Black.background()
   }
 
   private def drawInnerBackground(): Unit = {
@@ -35,10 +41,10 @@ class PillowCase extends MyPApplet {
       stroke = colors.Empty
     )
     geometry.Rectangle(
-      left = InnerSideMargin,
-      top = InnerTopMargin,
-      width = Width - InnerSideMargin * 2,
-      height = Height - InnerTopMargin * 2,
+      left = InnerMargin,
+      top = InnerMargin,
+      width = OverallSide - InnerMargin * 2,
+      height = OverallSide - InnerMargin * 2,
     ).draw()
   }
 
@@ -46,13 +52,13 @@ class PillowCase extends MyPApplet {
   // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
     colors.set(
-      fill = colors.Solarized.Yellow,
+      fill = colors.Solarized.Black,
       stroke = colors.Empty
     )
     geometry.Rectangle(
       left = 0,
-      top = Height / 2 - MidBarHeight / 2,
-      width = Width,
+      top = OverallSide / 2 - MidBarHeight / 2,
+      width = OverallSide,
       height = MidBarHeight,
     ).draw()
   }
@@ -62,15 +68,24 @@ class PillowCase extends MyPApplet {
       fill = colors.Solarized.Red,
       stroke = colors.Empty
     )
+
     for (idx <- 0 until NumTriangles) {
-      triangle(
-        /*x1*/ 0,
-        /*y1*/ 0,
-        /*x2*/ 100,
-        /*y2*/ 100,
-        /*x3*/ 0,
-        /*y3*/ 200
-      )
+      val top: Float = MidHeight + TriangleHeight
+      val bottom: Float = MidHeight - TriangleHeight
+
+      val centerLeft = geometry.Vector(idx * TriangleWidth + InnerMargin, MidHeight)
+      val centerRight = geometry.Vector((idx + 1) * TriangleWidth + InnerMargin, MidHeight)
+      val downLeft = geometry.Vector(centerLeft.x, top)
+      val upRight = geometry.Vector(centerRight.x, bottom)
+
+      idx match {
+        // TODO does it matter if they are drawn counter/clockwise?
+        //  I'm drawing them both the same order just in case.
+        case _ if idx % 2 == 0 =>
+          Triangle(centerLeft, centerRight, downLeft).draw()
+        case _ =>
+          Triangle(centerLeft, upRight, centerRight).draw()
+      }
     }
   }
 }

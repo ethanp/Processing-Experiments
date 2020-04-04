@@ -36,19 +36,27 @@ package object geometry {
     def height: Float = widthHeight.y
 
     def bottomRight: PVector = leftTop.copy().add(widthHeight)
-    def draw()(implicit myPApplet: MyPApplet): Unit = myPApplet.rect(left, top, widthHeight.x, widthHeight.y)
+
+    def draw()(implicit myPApplet: MyPApplet): Unit =
+      myPApplet.rect(left, top, widthHeight.x, widthHeight.y)
   }
 
   object Rectangle {
     def apply(left: Float, top: Float, width: Float, height: Float): Rectangle =
-      Rectangle(PVector(left, top), PVector(width, height))
+      Rectangle(Vector(left, top), Vector(width, height))
+  }
+
+  case class Triangle(p1: PVector, p2: PVector, p3: PVector) {
+    def draw()(implicit myPApplet: MyPApplet): Unit = {
+      myPApplet.triangle(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y)
+    }
   }
 
   object V {
-    def apply(x: Float, y: Float, z: Float = 0): MyPVector = PVector(x, y, z)
+    def apply(x: Float, y: Float, z: Float = 0): Vector = Vector(x, y, z)
   }
 
-  class MyPVector(_x: Float, _y: Float, _z: Float = 0) extends PVector(_x, _y, _z) {
+  class Vector(_x: Float, _y: Float, _z: Float = 0) extends PVector(_x, _y, _z) {
     def isInside(rectangle: Rectangle): Boolean =
       x > rectangle.left &&
         y > rectangle.top &&
@@ -56,8 +64,8 @@ package object geometry {
         y < rectangle.bottom
   }
 
-  object PVector {
+  object Vector {
     def apply(x: Double, y: Double, z: Double = 0) =
-      new MyPVector(x.toFloat, y.toFloat, z.toFloat)
+      new Vector(x.toFloat, y.toFloat, z.toFloat)
   }
 }

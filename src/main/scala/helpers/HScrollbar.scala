@@ -1,7 +1,7 @@
 package helpers
 
 import colors.{Pure, Solarized}
-import geometry.{PVector, Rectangle, V}
+import geometry.{Rectangle, V, Vector}
 import javafx.beans.property.SimpleFloatProperty
 import javafx.beans.value.ChangeListener
 import processing.core.PConstants
@@ -117,7 +117,7 @@ trait Scrollbar {
 
   def mousePressed(click: MouseEvent): Unit = {
     if (click.getButton == PConstants.LEFT) {
-      val clickLoc = PVector(click.getX, click.getY)
+      val clickLoc = Vector(click.getX, click.getY)
       if (clickLoc isInside knob) {
         isDragging = true
       }
