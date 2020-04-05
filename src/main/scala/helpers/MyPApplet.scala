@@ -1,6 +1,6 @@
 package helpers
 import geometry.Vector
-import processing.core.PApplet
+import processing.core.{PApplet, PImage}
 
 import scala.reflect.io.Directory
 
@@ -21,6 +21,8 @@ trait MyPApplet extends PApplet {
 
   /* ************** SAVING ***************/
 
+  // TODO the implementation here should be moved to a different class.
+  //  Though we should still leave the mouseClicked() hook here.
   override def mouseClicked(): Unit = {
     val className = getClass.getSimpleName
 
@@ -41,10 +43,25 @@ trait MyPApplet extends PApplet {
 
     // TODO first we should check if the new frame is gonna just be the same
     //  as one of the ones we've already saved and show a warning instead of saving.
-    //  One easy way would be comparing the pixel values or something.
-    //  It may be best to offload all this work to a separate thread than the one that
-    //  calls draw() (which I've verified /is/ what calls this mouseClicked() callback).
+    //  We can do this using the comparePixels(f1, f2) method below.
     saveFrame(f"$stillsDir/$nextStillIdx%02d.png")
+  }
+
+  private def comparePixels(filename1: String, filename2: String): Boolean = {
+    // LowPriorityTodo should we offload this to an async thread?
+    val aImg: PImage = loadImage(filename1)
+    val bImg: PImage = loadImage(filename2)
+    aImg.loadPixels()
+    bImg.loadPixels()
+    if (aImg.pixels.length != bImg.pixels.length) {
+      return false
+    }
+    for ((a, b) <- aImg.pixels.zip(bImg.pixels)) {
+      if (a != b) {
+        return false
+      }
+    }
+    true
   }
 
 
