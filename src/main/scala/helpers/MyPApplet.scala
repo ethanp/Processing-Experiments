@@ -59,12 +59,14 @@ trait MyPApplet extends PApplet {
   }
 
 
-  val gifSaver = new GifSaver(getClass.getSimpleName)
+  protected val GifFrames: Int = 0
+
+  private val gifSaver = new GifSaver(getClass.getSimpleName, GifFrames)
 
   /**
    * Subclasses can call this to create gifs.
    *
-   * To enable it, update `gifLength` above to the length of the desired gif.
+   * To enable it, override `GifFrames` above to the length of the desired gif.
    *
    * It dumps a bunch of pngs, then shells out to ImageMagick to merge them into a gif.
    */

@@ -2,7 +2,7 @@ package helpers
 import scala.reflect.io.Directory
 
 /** @param gifLength = zero means gif-saving is disabled. */
-class GifSaver(className: String, gifLength: Int = 0) {
+class GifSaver(className: String, gifLength: Int) {
   lazy val gifFramesDir: Directory = {
     val gifsDir =
       reflect.io
@@ -35,27 +35,33 @@ class GifSaver(className: String, gifLength: Int = 0) {
     frameCount: Int,
     saveFrame: String => Unit
   ): Unit = {
-    val FramesToSave = 0
     // NB: The first `frameCount` is 1 apparently.
     if (frameCount > gifLength) return
+
+    // Thought: we could probably parallelize this by making it async
     val frameFile = reflect.io.File(gifFramesDir / s"Frame-$frameCount.png")
-    println(s"saving frame $frameCount")
+    println(s"CREATING GIF: saving frame $frameCount as png")
     saveFrame(frameFile.toString)
-    if (frameCount == FramesToSave - 1) {
-      import sys.process._
-      val hyphenatedClassName =
-        className
-          .tail
-          .foldLeft(new StringBuilder(className.head.toLower)) {
-            (b, char) =>
-              char match {
-                case _ if char.isUpper => b append "-" + char.toLower
-                case _ => b append char
-              }
-          }.toString()
-      val gifPath = s"$gifFramesDir/$hyphenatedClassName.gif"
-      s"convert -delay 20 $gifFramesDir/*.png -loop 0 $gifPath".!!
-      println("gif created successfully")
+
+    if (frameCount == gifLength - 1) {
+      convertPngsToGif()
     }
+  }
+  private def convertPngsToGif(): Unit = {
+    println("CREATE GIF: converting pngs to gif")
+    import sys.process._
+    val hyphenatedClassName =
+      className
+        .tail
+        .foldLeft(new StringBuilder(className.head.toLower)) {
+          (b, char) =>
+            char match {
+              case _ if char.isUpper => b append "-" + char.toLower
+              case _ => b append char
+            }
+        }.toString()
+    val gifPath = s"$gifFramesDir/$hyphenatedClassName.gif"
+    s"convert -delay 20 $gifFramesDir/*.png -loop 0 $gifPath".!!
+    println("CREATING GIF: gif saved successfully")
   }
 }
