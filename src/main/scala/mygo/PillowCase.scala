@@ -66,18 +66,22 @@ class PillowCase extends MyPApplet {
   }
 
   private def drawInnerBackground(): Unit = {
-    colors.set(
-      fill = colors.Solarized.White,
-      stroke = colors.Empty
-    )
-    innerBkgdRegion.draw()
+    { // Draw underlying rectangle
+      colors.set(
+        fill = colors.Solarized.White,
+        stroke = colors.Empty
+      )
+      innerBkgdRegion.draw()
+    }
 
-    colors.set(
-      fill = colors.Solarized.White,
-      stroke = colors.Solarized.Cyan
-    )
-    strokeWeight(1)
-    staticRandomLines foreach (_.draw())
+    { // Draw static random lines
+      colors.set(
+        fill = colors.Solarized.White,
+        stroke = colors.Solarized.Cyan
+      )
+      strokeWeight(1)
+      staticRandomLines foreach (_.draw())
+    }
   }
 
   // Note: As desired, we could refactor to draw both the upper and lower inner
