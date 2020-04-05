@@ -2,8 +2,6 @@ package helpers
 import geometry.Vector
 import processing.core.PApplet
 
-import scala.reflect.io.Directory
-
 /** Created 3/29/20 11:28 AM
  */
 trait MyPApplet extends PApplet {
@@ -60,37 +58,17 @@ trait MyPApplet extends PApplet {
     }
   }
 
-  lazy val framesDir: Directory = {
-    val gifsDir =
-      reflect.io
-        .Directory(s"${ getClass.getSimpleName }/gifs")
-        .createDirectory()
 
-    val nextInt: Int = gifsDir
-      .list
-      .map(_.name)
-      .filter(_ contains "Frames")
-      .flatMap("(\\d+)".r findFirstMatchIn _)
-      .map(_ group 1)
-      .map(_.toInt)
-      .maxOption
-      .getOrElse(0) + 1
-    reflect.io
-      .Directory(s"${ getClass.getSimpleName }/gifs/Frames-$nextInt")
-      .createDirectory()
-  }
+  val gifSaver = new GifSaver(getClass.getSimpleName)
 
+  /**
+   * Subclasses can call this to create gifs.
+   *
+   * To enable it, update `gifLength` above to the length of the desired gif.
+   *
+   * It dumps a bunch of pngs, then shells out to ImageMagick to merge them into a gif.
+   */
   final protected def overwritePngsForGifIfEnabled(): Unit = {
-    val FramesToSave = 0 // zero means gif-saving is disabled.
-    // NB: The first `frameCount` is 1 apparently.
-    if (frameCount > FramesToSave) return
-    val frameFile = reflect.io.File(framesDir / s"Frame-$frameCount.png")
-    println(s"saving frame $frameCount")
-    saveFrame(frameFile.toString)
-    if (frameCount == FramesToSave - 1) {
-      import sys.process._
-      val output = s"convert -delay 20 $framesDir/*.png -loop 0 $framesDir/pillow-case.gif".!!
-      println(s"output was $output")
-    }
+    gifSaver.overwritePngsForGifIfEnabled(frameCount, saveFrame)
   }
 }
