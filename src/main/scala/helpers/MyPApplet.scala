@@ -37,7 +37,10 @@ trait MyPApplet extends PApplet {
           }
       }
     // TODO first we should check if the new frame is gonna just be the same
-    //  as one of the ones we've already saved and show a warning instead of saving
+    //  as one of the ones we've already saved and show a warning instead of saving.
+    //  One easy way would be comparing the pixel values or something.
+    //  It may be best to offload all this work to a separate thread than the one that
+    //  calls draw() (which I've verified /is/ what calls this mouseClicked() callback).
     saveFrame(f"$className-$idx%02d.jpg")
   }
 

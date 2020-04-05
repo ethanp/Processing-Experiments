@@ -60,8 +60,8 @@ trait ThreeDimPApplet extends MyPApplet {
 
     override def tick(): Unit = {
       val elapsedTime = millis() - lastTime
-      // TODO is this right? can't think right now.
-      //  It should "work" (rotate) anyhow, just not necessarily at the right speed.
+      // LowPriorityTodo is this right? can't think right now.
+      //  It should "work" (rotate) anyhow, just not necessarily at the desired period.
       rotationFraction += elapsedTime.toDouble / period.toMillis
       lastTime = millis()
     }

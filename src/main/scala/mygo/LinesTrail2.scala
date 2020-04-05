@@ -19,7 +19,7 @@ class LinesTrail2 extends MyPApplet {
       val steps = 1000
       val stepWidth = lineWidth / steps
       for (step <- 0 to steps) {
-        Solarized.Yellow.stroke() // TODO lerp this color
+        Solarized.Yellow.stroke() // LowPriorityTodo lerp this color
         val x = lineLeft + step * stepWidth
         val rate = 110f
         val scale = pixelHeight / 10f

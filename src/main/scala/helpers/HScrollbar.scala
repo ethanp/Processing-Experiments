@@ -24,16 +24,21 @@ class HScrollbar(
 
   override protected def mouseDimLoc: MouseEvent => Int = _.getX
 
-  // TODO incorporate `bounds` into size choices of both rectangles and the value label
+  // MedPriorityTodo incorporate `bounds` into size choices of both rectangles and
+  //  the value label
   override protected val slider: Rectangle = Rectangle(
     leftTop = V(10, 35),
     widthHeight = V(200, 10)
   )
 
-  val labelWidth = 20 // TODO use the real label-width instead of a random constant
+  // MedPriorityTodo use the real label-width instead of a random constant
+  val labelWidth = 20
   override protected val knob: Rectangle = Rectangle(
     leftTop = bounds.leftTop,
-    widthHeight = V(bounds.width - labelWidth, bounds.height)
+    widthHeight = geometry.Vector(
+      x = bounds.width - labelWidth,
+      y = bounds.height
+    )
   )
 
   override protected def updateCurValue(): Unit = {
@@ -153,7 +158,7 @@ trait Scrollbar {
     Solarized.White.stroke().fill()
     app.textSize(24)
 
-    // TODO the text location should differ for HScrollbar vs `VScrollbar`
+    // MedPriorityTodo the text location should differ for HScrollbar vs `VScrollbar`
     app.text(
       /*string=*/ f"${ floatProperty.get.floatValue }%.2f",
       /*left=*/ slider.right + 10,
