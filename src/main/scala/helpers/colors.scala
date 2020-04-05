@@ -47,6 +47,7 @@ package object colors {
     object Orange extends Rgb(scale(203), scale(75), scale(22))
     object Red extends Rgb(scale(220), scale(50), scale(47))
     object White extends Rgb(scale(238), scale(232), scale(213))
+    object Violet extends Rgb(scale(108), scale(113), scale(196))
     object Yellow extends Rgb(scale(181), scale(137), scale(0))
   }
 

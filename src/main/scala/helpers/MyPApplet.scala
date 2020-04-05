@@ -2,6 +2,8 @@ package helpers
 import geometry.Vector
 import processing.core.PApplet
 
+import scala.reflect.io.Directory
+
 /** Created 3/29/20 11:28 AM
  */
 trait MyPApplet extends PApplet {
@@ -17,23 +19,20 @@ trait MyPApplet extends PApplet {
   /* ************** SAVING ***************/
 
   override def mouseClicked(): Unit = {
-    val className = this.getClass.getSimpleName
+    val className = getClass.getSimpleName
     val idx: Int =
-      reflect.io.Directory(".")
+      reflect.io.Directory(className)
         .list
         .map(_.name)
-        .filter(_ contains className)
         .filter(_ endsWith ".jpg")
         .toSeq
         .maxOption
       match {
         case None => 0
         case Some(path) =>
-          "-(\\d+)\\.jpg$".r findFirstMatchIn path match {
+          "(\\d+)\\.jpg$".r findFirstMatchIn path match {
+            case None => throw new Error(s"WARNING: Couldn't parse file path: $path")
             case Some(found) => found.group(1).toInt + 1
-            case None =>
-              System.err.println(s"WARNING: Couldn't parse file path: $path")
-              0
           }
       }
 
@@ -58,6 +57,40 @@ trait MyPApplet extends PApplet {
       if (is3D) translate(width / 2, height / 2, 0)
       else translate(width / 2, height / 2)
       block
+    }
+  }
+
+  lazy val framesDir: Directory = {
+    val gifsDir =
+      reflect.io
+        .Directory(s"${ getClass.getSimpleName }/gifs")
+        .createDirectory()
+
+    val nextInt: Int = gifsDir
+      .list
+      .map(_.name)
+      .filter(_ contains "Frames")
+      .flatMap("(\\d+)".r findFirstMatchIn _)
+      .map(_ group 1)
+      .map(_.toInt)
+      .maxOption
+      .getOrElse(0) + 1
+    reflect.io
+      .Directory(s"${ getClass.getSimpleName }/gifs/Frames-$nextInt")
+      .createDirectory()
+  }
+
+  final protected def overwritePngsForGifIfEnabled(): Unit = {
+    val FramesToSave = 0 // zero means gif-saving is disabled.
+    // NB: The first `frameCount` is 1 apparently.
+    if (frameCount > FramesToSave) return
+    val frameFile = reflect.io.File(framesDir / s"Frame-$frameCount.png")
+    println(s"saving frame $frameCount")
+    saveFrame(frameFile.toString)
+    if (frameCount == FramesToSave - 1) {
+      import sys.process._
+      val output = s"convert -delay 20 $framesDir/*.png -loop 0 $framesDir/pillow-case.gif".!!
+      println(s"output was $output")
     }
   }
 }

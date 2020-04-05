@@ -43,9 +43,7 @@ class PillowCase extends MyPApplet {
     overwritePngsForGifIfEnabled()
   }
 
-  private def drawOuterBackground(): Unit = {
-    colors.Solarized.Orange.background()
-  }
+  private def drawOuterBackground(): Unit = colors.Solarized.Violet.background()
 
   private val innerBkgdRegion = geometry.Rectangle(
     left = InnerMargin,
@@ -232,21 +230,6 @@ class PillowCase extends MyPApplet {
       fillAtDeg = _ => fadedOrange,
       width = 4,
     ).draw()
-  }
-
-  /**
-   * The resulting pngs can be converted into a gif with the following command
-   *
-   * $ convert -delay 20 PillowCaseFrames/*.png -loop 0 pillow-case.gif
-   *
-   */
-   * Lolol we need to close the comment twice now because of the glob in the example.
-   */
-  // MedPriorityTodo turn gif-saving into a general-use utility
-  private def overwritePngsForGifIfEnabled(): Unit = {
-    val FramesToSave = 0 // zero means gif-saving is disabled. 25 is a pretty long gif.
-    if (frameCount >= FramesToSave) return
-    saveFrame(s"PillowCaseFrames/Frame-$frameCount.png")
   }
 }
 
