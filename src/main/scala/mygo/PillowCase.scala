@@ -60,15 +60,9 @@ class PillowCase extends MyPApplet {
       y = MidBarHeight
     )
 
-    (1 to 200)
-      .foldLeft(
-        z = mutable.ArrayBuffer[geometry.Line](
-          randomLineFrom(from = startingPoint)
-        )
-      )(
-        op = (existingLines, _: Int) =>
-          existingLines += randomLineFrom(from = existingLines.last.to)
-      ).toSeq
+    val lines = mutable.ArrayBuffer(randomLineFrom(from = startingPoint))
+    1 to 200 foreach (_ => lines += randomLineFrom(from = lines.last.to))
+    lines.toSeq
   }
 
   private def drawInnerBackground(): Unit = {
