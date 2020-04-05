@@ -1,8 +1,8 @@
 package helpers
 import geometry.Vector
-import processing.core.{PApplet, PImage}
+import processing.core.PApplet
 
-import scala.reflect.io.Directory
+import scala.reflect.io.{Directory, Path}
 
 /** Created 3/29/20 11:28 AM
  */
@@ -31,9 +31,9 @@ trait MyPApplet extends PApplet {
         .Directory(s"stills/$className")
         .createDirectory()
 
+    val preExistingFiles = stillsDir.list
     val nextStillIdx: Int =
-      stillsDir
-        .list
+      preExistingFiles
         .map(_.name)
         .filter(_ endsWith ".jpg")
         .map(_.filter(_.isDigit).mkString)
@@ -41,27 +41,21 @@ trait MyPApplet extends PApplet {
         .maxOption
         .getOrElse(0) + 1
 
-    // TODO first we should check if the new frame is gonna just be the same
-    //  as one of the ones we've already saved and show a warning instead of saving.
-    //  We can do this using the comparePixels(f1, f2) method below.
-    saveFrame(f"$stillsDir/$nextStillIdx%02d.png")
+    val newFileName = f"$stillsDir/$nextStillIdx%02d.png"
+    saveFrame(newFileName)
+    deduplicateImages(preExistingFiles, newFileName)
   }
 
-  private def comparePixels(filename1: String, filename2: String): Boolean = {
-    // LowPriorityTodo should we offload this to an async thread?
-    val aImg: PImage = loadImage(filename1)
-    val bImg: PImage = loadImage(filename2)
-    aImg.loadPixels()
-    bImg.loadPixels()
-    if (aImg.pixels.length != bImg.pixels.length) {
-      return false
-    }
-    for ((a, b) <- aImg.pixels.zip(bImg.pixels)) {
-      if (a != b) {
-        return false
+  private def deduplicateImages(preExistingFiles: Iterator[Path], newFileName: String): Unit = {
+    // Thought: we could make this more async in several different ways and that
+    //  might make it faster. But I haven't had any performance issues with it.
+    val newImg = loadImage(newFileName)
+    for (file <- preExistingFiles) {
+      if (PixelComparator.areEquivalent(aImg = newImg, bImg = loadImage(file.path))) {
+        reflect.io.File(newFileName).delete()
+        return
       }
     }
-    true
   }
 
 
