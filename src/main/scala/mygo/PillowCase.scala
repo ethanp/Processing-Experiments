@@ -46,14 +46,22 @@ class PillowCase extends MyPApplet {
   )
 
   private val staticRandomLines: Seq[geometry.Line] = {
-    def randomLineFrom(from: geometry.Vector) =
-      geometry.Line(
+    def nG(): Double = {
+      val v = Random.nextGaussian()
+      println(s"got $v g")
+      v
+    }
+    def randomLineFrom(from: geometry.Vector): geometry.Line = {
+      val v = geometry.Line(
         from = from,
         to = geometry.Vector(
-          x = innerBkgdRegion.left + Random.nextInt(innerBkgdRegion.width.toInt),
-          y = innerBkgdRegion.top + Random.nextInt(innerBkgdRegion.height.toInt)
-        )
+          x = from.x + nG() * 50,
+          y = from.y + nG() * 50
+        ).constrainedTo(innerBkgdRegion)
       )
+      println(v)
+      v
+    }
 
     val startingPoint = geometry.V(
       x = MidBarHeight,
@@ -61,7 +69,7 @@ class PillowCase extends MyPApplet {
     )
 
     val lines = mutable.ArrayBuffer(randomLineFrom(from = startingPoint))
-    1 to 200 foreach (_ => lines += randomLineFrom(from = lines.last.to))
+    1 to 2000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
     lines.toSeq
   }
 

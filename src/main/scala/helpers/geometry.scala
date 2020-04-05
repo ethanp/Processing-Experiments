@@ -35,7 +35,7 @@ package object geometry {
     def width: Float = widthHeight.x
     def height: Float = widthHeight.y
 
-    def bottomRight: Vector = (leftTop.copy() add widthHeight).asInstanceOf[Vector]
+    def bottomRight: Vector = Vector(leftTop.copy() add widthHeight)
 
     def draw()(implicit myPApplet: MyPApplet): Unit =
       myPApplet.rect(left, top, widthHeight.x, widthHeight.y)
@@ -70,6 +70,13 @@ package object geometry {
   }
 
   class Vector(_x: Float, _y: Float, _z: Float = 0) extends PVector(_x, _y, _z) {
+
+    def constrainedTo(rectangle: Rectangle): Vector = {
+      x = rectangle.left.max(x).min(rectangle.right)
+      y = rectangle.top.max(y).min(rectangle.bottom)
+      this
+    }
+
     def isInside(rectangle: Rectangle): Boolean =
       x > rectangle.left &&
         y > rectangle.top &&
