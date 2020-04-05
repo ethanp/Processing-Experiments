@@ -1,10 +1,10 @@
 import helpers.MyPApplet
-import processing.core.PVector
+import processing.core.{PConstants, PVector}
 
 /** Created 3/29/20 11:17 PM
  */
 package object geometry {
-  case class Rectangle(leftTop: PVector, widthHeight: PVector) {
+  case class Rectangle(leftTop: Vector, widthHeight: Vector) {
     def centerOnX(center: Int): Rectangle = {
       leftTop.x = center - width / 2
       this
@@ -35,7 +35,7 @@ package object geometry {
     def width: Float = widthHeight.x
     def height: Float = widthHeight.y
 
-    def bottomRight: PVector = leftTop.copy() add widthHeight
+    def bottomRight: Vector = (leftTop.copy() add widthHeight).asInstanceOf[Vector]
 
     def draw()(implicit myPApplet: MyPApplet): Unit =
       myPApplet.rect(left, top, widthHeight.x, widthHeight.y)
@@ -46,7 +46,18 @@ package object geometry {
       Rectangle(Vector(left, top), Vector(width, height))
   }
 
-  case class Triangle(p1: PVector, p2: PVector, p3: PVector) {
+  case class Line(from: Vector, to: Vector) {
+    def draw()(implicit myPApplet: MyPApplet): Unit = {
+      myPApplet.sketchRenderer() match {
+        case PConstants.P3D =>
+          myPApplet.line(from.x, from.y, from.z, to.x, to.y, to.z)
+        case _ =>
+          myPApplet.line(from.x, from.y, to.x, to.y)
+      }
+    }
+  }
+
+  case class Triangle(p1: Vector, p2: Vector, p3: Vector) {
     // Note it *might* matter which order the vectors are given, but most-likely it
     //  it *does not* matter.
     def draw()(implicit myPApplet: MyPApplet): Unit = {
@@ -64,15 +75,18 @@ package object geometry {
         y > rectangle.top &&
         x < rectangle.right &&
         y < rectangle.bottom
+
+    /** Creates a copy with `value = this + vector`. */
+    def +(vector: PVector): Vector = Vector(copy().add(vector))
   }
 
   object Vector {
-    def apply(x: Double, y: Double, z: Double = 0) =
-      new Vector(x.toFloat, y.toFloat, z.toFloat)
+    def apply(x: Double, y: Double, z: Double = 0) = new Vector(x.toFloat, y.toFloat, z.toFloat)
+    def apply(vector: PVector) = new Vector(vector.x, vector.y, vector.z)
   }
 
   case class Spiral(
-    center: PVector,
+    center: Vector,
     numLoops: Int,
     radiusIncrement: Float,
     fillAtDeg: Float => colors.Color,

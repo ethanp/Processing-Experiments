@@ -2,6 +2,9 @@ package mygo
 import geometry.Triangle
 import helpers.{MyPApplet, Runner}
 
+import scala.collection.mutable
+import scala.util.Random
+
 /** Created 4/3/20 7:07 PM
  */
 class PillowCase extends MyPApplet {
@@ -35,18 +38,52 @@ class PillowCase extends MyPApplet {
     colors.Solarized.Orange.background()
   }
 
+  private val innerBkgdRegion = geometry.Rectangle(
+    left = InnerMargin,
+    top = InnerMargin,
+    width = OverallSide - InnerMargin * 2,
+    height = OverallSide - InnerMargin * 2,
+  )
+
+  private def randomInBkgd = geometry.Vector(
+    x = innerBkgdRegion.left + Random.nextInt(innerBkgdRegion.width.toInt),
+    y = innerBkgdRegion.top + Random.nextInt(innerBkgdRegion.height.toInt)
+  )
+
+  private def lineToRdbInBkgd(from: geometry.Vector) =
+    geometry.Line(
+      from = from,
+      to = randomInBkgd
+    )
+
+  private val staticRandomLines: Seq[geometry.Line] = (1 to 200)
+    .foldLeft(
+      mutable.ArrayBuffer[geometry.Line](
+        lineToRdbInBkgd(
+          from = geometry.V(
+            x = MidBarHeight,
+            y = MidBarHeight
+          )
+        )
+      )
+    )(
+      (x, _: Int) =>
+        x += lineToRdbInBkgd(from = x.last.to)
+    ).toSeq
+
   private def drawInnerBackground(): Unit = {
-    noStroke()
     colors.set(
       fill = colors.Solarized.White,
       stroke = colors.Empty
     )
-    geometry.Rectangle(
-      left = InnerMargin,
-      top = InnerMargin,
-      width = OverallSide - InnerMargin * 2,
-      height = OverallSide - InnerMargin * 2,
-    ).draw()
+    innerBkgdRegion.draw()
+
+    colors.set(
+      fill = colors.Solarized.White,
+      stroke = colors.Solarized.Cyan
+    )
+    strokeWeight(1)
+    staticRandomLines foreach (_.draw())
   }
 
   // Note: As desired, we could refactor to draw both the upper and lower inner
@@ -126,7 +163,7 @@ class PillowCase extends MyPApplet {
     )
 
     geometry.Spiral(
-      center = topStrip.leftTop.copy().add(offset1),
+      center = topStrip.leftTop + offset1,
       numLoops = 4,
       radiusIncrement = .02f,
       fillAtDeg = _ => fadedOrange,
@@ -134,7 +171,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = topStrip.leftTop.copy().add(offset2),
+      center = topStrip.leftTop + offset2,
       numLoops = 3,
       radiusIncrement = .03f,
       fillAtDeg = _ => fadedOrange,
@@ -142,7 +179,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = topStrip.leftTop.copy().add(offset3),
+      center = topStrip.leftTop + offset3,
       numLoops = 6,
       radiusIncrement = .01f,
       fillAtDeg = _ => fadedOrange,
@@ -150,7 +187,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = bottomStrip.leftTop.copy().add(offset1),
+      center = bottomStrip.leftTop + offset1,
       numLoops = 3,
       radiusIncrement = .03f,
       fillAtDeg = _ => fadedOrange,
@@ -158,7 +195,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = bottomStrip.leftTop.copy().add(offset2),
+      center = bottomStrip.leftTop + offset2,
       numLoops = 4,
       radiusIncrement = .02f,
       fillAtDeg = _ => fadedOrange,

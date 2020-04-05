@@ -40,7 +40,7 @@ package object colors {
 
   // Based on values listed at: https://www.wikiwand.com/en/Solarized_(color_scheme)
   object Solarized {
-    private def scale(int: Int) = int / 255f * 100f
+    private def scale(from: Int) = from / 255f * 100f
     object Black extends Rgb(scale(0), scale(43), scale(54))
     object Cyan extends Rgb(scale(42), scale(161), scale(152))
     object Orange extends Rgb(scale(203), scale(75), scale(22))
