@@ -45,31 +45,31 @@ class PillowCase extends MyPApplet {
     height = OverallSide - InnerMargin * 2,
   )
 
-  private def randomInBkgd = geometry.Vector(
-    x = innerBkgdRegion.left + Random.nextInt(innerBkgdRegion.width.toInt),
-    y = innerBkgdRegion.top + Random.nextInt(innerBkgdRegion.height.toInt)
-  )
-
-  private def lineToRdbInBkgd(from: geometry.Vector) =
-    geometry.Line(
-      from = from,
-      to = randomInBkgd
-    )
-
-  private val staticRandomLines: Seq[geometry.Line] = (1 to 200)
-    .foldLeft(
-      mutable.ArrayBuffer[geometry.Line](
-        lineToRdbInBkgd(
-          from = geometry.V(
-            x = MidBarHeight,
-            y = MidBarHeight
-          )
+  private val staticRandomLines: Seq[geometry.Line] = {
+    def randomLineFrom(from: geometry.Vector) =
+      geometry.Line(
+        from = from,
+        to = geometry.Vector(
+          x = innerBkgdRegion.left + Random.nextInt(innerBkgdRegion.width.toInt),
+          y = innerBkgdRegion.top + Random.nextInt(innerBkgdRegion.height.toInt)
         )
       )
-    )(
-      (x, _: Int) =>
-        x += lineToRdbInBkgd(from = x.last.to)
-    ).toSeq
+
+    val startingPoint = geometry.V(
+      x = MidBarHeight,
+      y = MidBarHeight
+    )
+
+    (1 to 200)
+      .foldLeft(
+        z = mutable.ArrayBuffer[geometry.Line](
+          randomLineFrom(from = startingPoint)
+        )
+      )(
+        op = (existingLines, _: Int) =>
+          existingLines += randomLineFrom(from = existingLines.last.to)
+      ).toSeq
+  }
 
   private def drawInnerBackground(): Unit = {
     colors.set(

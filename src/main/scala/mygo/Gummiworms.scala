@@ -39,8 +39,8 @@ class Gummiworms extends ThreeDimPApplet {
         Hsb(h = curZ % 81, b = 50, a = 60).fill()
         Hsb(h = curZ % 100, a = 70).stroke()
         translate(
-          x = math.sin(curZ / 100.0) * 100,
-          y = math.cos(curZ / 100.0) * 100,
+          x = geometry.sinRad(radians = curZ / 100.0) * 100,
+          y = geometry.cosRad(radians = curZ / 100.0) * 100,
           z = curZ
         )
         sphere(55)

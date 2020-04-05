@@ -94,7 +94,7 @@ package object geometry {
   ) {
     val Smoothness = 4
     def draw()(implicit myPApplet: MyPApplet): Unit = {
-      myPApplet.withPushedMatrix {
+      myPApplet withPushedMatrix {
         myPApplet.translate(center.x, center.y)
         for (notSmoothed <- 0 until (360 * numLoops * Smoothness)) {
           val degrees = notSmoothed.toFloat / Smoothness
