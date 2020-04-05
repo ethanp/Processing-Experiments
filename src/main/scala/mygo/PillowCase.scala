@@ -1,6 +1,6 @@
 package mygo
 import geometry.Triangle
-import helpers.{MyPApplet, Runner}
+import helpers.{GifSaver, MyPApplet, Runner}
 import processing.core.PShape
 
 import scala.collection.mutable
@@ -27,11 +27,15 @@ class PillowCase extends MyPApplet {
 
   private val RandomLineLength = 10
 
+
+  private val gifSaver = new GifSaver(
+    className = getClass.getSimpleName,
+    gifLength = GifSaver.Disabled
+  )
+
   override def settings(): Unit = size(OverallSide, OverallSide)
 
-  override def setup(): Unit = {
-    frameRate(5)
-  }
+  override def setup(): Unit = frameRate(5)
 
   override def draw(): Unit = {
     drawOuterBackground()
@@ -40,7 +44,7 @@ class PillowCase extends MyPApplet {
     drawMidBar()
     drawOuterStrips()
     drawSpirals()
-    overwritePngsForGifIfEnabled()
+    gifSaver.addFrame(frameCount, saveFrame)
   }
 
   private def drawOuterBackground(): Unit = colors.Solarized.Violet.background()

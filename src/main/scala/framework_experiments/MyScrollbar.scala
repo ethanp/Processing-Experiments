@@ -1,4 +1,4 @@
-package mygo
+package framework_experiments
 
 import helpers.{HScrollbar, MyPApplet, Runner, Scrollbar, VScrollbar}
 import processing.event.MouseEvent

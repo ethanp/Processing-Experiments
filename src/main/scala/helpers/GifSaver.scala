@@ -29,9 +29,10 @@ class GifSaver(className: String, gifLength: Int) {
    *
    * To enable it, update `FramesToSave` to the length of the desired gif.
    *
-   * It dumps a bunch of pngs, then shells out to ImageMagick to merge them into a gif.
+   * It dumps a bunch of pngs, and then at the right time, it shells out
+   * to ImageMagick to merge the pngs into a gif. Then it stops doing anything.
    */
-  final def overwritePngsForGifIfEnabled(
+  final def addFrame(
     frameCount: Int,
     saveFrame: String => Unit
   ): Unit = {
@@ -47,6 +48,7 @@ class GifSaver(className: String, gifLength: Int) {
       convertPngsToGif()
     }
   }
+
   private def convertPngsToGif(): Unit = {
     println("CREATE GIF: converting pngs to gif")
     import sys.process._
@@ -64,4 +66,8 @@ class GifSaver(className: String, gifLength: Int) {
     s"convert -delay 20 $gifFramesDir/*.png -loop 0 $gifPath".!!
     println("CREATING GIF: gif saved successfully")
   }
+}
+
+object GifSaver {
+  val Disabled: Int = 0
 }
