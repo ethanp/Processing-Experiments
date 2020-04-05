@@ -9,15 +9,16 @@ class GifSaver(className: String, gifLength: Int) {
         .Directory(s"gifs/$className")
         .createDirectory()
 
-    val newGifIndex: Int = gifsDir
-      .list
-      .map(_.name)
-      .filter(_ contains "Frames")
-      .flatMap("(\\d+)".r findFirstMatchIn _)
-      .map(_ group 1)
-      .map(_.toInt)
-      .maxOption
-      .getOrElse(0) + 1
+    val newGifIndex: Int =
+      gifsDir
+        .list
+        .map(_.name)
+        .filter(_ contains "Frames")
+        .flatMap("(\\d+)".r findFirstMatchIn _)
+        .map(_ group 1)
+        .map(_.toInt)
+        .maxOption
+        .getOrElse(0) + 1
 
     reflect.io
       .Directory(s"$gifsDir/Frames-$newGifIndex")

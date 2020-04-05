@@ -15,6 +15,9 @@ class Designation1 extends MyPApplet {
   private val RowHeight = WindowSideLength / NumRows - (WindowSideLength / 80f)
   private val RectBottomSpace = RowHeight / 3f
 
+  // TODO use this instead of the above calculations.
+  private val SideMargin = 30f
+
   override def settings(): Unit = size(WindowSideLength, WindowSideLength)
   override def draw(): Unit = {
     colors.Solarized.Black.background()

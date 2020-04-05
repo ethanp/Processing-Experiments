@@ -20,7 +20,7 @@ trait MyPApplet extends PApplet {
 
   /* ************** User Interaction ***************/
 
-  override def mouseClicked(): Unit = ImageSaver.save(getClass.getSimpleName)
+  override def mouseClicked(): Unit = ImageSaver.save(className = getClass.getSimpleName)
 
 
   /* ************** GEOMETRY ***************/
