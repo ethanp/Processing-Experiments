@@ -19,7 +19,7 @@ class Designation1 extends MyPApplet {
   override def draw(): Unit = {
     colors.Solarized.Black.background()
     for (row <- 1 to NumRows; col <- 1 to NumCols) {
-      colors.set(
+      colors.Current.update(
         fill = colors.lerp(
           from = colors.Solarized.Cyan,
           to = colors.Solarized.Red,

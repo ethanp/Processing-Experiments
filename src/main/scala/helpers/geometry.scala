@@ -105,7 +105,7 @@ package object geometry {
         myPApplet.translate(center.x, center.y)
         for (notSmoothed <- 0 until (360 * numLoops * Smoothness)) {
           val degrees = notSmoothed.toFloat / Smoothness
-          colors.set(
+          colors.Current.update(
             fill = fillAtDeg(degrees),
             stroke = colors.Empty
           )

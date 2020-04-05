@@ -19,9 +19,10 @@ class PillowCase extends MyPApplet {
   private val NumTriangles: Int = 10
   private val TriangleWidth: Float = (OverallSide - InnerMargin * 2) / NumTriangles
   private val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
+  private val TriangleStripGap: Float = OverallSide / 20f
 
   private val StripWidth = OverallSide - 2 * InnerMargin
-  private val StripHeight = MidSide - TriangleHeight - InnerMargin
+  private val StripHeight = MidSide - TriangleHeight - InnerMargin - TriangleStripGap
 
   private val RandomLineLength = 10
 
@@ -64,26 +65,25 @@ class PillowCase extends MyPApplet {
     )
 
     val lines = mutable.ArrayBuffer(randomLineFrom(from = startingPoint))
-    1 to 70000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
+    1 to 40000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
     lines.toSeq
   }
 
   private def drawInnerBackground(): Unit = {
     { // Draw underlying rectangle
-      strokeWeight(30)
-      colors.set(
+      colors.Current.update(
         fill = colors.Solarized.White,
-        stroke = colors.Pure.Black
+        stroke = colors.Pure.Black,
+        strokeWeight = 30
       )
       innerBkgdRegion.draw()
     }
 
     { // Draw static random lines
-      colors.set(
+      colors.Current.update(
         fill = colors.Solarized.White,
         stroke = colors.Solarized.Cyan
       )
-      strokeWeight(1)
       staticRandomLines foreach (_.draw())
     }
   }
@@ -91,7 +91,7 @@ class PillowCase extends MyPApplet {
   // Note: As desired, we could refactor to draw both the upper and lower inner
   // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
-    colors.set(
+    colors.Current.update(
       fill = colors.Solarized.Orange.copy(a = 50),
       stroke = colors.Empty
     )
@@ -104,14 +104,16 @@ class PillowCase extends MyPApplet {
   }
 
   private def drawTriangles(): Unit = {
-    colors.set(
+    colors.Current.update(
       fill = colors.Solarized.Red,
-      stroke = colors.Empty
+      stroke = colors.Solarized.White,
+      strokeWeight = 5
     )
 
     for (idx <- 0 until NumTriangles) {
-      val top: Float = MidSide + TriangleHeight
-      val bottom: Float = MidSide - TriangleHeight
+      def randomOffset(): Float = Random.nextGaussian().toFloat * 20
+      val top: Float = MidSide + TriangleHeight + randomOffset()
+      val bottom: Float = MidSide - TriangleHeight + randomOffset()
 
       val centerLeft = geometry.Vector(idx * TriangleWidth + InnerMargin, MidSide)
       val centerRight = geometry.Vector((idx + 1) * TriangleWidth + InnerMargin, MidSide)
@@ -134,13 +136,13 @@ class PillowCase extends MyPApplet {
 
   private val bottomStrip = geometry.Rectangle(
     left = InnerMargin,
-    top = MidSide + TriangleHeight,
+    top = MidSide + TriangleHeight + TriangleStripGap,
     width = StripWidth,
     height = StripHeight
   )
 
   private def drawOuterStrips(): Unit = {
-    colors.set(
+    colors.Current.update(
       fill = colors.Solarized.Black,
       stroke = colors.Empty
     )

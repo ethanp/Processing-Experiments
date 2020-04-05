@@ -77,9 +77,12 @@ package object colors {
     }
   }
 
-  def set(fill: Color, stroke: Color)(implicit pApplet: MyPApplet): Unit = {
-    fill.fill()
-    stroke.stroke()
+  object Current {
+    def update(fill: Color, stroke: Color, strokeWeight: Int = 1)(implicit pApplet: MyPApplet): Unit = {
+      pApplet.strokeWeight(strokeWeight)
+      fill.fill()
+      stroke.stroke()
+    }
   }
 
   def lerp(from: Rgb, to: Rgb, ratio: Double): Rgb = {
