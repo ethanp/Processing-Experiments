@@ -9,19 +9,21 @@ import scala.util.Random
  */
 class PillowCase extends MyPApplet {
 
-  val OverallSide: Int = 700
-  val MidSide: Int = OverallSide / 2
+  private val OverallSide: Int = 700
+  private val MidSide: Int = OverallSide / 2
 
-  val MidBarHeight: Float = 100f
+  private val MidBarHeight: Float = 100f
 
-  val InnerMargin: Float = 75f
+  private val InnerMargin: Float = 75f
 
-  val NumTriangles: Int = 10
-  val TriangleWidth: Float = (OverallSide - InnerMargin * 2) / NumTriangles
-  val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
+  private val NumTriangles: Int = 10
+  private val TriangleWidth: Float = (OverallSide - InnerMargin * 2) / NumTriangles
+  private val TriangleHeight: Float = (OverallSide - InnerMargin * 2) / 3
 
   private val StripWidth = OverallSide - 2 * InnerMargin
   private val StripHeight = MidSide - TriangleHeight - InnerMargin
+
+  private val RandomLineLength = 10
 
   override def settings(): Unit = size(OverallSide, OverallSide)
 
@@ -46,38 +48,32 @@ class PillowCase extends MyPApplet {
   )
 
   private val staticRandomLines: Seq[geometry.Line] = {
-    def nG(): Double = {
-      val v = Random.nextGaussian()
-      println(s"got $v g")
-      v
-    }
     def randomLineFrom(from: geometry.Vector): geometry.Line = {
-      val v = geometry.Line(
+      geometry.Line(
         from = from,
         to = geometry.Vector(
-          x = from.x + nG() * 50,
-          y = from.y + nG() * 50
-        ).constrainedTo(innerBkgdRegion)
+          x = from.x + Random.nextGaussian() * RandomLineLength,
+          y = from.y + Random.nextGaussian() * RandomLineLength
+        ).constrainedToBounds(rectangle = innerBkgdRegion)
       )
-      println(v)
-      v
     }
 
-    val startingPoint = geometry.V(
+    val startingPoint = geometry.Vector(
       x = MidBarHeight,
       y = MidBarHeight
     )
 
     val lines = mutable.ArrayBuffer(randomLineFrom(from = startingPoint))
-    1 to 2000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
+    1 to 70000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
     lines.toSeq
   }
 
   private def drawInnerBackground(): Unit = {
     { // Draw underlying rectangle
+      strokeWeight(30)
       colors.set(
         fill = colors.Solarized.White,
-        stroke = colors.Empty
+        stroke = colors.Pure.Black
       )
       innerBkgdRegion.draw()
     }

@@ -71,7 +71,7 @@ package object geometry {
 
   class Vector(_x: Float, _y: Float, _z: Float = 0) extends PVector(_x, _y, _z) {
 
-    def constrainedTo(rectangle: Rectangle): Vector = {
+    def constrainedToBounds(rectangle: Rectangle): Vector = {
       x = rectangle.left.max(x).min(rectangle.right)
       y = rectangle.top.max(y).min(rectangle.bottom)
       this
