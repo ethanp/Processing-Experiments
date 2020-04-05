@@ -1,6 +1,7 @@
 package mygo
 import geometry.Triangle
 import helpers.{MyPApplet, Runner}
+import processing.core.PShape
 
 import scala.collection.mutable
 import scala.util.Random
@@ -28,6 +29,21 @@ class PillowCase extends MyPApplet {
 
   override def settings(): Unit = size(OverallSide, OverallSide)
 
+  override def setup(): Unit = {
+    frameRate(5)
+  }
+
+  val RecordGif = false
+  val FramesToSave = 100
+  def savePngsForGif(): Unit = {
+    if (frameCount >= FramesToSave)
+      return
+
+    val dir = scala.reflect.io.Directory("PillowCaseFrames")
+    val frameName = dir / s"Frame-$frameCount.png"
+    saveFrame(frameName.path)
+  }
+
   override def draw(): Unit = {
     drawOuterBackground()
     drawInnerBackground()
@@ -35,6 +51,7 @@ class PillowCase extends MyPApplet {
     drawMidBar()
     drawOuterStrips()
     drawSpirals()
+    if (RecordGif) savePngsForGif()
   }
 
   private def drawOuterBackground(): Unit = {
@@ -63,11 +80,12 @@ class PillowCase extends MyPApplet {
       x = MidBarHeight,
       y = MidBarHeight
     )
-
     val lines = mutable.ArrayBuffer(randomLineFrom(from = startingPoint))
     1 to 40000 foreach (_ => lines += randomLineFrom(from = lines.last.to))
     lines.toSeq
   }
+
+  private var fastShape: PShape = _
 
   private def drawInnerBackground(): Unit = {
     { // Draw underlying rectangle
@@ -80,14 +98,27 @@ class PillowCase extends MyPApplet {
     }
 
     { // Draw static random lines
+      // NB: This is the colors setting that gets applied, /not/ the one we can add
+      // while building the [[PShape]] `fastShape`.
       colors.Current.update(
         fill = colors.Solarized.White,
         stroke = colors.Solarized.Cyan
       )
-      staticRandomLines foreach (_.draw())
+
+      // We do a batch call with the hope that it is much faster it is than rendering each
+      // line individually. With the individual calls I was getting 40000 lines 3x/sec.
+      // With this thing it might be like 6x/sec. I was expecting much more speed here.
+      if (fastShape == null) {
+        fastShape = createShape()
+        fastShape.beginShape()
+        val first = staticRandomLines.head.from
+        fastShape.vertex(first.x, first.y)
+        staticRandomLines foreach (line => fastShape.vertex(line.to.x, line.to.y))
+        fastShape.endShape()
+      }
+      fastShape.draw(getGraphics)
     }
   }
-
   // Note: As desired, we could refactor to draw both the upper and lower inner
   // backgrounds separately, and then we wouldn't need this mid-bar at all.
   private def drawMidBar(): Unit = {
@@ -166,8 +197,15 @@ class PillowCase extends MyPApplet {
       y = OverallSide.toFloat * (1f / 10f)
     )
 
+    def jitter(vector: geometry.Vector) = {
+      val scale = 5
+      vector.x = vector.x + Random.nextGaussian().toFloat * scale
+      vector.y = vector.y + Random.nextGaussian().toFloat * scale
+      vector
+    }
+
     geometry.Spiral(
-      center = topStrip.leftTop + offset1,
+      center = jitter(topStrip.leftTop + offset1),
       numLoops = 4,
       radiusIncrement = .02f,
       fillAtDeg = _ => fadedOrange,
@@ -175,7 +213,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = topStrip.leftTop + offset2,
+      center = jitter(topStrip.leftTop + offset2),
       numLoops = 3,
       radiusIncrement = .03f,
       fillAtDeg = _ => fadedOrange,
@@ -183,7 +221,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = topStrip.leftTop + offset3,
+      center = jitter(topStrip.leftTop + offset3),
       numLoops = 6,
       radiusIncrement = .01f,
       fillAtDeg = _ => fadedOrange,
@@ -191,7 +229,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = bottomStrip.leftTop + offset1,
+      center = jitter(bottomStrip.leftTop + offset1),
       numLoops = 3,
       radiusIncrement = .03f,
       fillAtDeg = _ => fadedOrange,
@@ -199,7 +237,7 @@ class PillowCase extends MyPApplet {
     ).draw()
 
     geometry.Spiral(
-      center = bottomStrip.leftTop + offset2,
+      center = jitter(bottomStrip.leftTop + offset2),
       numLoops = 4,
       radiusIncrement = .02f,
       fillAtDeg = _ => fadedOrange,

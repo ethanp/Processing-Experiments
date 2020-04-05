@@ -14,14 +14,15 @@ package object colors {
   ) {
     protected def myColorMode: Int
 
-    def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet.stroke)
-    def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet.fill)
-    final def background()(implicit pApplet: MyPApplet): Color = apply(pApplet.background)
+    def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet, pApplet.stroke)
+    def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet, pApplet.fill)
+
+    final def background()(implicit pApplet: MyPApplet): Color =
+      apply(pApplet, pApplet.background)
 
     private def apply(
-      f: (Float, Float, Float, Float) => Unit
-    )(
-      implicit pApplet: MyPApplet
+      pApplet: MyPApplet,
+      f: (Float, Float, Float, Float) => Unit,
     ): Color = {
       pApplet.colorMode(myColorMode, MaxVal)
       f(v1, v2, v3, v4)
