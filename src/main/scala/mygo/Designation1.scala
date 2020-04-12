@@ -1,27 +1,41 @@
 package mygo
 import helpers.{MyPApplet, Runner}
 
-/** Created 4/4/20 2:18 PM
+/**
+ * This really didn't turn out as good as I wanted it to.
+ *
+ * Created 4/4/20 2:18 PM
+ * Updated 4/12/20
  */
 class Designation1 extends MyPApplet {
-  private val WindowSideLength = 800
+  private val WindowSide: Int = 800
+  private val Margin: Float = 50f
 
-  private val NumRows = 20
-  private val NumCols = 10
+  private val NumRows: Int = 20
+  private val NumCols: Int = 10
 
-  private val ColWidth = WindowSideLength / NumCols - (WindowSideLength / 80f)
-  private val RectRightSpace = ColWidth / 5f
+  private val ColoredLen: Float = WindowSide - Margin * 2
 
-  private val RowHeight = WindowSideLength / NumRows - (WindowSideLength / 80f)
-  private val RectBottomSpace = RowHeight / 3f
+  private val RectWidth: Float = 8f * ColoredLen / (9 * NumCols - 1)
+  private val RectRightSpace: Float = RectWidth / 6f
+  private val ColWidth: Float = RectWidth + RectRightSpace
 
-  // TODO use this instead of the above calculations.
-  private val SideMargin = 30f
+  private val RectHeight: Float = 8f * ColoredLen / (9 * NumRows - 1)
+  private val RectBottomSpace: Float = RectHeight / 8f
+  private val RowHeight: Float = RectHeight + RectBottomSpace
 
-  override def settings(): Unit = size(WindowSideLength, WindowSideLength)
+  {
+    val CalculatedColoredWidth: Float = RectWidth * NumCols
+    assert(
+      assertion = (CalculatedColoredWidth - ColoredLen).abs < 100,
+      message = s"Somewhere width math is wrong: $CalculatedColoredWidth vs $ColoredLen"
+    )
+  }
+
+  override def settings(): Unit = size(WindowSide, WindowSide)
+
   override def draw(): Unit = {
-    colors.Solarized.Black.background()
-    for (row <- 1 to NumRows; col <- 1 to NumCols) {
+    def setColor(row: Int, col: Int): Unit = {
       colors.Current.update(
         fill = colors.lerp(
           from = colors.Solarized.Cyan,
@@ -32,12 +46,28 @@ class Designation1 extends MyPApplet {
         ),
         stroke = colors.Empty
       )
+    }
+
+    def drawRect(xNow: Float, yNow: Float): Unit = {
       geometry.Rectangle(
-        left = col * ColWidth,
-        top = row * RowHeight,
-        width = ColWidth - RectRightSpace,
-        height = RowHeight - RectBottomSpace
+        left = xNow,
+        top = yNow,
+        width = RectWidth,
+        height = RectHeight
       ).draw()
+    }
+
+    colors.Solarized.Black.background()
+    var xNow = Margin
+    var yNow = Margin
+    for (row <- 1 to NumRows) {
+      for (col <- 1 to NumCols) {
+        setColor(row, col)
+        drawRect(xNow, yNow)
+        xNow += ColWidth
+      }
+      xNow = Margin
+      yNow += RowHeight
     }
   }
 }
