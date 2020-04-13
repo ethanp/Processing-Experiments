@@ -14,16 +14,13 @@ package object colors {
   ) {
     protected def myColorMode: Int
 
-    def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet, pApplet.stroke)
-    def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet, pApplet.fill)
-
-    final def background()(implicit pApplet: MyPApplet): Color =
-      apply(pApplet, pApplet.background)
+    def stroke()(implicit pApplet: MyPApplet): Color = apply(pApplet.stroke)
+    def fill()(implicit pApplet: MyPApplet): Color = apply(pApplet.fill)
+    def background()(implicit pApplet: MyPApplet): Color = apply(pApplet.background)
 
     private def apply(
-      pApplet: MyPApplet,
       f: (Float, Float, Float, Float) => Unit,
-    ): Color = {
+    )(implicit pApplet: MyPApplet): Color = {
       pApplet.colorMode(myColorMode, MaxVal)
       f(v1, v2, v3, v4)
       this
@@ -77,6 +74,8 @@ package object colors {
       pApplet.noStroke()
       this
     }
+    override def background()(implicit pApplet: MyPApplet): Color =
+      throw new NotImplementedError("What is an empty background supposed to look like?")
   }
 
   object Current {

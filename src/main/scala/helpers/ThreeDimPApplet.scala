@@ -22,7 +22,6 @@ trait ThreeDimPApplet extends MyPApplet {
   override def draw(): Unit = {
     blackBackground()
     moveCamera()
-    colorMode(PConstants.RGB, 100)
     for (gameObj <- gameObjects) {
       fromTheCenter {
         gameObj.draw()
@@ -37,7 +36,7 @@ trait ThreeDimPApplet extends MyPApplet {
   }
 
   override def setup(): Unit = {
-    // NB: These (and other) hints trade performance for visual quality.
+    // NB: These hints trade performance for visual quality.
     //  https://processing.org/reference/hint_.html
     hint(PConstants.DISABLE_DEPTH_TEST)
     hint(PConstants.ENABLE_STROKE_PERSPECTIVE)

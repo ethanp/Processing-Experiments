@@ -15,7 +15,7 @@ object ImageSaver {
     val nextStillIdx: Int =
       preExistingFiles
         .map(_.name)
-        .filter(_ endsWith ".jpg")
+        .filter(Seq(".jpg", ".png") exists _.endsWith)
         .map(_.filter(_.isDigit).mkString)
         .map(_.toInt)
         .maxOption
