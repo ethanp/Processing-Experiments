@@ -9,12 +9,18 @@ class RingTunnel extends ThreeDimPApplet {
   // Create the rings at different z-values.
   gameObjects ++= (0 until 30 map (new Ring(_)))
 
-  // TODO move this elsewhere.
+  // TODO move this to the base class to create those sliders that move the camera around.
   def lookAt(
     vantagePoint: geometry.Vector,
     focusPoint: geometry.Vector,
-    upDir: geometry.Vector
+    upDir: geometry.Vector = geometry.Vector.Y
   ): Unit = {
+    // NB: the camera() method is based on gluLookAt, which has a nice visual description:
+    //
+    //  https://stackoverflow.com/a/5721110/1959155
+    //
+    // In particular, note that the up-dir actually used will be "tilted forward or
+    // backward" based on the vector from vantage point to focus point.
     camera(
       vantagePoint.x, vantagePoint.y, vantagePoint.z,
       focusPoint.x, focusPoint.y, focusPoint.z,
@@ -22,13 +28,30 @@ class RingTunnel extends ThreeDimPApplet {
     )
   }
 
+  private val defaultVantagePoint = geometry.Vector(
+    x = width / 2,
+    y = height / 2,
+
+    // TODO wtf is this? I found that it is the default here:
+    //  https://processing.org/reference/camera_.html
+    z = (height / 2.0) / math.tan(math.Pi * 30.0 / 180.0)
+  )
+
+  //noinspection RedundantDefaultArgument
+  private val defaultFocusPoint = geometry.Vector(
+    x = width / 2.0,
+    y = height / 2.0,
+    z = 0
+  )
+
   override def moveCamera(): Unit = {
+    // Recall: GameObjects are drawn fromTheCenter().
+
+    // This is the default anyway.
     lookAt(
-      vantagePoint = geometry.Vector.Z * -10,
-      focusPoint = geometry.Vector.Zero,
-      upDir = geometry.Vector.Y
+      vantagePoint = defaultVantagePoint,
+      focusPoint = defaultFocusPoint,
     )
-    //    rotateY(frameCount)
   }
 
   class Ring(idx: Int) extends GameObject {

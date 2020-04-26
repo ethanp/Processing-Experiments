@@ -29,7 +29,6 @@ trait ThreeDimPApplet extends MyPApplet {
       }
     }
     gameObjects.foreach(_.tick())
-    gifSaver.addFrame(frameCount, saveFrame)
   }
 
   override def settings(): Unit = {
@@ -77,7 +76,8 @@ trait ThreeDimPApplet extends MyPApplet {
 
   // TODO super useful feature:
   //  Click and drag to move the camera across the different axes.
-  //  Should use the [[Fader]] class I made.
+  //  I should "bind" the loc to three of those [[Fader]] class I made.
+  //  It should all take place encapsulated within a utility class too.
   val cameraLoc = geometry.Vector.Z * -10
 
   var mouseDown = false
