@@ -1,6 +1,7 @@
 package framework_experiments
 
-import helpers.{AbstractFader, HorizontalFader, MyPApplet, Runner, VerticalFader}
+import helpers.controls.{Fader, HorizontalFader, VerticalFader}
+import helpers.{MyPApplet, Runner}
 import processing.event.MouseEvent
 
 /** Created 3/29/20 8:20 PM
@@ -36,7 +37,7 @@ class FaderDemo extends MyPApplet {
     )
   )
 
-  private val faders: Seq[AbstractFader] = Seq(horizontalFader, verticalFader)
+  private val faders: Seq[Fader] = Seq(horizontalFader, verticalFader)
 
   override def setup(): Unit = frameRate(60)
 

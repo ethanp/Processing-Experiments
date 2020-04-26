@@ -77,7 +77,7 @@ trait ThreeDimPApplet extends MyPApplet {
 
   // TODO super useful feature:
   //  Click and drag to move the camera across the different axes.
-  //  Should use the [[VFader]] class I made.
+  //  Should use the [[Fader]] class I made.
   val cameraLoc = geometry.Vector.Z * -10
 
   var mouseDown = false
