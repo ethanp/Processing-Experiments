@@ -20,19 +20,18 @@ object CleanupDirsScript {
       jpg <- here.files
         if jpg.name matches ".*-.*\\.jpg$"
     } {
-      val matches = "(\\w+)-(\\d+)\\.jpg$".r findFirstMatchIn jpg.name
-      assert(
-        assertion = matches.nonEmpty,
-        message = s"couldn't parse $jpg"
-      )
-      val name = matches.get group 1
-      val num = matches.get group 2
-      val newPath: Path = io.Directory(name).createDirectory() / s"$num.jpg"
-      val succeeded: Boolean = jpg.jfile renameTo newPath.jfile
-      assert(
-        assertion = succeeded,
-        message = "FATAL: Couldn't move $jpg to $newPath"
-      )
+      // This is cool, source:
+      // https://netzwerg.ch/blog/2015/02/27/scala-gems-number-9-regex-extractors
+      val ParseFilename = "(\\w+)-(\\d+)\\.jpg$".r
+      jpg.name match {
+        case ParseFilename(name: String, num: String) =>
+          val newPath: Path = io.Directory(name).createDirectory() / s"$num.jpg"
+          val succeeded: Boolean = jpg.jfile renameTo newPath.jfile
+          assert(
+            assertion = succeeded,
+            message = "FATAL: Couldn't move $jpg to $newPath"
+          )
+      }
     }
   }
 }

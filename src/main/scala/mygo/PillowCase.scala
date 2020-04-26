@@ -32,7 +32,7 @@ class PillowCase extends MyPApplet {
 
   override def setup(): Unit = frameRate(5)
 
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     drawOuterBackground()
     drawInnerBackground()
     drawTriangles()

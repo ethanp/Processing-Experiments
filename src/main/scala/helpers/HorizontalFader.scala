@@ -1,7 +1,7 @@
 package helpers
 
 import colors.{Pure, Solarized}
-import geometry.{Rectangle, V, Vector}
+import geometry.{Rectangle, Vector}
 import javafx.beans.property.SimpleFloatProperty
 import javafx.beans.value.ChangeListener
 import processing.core.PConstants
@@ -53,7 +53,9 @@ class VerticalFader(
   override protected val initialValue: Float,
   override protected val minValue: Float,
   override protected val maxValue: Float,
-  override protected val changeListener: ChangeListener[Number]
+  override protected val changeListener: ChangeListener[Number],
+  // TODO Should this go on the base class and override here like the other params?
+  bounds: Rectangle,
 )(implicit pApp: MyPApplet)
   extends AbstractFader {
   override def app: MyPApplet = pApp
@@ -63,14 +65,19 @@ class VerticalFader(
 
   override protected def mouseDimLoc: MouseEvent => Int = _.getY
 
-  override protected val slideTrackRect: Rectangle = Rectangle(
-    leftTop = V(35, 10),
-    widthHeight = V(10, 200)
+  private val trackWidth = 10
+  override protected val slideTrackRect: Rectangle = geometry.Rectangle(
+    left = bounds.left + bounds.width / 2 - trackWidth / 2,
+    top = bounds.top,
+    width = trackWidth,
+    height = bounds.height
   )
 
-  override protected val handleRect: Rectangle = Rectangle(
-    leftTop = V(20, 10),
-    widthHeight = V(40, 15)
+  override protected val handleRect: Rectangle = geometry.Rectangle(
+    left = bounds.left,
+    top = bounds.top,
+    width = bounds.width,
+    height = 10
   )
 
   override protected def updateCurValue(): Unit = {

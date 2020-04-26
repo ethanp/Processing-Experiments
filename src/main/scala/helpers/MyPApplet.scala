@@ -49,8 +49,12 @@ trait MyPApplet extends PApplet {
     // gifLength = 25
   )
 
-  override def draw(): Unit = {
-    super.draw()
-    gifSaver.addFrame(frameCount, saveFrame)
+  protected def drawFrame(): Unit
+
+  protected def afterDraw(): Unit = gifSaver.addFrame(frameCount, saveFrame)
+
+  override final def draw(): Unit = {
+    drawFrame()
+    afterDraw()
   }
 }

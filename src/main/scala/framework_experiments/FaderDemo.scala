@@ -17,15 +17,23 @@ class FaderDemo extends MyPApplet {
     changeListener = (_, _, current: Number) =>
       println(f"Horizontal Scrollbar from main drawing: ${ current.floatValue() }%.02f"),
     bounds = geometry.Rectangle(
-      leftTop = geometry.Vector.Zero,
-      widthHeight = geometry.Vector(100, 100)
+      left = 100,
+      top = 100,
+      width = 300,
+      height = 30
     )
   )
 
   private val verticalFader = new VerticalFader(
     initialValue = 0, minValue = 0, maxValue = 10,
     changeListener = (_, _, current: Number) =>
-      println(f"Vertical Scrollbar from main drawing: ${ current.floatValue() }%.02f")
+      println(f"Vertical Scrollbar from main drawing: ${ current.floatValue() }%.02f"),
+    bounds = geometry.Rectangle(
+      left = 100,
+      top = 150,
+      width = 30,
+      height = 150
+    )
   )
 
   private val faders: Seq[AbstractFader] = Seq(horizontalFader, verticalFader)
@@ -36,7 +44,7 @@ class FaderDemo extends MyPApplet {
   override def mouseDragged(event: MouseEvent): Unit = faders foreach (_ mouseDragged event)
   override def mouseReleased(event: MouseEvent): Unit = faders foreach (_ mouseReleased event)
 
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     app.background(10)
     faders.foreach(_.draw())
   }

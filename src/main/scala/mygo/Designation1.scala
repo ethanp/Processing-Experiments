@@ -34,7 +34,7 @@ class Designation1 extends MyPApplet {
 
   override def settings(): Unit = size(WindowSide, WindowSide)
 
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     def setColor(row: Int, col: Int): Unit = {
       colors.Current.update(
         fill = colors.lerp(

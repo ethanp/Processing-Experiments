@@ -18,7 +18,7 @@ class Gummiworms extends ThreeDimPApplet {
   private var isGenerating = true
   private var increment = 1f
 
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     onOff run {
       isGenerating = !isGenerating
       if (isGenerating) increment = Random.nextFloat() * 2

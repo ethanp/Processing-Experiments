@@ -10,7 +10,7 @@ import helpers.{MyPApplet, Runner}
 class SpiralDevEnv extends MyPApplet {
   override def settings(): Unit = size(700, 700)
 
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     blackBackground()
     geometry.Spiral(
       center = geometry.V(width / 2, height / 2),

@@ -39,7 +39,7 @@ class FrankStella extends MyPApplet {
   override def mouseClicked(): Unit =
     saveFrame(this.getClass.getSimpleName + ".jpg")
 
-  override def draw(): Unit = atFrameRate run {
+  override def drawFrame(): Unit = atFrameRate run {
     background(82, 0, 164)
     noStroke()
 

@@ -6,7 +6,7 @@ import processing.core.PConstants
 /** Created 3/29/20 11:24 AM
  */
 class LinesTrail extends MyPApplet {
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     blackBackground()
     fromTheCenter {
       strokeWeight(2)

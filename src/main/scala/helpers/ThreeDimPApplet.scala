@@ -20,7 +20,7 @@ trait ThreeDimPApplet extends MyPApplet {
   def moveCamera(): Unit = ()
 
   /** Default implementation. Override as desired. */
-  override def draw(): Unit = {
+  override def drawFrame(): Unit = {
     blackBackground()
     moveCamera()
     for (gameObj <- gameObjects) {
@@ -53,6 +53,8 @@ trait ThreeDimPApplet extends MyPApplet {
   def translate(x: Double, y: Double, z: Double): Unit =
     ThreeDimPApplet.super.translate(x.toFloat, y.toFloat, z.toFloat)
 
+  // TODO this should be in its own file and get passed the context implicitly, like the
+  //  other utilities.
   case class Rotation(period: FiniteDuration) extends GameObject {
     private var rotationFraction = 0D
     val millerPerPeriod = 1.0 / period.toMillis
@@ -68,10 +70,10 @@ trait ThreeDimPApplet extends MyPApplet {
     }
 
     def curRadians(): Float = angleFractionToRadians(rotationFraction)
-  }
 
-  def angleFractionToRadians(angleFraction: Double): Float =
-    ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
+    private def angleFractionToRadians(angleFraction: Double): Float =
+      ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
+  }
 
   // TODO super useful feature:
   //  Click and drag to move the camera across the different axes.
