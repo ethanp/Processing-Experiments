@@ -9,77 +9,75 @@ import processing.event.MouseEvent
 
 /** @inheritdoc
  */
-class HScrollbar(
-  override protected val initial: Float,
-  override protected val min: Float,
-  override protected val max: Float,
-  override protected val listener: ChangeListener[Number],
+class HorizontalFader(
+  override protected val initialValue: Float,
+  override protected val minValue: Float,
+  override protected val maxValue: Float,
+  override protected val changeListener: ChangeListener[Number],
   bounds: Rectangle,
 )(implicit pApp: MyPApplet)
-  extends Scrollbar {
+  extends AbstractFader {
   override def app: MyPApplet = pApp
 
-  override protected def centerKnob(mouseX: Int): Unit =
-    knob centerOnX mouseX withinWidth slider
+  override protected def centerKnobOnSlider(mouseX: Int): Unit =
+    handleRect centerOnX mouseX withinWidth slideTrackRect
 
   override protected def mouseDimLoc: MouseEvent => Int = _.getX
 
-  // MedPriorityTodo incorporate `bounds` into size choices of both rectangles and
-  //  the value label
-  override protected val slider: Rectangle = Rectangle(
-    leftTop = V(10, 35),
-    widthHeight = V(200, 10)
+  private val trackHeight = 10
+  override protected val slideTrackRect: Rectangle = geometry.Rectangle(
+    left = bounds.left,
+    top = bounds.top + bounds.height / 2 - trackHeight / 2,
+    width = bounds.width,
+    height = trackHeight
   )
 
-  // MedPriorityTodo use the real label-width instead of a random constant
-  val labelWidth = 20
-  override protected val knob: Rectangle = Rectangle(
-    leftTop = bounds.leftTop,
-    widthHeight = geometry.Vector(
-      x = bounds.width - labelWidth,
-      y = bounds.height
-    )
+  override protected val handleRect: Rectangle = geometry.Rectangle(
+    left = bounds.left,
+    top = bounds.top,
+    width = 10,
+    height = bounds.height
   )
 
   override protected def updateCurValue(): Unit = {
-    val extent: Float = knob.left - slider.left
-    val width: Float = slider.width - knob.width
+    val extent: Float = handleRect.left - slideTrackRect.left
+    val width: Float = slideTrackRect.width - handleRect.width
     val prop: Float = extent / width
-    floatProperty.setValue(prop * max)
+    floatProperty.setValue(prop * maxValue)
   }
 }
 
 /** @inheritdoc
  */
-class VScrollbar(
-  override protected val initial: Float,
-  override protected val min: Float,
-  override protected val max: Float,
-  override protected val listener: ChangeListener[Number]
+class VerticalFader(
+  override protected val initialValue: Float,
+  override protected val minValue: Float,
+  override protected val maxValue: Float,
+  override protected val changeListener: ChangeListener[Number]
 )(implicit pApp: MyPApplet)
-  extends Scrollbar {
+  extends AbstractFader {
   override def app: MyPApplet = pApp
 
-  override protected def centerKnob(mouseCoord: Int): Unit =
-    knob centerOnY mouseCoord withinHeight slider
+  override protected def centerKnobOnSlider(mouseCoord: Int): Unit =
+    handleRect centerOnY mouseCoord withinHeight slideTrackRect
 
   override protected def mouseDimLoc: MouseEvent => Int = _.getY
 
-  override protected val slider: Rectangle = Rectangle(
+  override protected val slideTrackRect: Rectangle = Rectangle(
     leftTop = V(35, 10),
     widthHeight = V(10, 200)
   )
 
-  override protected val knob: Rectangle = Rectangle(
+  override protected val handleRect: Rectangle = Rectangle(
     leftTop = V(20, 10),
     widthHeight = V(40, 15)
   )
 
   override protected def updateCurValue(): Unit = {
-    val extent: Float = knob.top - slider.top
-    val height: Float = slider.height - knob.height
+    val extent: Float = handleRect.top - slideTrackRect.top
+    val height: Float = slideTrackRect.height - handleRect.height
     val prop: Float = extent / height
-    floatProperty.setValue(prop * max)
+    floatProperty.setValue(prop * maxValue)
   }
 }
 
@@ -99,41 +97,41 @@ class VScrollbar(
  * <p>
  * Created 3/29/20 11:23 PM
  */
-trait Scrollbar {
-  protected def initial: Float
-  protected def min: Float
-  protected def max: Float
-  protected def listener: ChangeListener[Number]
+abstract class AbstractFader {
+  protected def initialValue: Float
+  protected def minValue: Float
+  protected def maxValue: Float
+  protected def changeListener: ChangeListener[Number]
   protected def app: MyPApplet
   implicit val iApp: MyPApplet = app
 
   val floatProperty: SimpleFloatProperty =
-    new SimpleFloatProperty(initial) {
-      addListener(listener)
+    new SimpleFloatProperty(initialValue) {
+      addListener(changeListener)
     }
 
   //noinspection NotImplementedCode
-  if (min != 0) ???
+  if (minValue != 0) ???
 
-  protected val slider: Rectangle
-  protected val knob: Rectangle
+  protected val slideTrackRect: Rectangle
+  protected val handleRect: Rectangle
 
   private var isDragging = false
 
   def mousePressed(click: MouseEvent): Unit = {
     if (click.getButton == PConstants.LEFT) {
       val clickLoc = Vector(click.getX, click.getY)
-      if (clickLoc isInside knob) {
+      if (clickLoc isInside handleRect) {
         isDragging = true
       }
     }
   }
 
-  protected def centerKnob(mouseX: Int): Unit
+  protected def centerKnobOnSlider(mouseX: Int): Unit
 
   private def innerRectDragged(mouseX: Int): Unit =
     if (isDragging) {
-      centerKnob(mouseX)
+      centerKnobOnSlider(mouseX)
       updateCurValue()
     }
 
@@ -152,17 +150,17 @@ trait Scrollbar {
     app.strokeWeight(2)
     Pure.Black.stroke()
     Solarized.Red.fill()
-    slider.draw()
+    slideTrackRect.draw()
     Solarized.Yellow.fill()
-    knob.draw()
+    handleRect.draw()
     Solarized.White.stroke().fill()
     app.textSize(24)
 
     // MedPriorityTodo the text location should differ for HScrollbar vs `VScrollbar`
     app.text(
       /*string=*/ f"${ floatProperty.get.floatValue }%.2f",
-      /*left=*/ slider.right + 10,
-      /*bottom??=*/ slider.bottom - slider.height / 3
+      /*left=*/ slideTrackRect.right + 10,
+      /*bottom??=*/ slideTrackRect.bottom - slideTrackRect.height / 3
     )
   }
 }

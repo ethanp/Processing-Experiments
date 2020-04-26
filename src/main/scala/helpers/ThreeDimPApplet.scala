@@ -1,5 +1,6 @@
 package helpers
 import processing.core.PConstants
+import processing.event.MouseEvent
 
 import scala.collection.mutable
 import scala.concurrent.duration.FiniteDuration
@@ -28,6 +29,7 @@ trait ThreeDimPApplet extends MyPApplet {
       }
     }
     gameObjects.foreach(_.tick())
+    gifSaver.addFrame(frameCount, saveFrame)
   }
 
   override def settings(): Unit = {
@@ -70,4 +72,23 @@ trait ThreeDimPApplet extends MyPApplet {
 
   def angleFractionToRadians(angleFraction: Double): Float =
     ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
+
+  // TODO super useful feature:
+  //  Click and drag to move the camera across the different axes.
+  //  Should use the [[VFader]] class I made.
+  val cameraLoc = geometry.Vector.Z * -10
+
+  var mouseDown = false
+  override def mousePressed(event: MouseEvent): Unit = {
+    event.getButton match {
+      case PConstants.LEFT =>
+        mouseDown = true
+      case _ => /* ignore. */
+    }
+  }
+
+  override def mouseDragged(event: MouseEvent): Unit = {
+  }
+  override def mouseReleased(event: MouseEvent): Unit = {
+  }
 }

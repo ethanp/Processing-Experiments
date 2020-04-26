@@ -85,11 +85,17 @@ package object geometry {
 
     /** Creates a copy with `value = this + vector`. */
     def +(vector: PVector): Vector = Vector(copy().add(vector))
+
+    /** Creates a copy multiplied by `scale`. */
+    def *(scale: Double): Vector = Vector(x * scale, y * scale, z * scale)
   }
 
   object Vector {
     def apply(x: Double, y: Double, z: Double = 0) = new Vector(x.toFloat, y.toFloat, z.toFloat)
     def apply(vector: PVector) = new Vector(vector.x, vector.y, vector.z)
+    object Zero extends Vector(_x = 0, _y = 0, _z = 0)
+    object Y extends Vector(_x = 0, _y = 1, _z = 0)
+    object Z extends Vector(_x = 0, _y = 1, _z = 1)
   }
 
   case class Spiral(
