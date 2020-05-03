@@ -9,7 +9,8 @@ import processing.core.PConstants
 class LinesTrail2 extends MyPApplet {
   override def drawFrame(): Unit = {
     blackBackground()
-    fromTheCenter {
+    translate(width / 2, height / 2)
+    withPushedMatrix {
       strokeWeight(5)
       Solarized.White.stroke()
       val lineLeft = -pixelWidth / 6f

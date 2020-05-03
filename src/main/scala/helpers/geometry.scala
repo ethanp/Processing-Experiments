@@ -132,4 +132,6 @@ package object geometry {
 
   final def sinDeg(degrees: Double): Float = sinRad(math.toRadians(degrees))
   final def cosDeg(degrees: Double): Float = cosRad(math.toRadians(degrees))
+
+  final def degreesToRadians(degrees: Double): Float = math.toRadians(degrees).toFloat
 }

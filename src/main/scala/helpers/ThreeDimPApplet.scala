@@ -13,7 +13,7 @@ trait ThreeDimPApplet extends MyPApplet {
   val gameObjects = mutable.ArrayBuffer.empty[GameObject]
 
   trait GameObject {
-    def draw(): Unit = ()
+    def drawFromCenter(): Unit = ()
     def tick(): Unit = ()
   }
 
@@ -22,10 +22,12 @@ trait ThreeDimPApplet extends MyPApplet {
   /** Default implementation. Override as desired. */
   override def drawFrame(): Unit = {
     blackBackground()
+    assert(is3D, s"Class ${ getClass.getName } must be defined to be 3-Dimensional.")
     moveCamera()
+    translate(width / 2, height / 2, -height / 2)
     for (gameObj <- gameObjects) {
-      fromTheCenter {
-        gameObj.draw()
+      withPushedMatrix {
+        gameObj.drawFromCenter()
       }
     }
     gameObjects.foreach(_.tick())

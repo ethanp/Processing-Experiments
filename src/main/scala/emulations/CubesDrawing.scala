@@ -23,7 +23,7 @@ class CubesDrawing extends ThreeDimPApplet {
     saveFrame(this.getClass.getSimpleName + ".jpg")
 
   private case class Cube(r: Int, c: Int) extends GameObject {
-    override def draw(): Unit = {
+    override def drawFromCenter(): Unit = {
       ortho()
       val factor = 10
       translate(c * colWidth * factor, r * rowHeight * factor)

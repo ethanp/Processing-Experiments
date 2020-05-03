@@ -7,7 +7,7 @@ import processing.core.PConstants
 class RingTunnel extends ThreeDimPApplet {
 
   // Create the rings at different z-values.
-  gameObjects ++= (0 until 30 map (new Ring(_)))
+  gameObjects ++= 0 until 30 map (new Ring(_))
 
   // TODO move this to the base class to create those sliders that move the camera around.
   def lookAt(
@@ -28,46 +28,41 @@ class RingTunnel extends ThreeDimPApplet {
     )
   }
 
-  private val defaultVantagePoint = geometry.Vector(
-    x = width / 2,
-    y = height / 2,
-
-    // TODO wtf is this? I found that it is the default here:
-    //  https://processing.org/reference/camera_.html
-    z = (height / 2.0) / math.tan(math.Pi * 30.0 / 180.0)
+  /* TODO this part is not working at all.
+  private val vantagePoint = geometry.Vector(
+    x = width / 2.0,
+    y = height / 2.0,
+    z = -1000
   )
 
   //noinspection RedundantDefaultArgument
-  private val defaultFocusPoint = geometry.Vector(
+  private val focusPoint = geometry.Vector(
     x = width / 2.0,
     y = height / 2.0,
     z = 0
   )
 
-  override def moveCamera(): Unit = {
-    // Recall: GameObjects are drawn fromTheCenter().
-
-    // This is the default anyway.
-    lookAt(
-      vantagePoint = defaultVantagePoint,
-      focusPoint = defaultFocusPoint,
+    override def moveCamera(): Unit = lookAt(
+      vantagePoint = vantagePoint,
+      focusPoint = focusPoint,
     )
-  }
+  */
 
   class Ring(idx: Int) extends GameObject {
-    override def draw(): Unit = {
+    override def drawFromCenter(): Unit = {
       colors.Current.update(
-        fill = colors.Hsb(h = frameCount / 4f % 100),
+        fill = colors.Hsb(h = (frameCount + idx) / 4f % 100),
         stroke = colors.Solarized.White
       )
       translate(
         x = 0,
-        y = 0,
-        z = idx * 10
+        y = idx * 5,
+        z = 0 // For some reason this appears to have no effect?
       )
+      rotateY(geometry degreesToRadians (degrees = frameCount))
       ellipseMode(PConstants.RADIUS)
       // Center and radius
-      ellipse(0, 0, idx * 10, idx * 10)
+      ellipse(0, 0, 2 * idx, 2 * idx)
     }
   }
 }

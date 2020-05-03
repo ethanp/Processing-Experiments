@@ -21,7 +21,7 @@ class CubesDrawing3D extends ThreeDimPApplet {
   override def moveCamera(): Unit = rotateX(.38f)
 
   private class Cube(r: Int, c: Int, t: Int) extends GameObject {
-    override def draw(): Unit = {
+    override def drawFromCenter(): Unit = {
       ortho()
       val factor = 8
       rotateX(4f)

@@ -8,7 +8,8 @@ import processing.core.PConstants
 class LinesTrail extends MyPApplet {
   override def drawFrame(): Unit = {
     blackBackground()
-    fromTheCenter {
+    translate(width / 2, height / 2)
+    withPushedMatrix {
       strokeWeight(2)
       Rgb(10, 90, 10, 90).stroke()
       for (i <- -1000 to 1000 by 10)

@@ -29,6 +29,7 @@ abstract class Fader {
   protected def minValue: Float
   protected def maxValue: Float
   protected def changeListener: ChangeListener[Number]
+  protected def bounds: Rectangle
   protected def app: MyPApplet
   implicit val iApp: MyPApplet = app
 
@@ -99,7 +100,7 @@ class HorizontalFader(
   override protected val minValue: Float,
   override protected val maxValue: Float,
   override protected val changeListener: ChangeListener[Number],
-  bounds: Rectangle,
+  override protected val bounds: Rectangle,
 )(implicit pApp: MyPApplet)
   extends Fader {
   override def app: MyPApplet = pApp
@@ -139,8 +140,7 @@ class VerticalFader(
   override protected val minValue: Float,
   override protected val maxValue: Float,
   override protected val changeListener: ChangeListener[Number],
-  // TODO Should this go on the base class and override here like the other params?
-  bounds: Rectangle,
+  override protected val bounds: Rectangle,
 )(implicit pApp: MyPApplet)
   extends Fader {
   override def app: MyPApplet = pApp

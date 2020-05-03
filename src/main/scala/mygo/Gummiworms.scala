@@ -11,7 +11,7 @@ import scala.util.Random
  */
 class Gummiworms extends ThreeDimPApplet {
 
-  // LowPriorityTodo this one isn't working too well these days; not sure what's up
+  // LowPriorityTodo this one doesn't work anymore.
 
   private val atGenerationRate = Every(300 milliseconds)
   private val onOff = Every(7 seconds)
@@ -26,25 +26,22 @@ class Gummiworms extends ThreeDimPApplet {
     if (isGenerating) atGenerationRate run {
       gameObjects += new CorkscrewBall
     }
-    super.draw()
   }
 
   class CorkscrewBall extends GameObject {
     private var curZ: Float = 0
     private var curRotationRadians: Float = 0f
-    override def draw(): Unit = {
-      fromTheCenter {
-        rotateX(curRotationRadians)
-        rotateY(curRotationRadians)
-        Hsb(h = curZ % 81, b = 50, a = 60).fill()
-        Hsb(h = curZ % 100, a = 70).stroke()
-        translate(
-          x = geometry.sinRad(radians = curZ / 100.0) * 100,
-          y = geometry.cosRad(radians = curZ / 100.0) * 100,
-          z = curZ
-        )
-        sphere(55)
-      }
+    override def drawFromCenter(): Unit = {
+      rotateX(curRotationRadians)
+      rotateY(curRotationRadians)
+      Hsb(h = curZ % 81, b = 50, a = 60).fill()
+      Hsb(h = curZ % 100, a = 70).stroke()
+      translate(
+        x = geometry.sinRad(radians = curZ / 100.0) * 100,
+        y = geometry.cosRad(radians = curZ / 100.0) * 100,
+        z = curZ
+      )
+      sphere(55)
     }
 
     override def tick(): Unit = {

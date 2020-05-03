@@ -31,14 +31,6 @@ trait MyPApplet extends PApplet {
     popMatrix()
   }
 
-  final protected def fromTheCenter(block: => Unit): Unit = {
-    withPushedMatrix {
-      if (is3D) translate(width / 2, height / 2, 0)
-      else translate(width / 2, height / 2)
-      block
-    }
-  }
-
   /** ************ GIF SAVING **************/
   /** Override this to enable gif saving. */
   protected val gifLength: Int = GifSaver.Disabled

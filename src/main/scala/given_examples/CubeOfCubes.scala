@@ -17,7 +17,7 @@ class CubeOfCubes extends PApplet {
     background(0)
     translate(width / 2, height / 2, -HalfWidth)
     rotateAllAxes(θ = spin(revolutionsPerSecond = 0.1))
-    val range = -HalfWidth to HalfWidth by BoxSpacing
+    val range = -HalfWidth to HalfWidth by BoxSpacing take 10
     for (x <- range; y <- range; z <- range) {
       withPushedMatrix {
         translate(x, y, z)
@@ -36,7 +36,10 @@ class CubeOfCubes extends PApplet {
 
   private def HalfWidth = height / 2 - 300
 
-  /** Returns a rotation angle (in radians) given a number of rotations per second, using the elapsed time */
+  /**
+   * Returns a rotation angle (in radians) given a number of rotations per second,
+   * using the elapsed time.
+   */
   private def spin(revolutionsPerSecond: Double) =
     (revolutionsPerSecond / 1000 * PI * 2 * millis).toFloat
 
@@ -67,6 +70,7 @@ class CubeOfCubes extends PApplet {
     (center + offset).toFloat
   }
 
+  //noinspection NonAsciiCharacters
   private def rotateAllAxes(θ: Float): Unit = {
     rotateX(θ)
     rotateY(θ)

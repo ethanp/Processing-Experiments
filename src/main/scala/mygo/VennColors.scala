@@ -30,7 +30,7 @@ class VennColors extends ThreeDimPApplet {
     private val Width = 400
     private val Height = 400
 
-    override def draw(): Unit = {
+    override def drawFromCenter(): Unit = {
       rotateZ(curRadians.toFloat)
       color.fill()
       Solarized.White.stroke()
