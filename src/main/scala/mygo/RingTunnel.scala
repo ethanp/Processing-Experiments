@@ -51,18 +51,21 @@ class RingTunnel extends ThreeDimPApplet {
   class Ring(idx: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
-        fill = colors.Hsb(h = (frameCount + idx) / 4f % 100),
-        stroke = colors.Solarized.White
+        fill = colors.Hsb(h = (frameCount + idx * 3) / 4f % 100),
+        stroke = colors.Empty
       )
       translate(
         x = 0,
-        y = idx * 5,
-        z = 0 // For some reason this appears to have no effect?
+        y = 0,
+        z = -idx * 50 // 0 // For some reason this appears to have no effect?
       )
-      rotateY(geometry degreesToRadians (degrees = frameCount))
+
+      // NB: Ellipses (and other 2D shapes when in 3D mode)
+      // are only drawn on the x-y plane (at z=0).
+      // (At least that seems to be the case, plus it makes sense.)
       ellipseMode(PConstants.RADIUS)
       // Center and radius
-      ellipse(0, 0, 2 * idx, 2 * idx)
+      ellipse(0, 0, 500, 500)
     }
   }
 }
