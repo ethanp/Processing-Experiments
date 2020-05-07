@@ -33,12 +33,11 @@ trait MyPApplet extends PApplet {
 
   /** ************ GIF SAVING **************/
   /** Override this to enable gif saving. */
-  protected val gifLength: Int = GifSaver.Disabled
+  protected def gifLength: Int = GifSaver.Disabled
 
-  protected val gifSaver = new GifSaver(
+  protected lazy val gifSaver = new GifSaver(
     className = getClass.getSimpleName,
     gifLength = gifLength
-    // gifLength = 25
   )
 
   protected def drawFrame(): Unit

@@ -1,10 +1,13 @@
 package mygo
+import geometry.V
 import helpers.{Runner, ThreeDimPApplet}
 import processing.core.PConstants
 
 /** Created 4/12/20 1:00 PM
  */
 class RingTunnel extends ThreeDimPApplet {
+
+  override protected val gifLength = 120
 
   // Create the rings at different z-values.
   gameObjects ++= 0 until 30 map (new Ring(_))
@@ -48,6 +51,14 @@ class RingTunnel extends ThreeDimPApplet {
     )
   */
 
+  // NB: Ellipses (and other 2D shapes when in 3D mode)
+  // are only drawn on the x-y plane (at z=0).
+  // (At least that seems to be the case, plus it makes sense.)
+  def ellipse(center: geometry.Vector, radii: geometry.Vector) {
+    ellipseMode(PConstants.RADIUS)
+    ellipse(center.x, center.y, radii.x, radii.y)
+  }
+
   class Ring(idx: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
@@ -57,15 +68,12 @@ class RingTunnel extends ThreeDimPApplet {
       translate(
         x = 0,
         y = 0,
-        z = -idx * 50 // 0 // For some reason this appears to have no effect?
+        z = -idx * 50
       )
-
-      // NB: Ellipses (and other 2D shapes when in 3D mode)
-      // are only drawn on the x-y plane (at z=0).
-      // (At least that seems to be the case, plus it makes sense.)
-      ellipseMode(PConstants.RADIUS)
-      // Center and radius
-      ellipse(0, 0, 500, 500)
+      ellipse(
+        center = V(x = 0, y = 0),
+        radii = V(x = 500, y = 500)
+      )
     }
   }
 }

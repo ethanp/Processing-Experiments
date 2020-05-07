@@ -41,22 +41,21 @@ class GifSaver(className: String, gifLength: Int) {
     if (frameCount > gifLength) return
 
     // Thought: we could probably parallelize this by making it async
-    val frameFile = reflect.io.File(gifFramesDir / s"Frame-$frameCount.png")
+    val frameFile = reflect.io.File(gifFramesDir / f"Frame-$frameCount%03d.png")
     println(s"CREATING GIF: saving frame $frameCount as png")
     saveFrame(frameFile.toString)
 
-    if (frameCount == gifLength - 1) {
+    if (frameCount == gifLength) {
       convertPngsToGif()
     }
   }
 
   private def convertPngsToGif(): Unit = {
     println("CREATE GIF: converting pngs to gif")
-    import sys.process._
     val hyphenatedClassName =
       className
         .tail
-        .foldLeft(new StringBuilder(className.head.toLower)) {
+        .foldLeft(new StringBuilder() append className.head.toLower) {
           (b, char) =>
             char match {
               case _ if char.isUpper => b append "-" + char.toLower
@@ -64,7 +63,8 @@ class GifSaver(className: String, gifLength: Int) {
             }
         }.toString()
     val gifPath = s"$gifFramesDir/$hyphenatedClassName.gif"
-    s"convert -delay 20 $gifFramesDir/*.png -loop 0 $gifPath".!!
+    import sys.process._
+    s"convert -delay 0 $gifFramesDir/*.png -loop 0 $gifPath".!!
     println("CREATING GIF: gif saved successfully")
   }
 }
