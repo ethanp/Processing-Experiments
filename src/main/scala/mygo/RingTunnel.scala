@@ -1,7 +1,7 @@
 package mygo
 import geometry.V
 import helpers.{Runner, ThreeDimPApplet}
-import processing.core.{PApplet, PConstants}
+import processing.core.PConstants
 
 /** Created 4/12/20 1:00 PM
  */
@@ -30,11 +30,10 @@ class RingTunnel extends ThreeDimPApplet {
   }
 
   private def vantagePoint = {
-    val camDist = (height / 2) / PApplet.tan(PConstants.PI / 6) * 5
     geometry.Vector(
-      x = camDist * PApplet.cos(frameCount / 50f),
-      y = PApplet.map(mouseY, 0, height, -height, height),
-      z = camDist * PApplet.sin(frameCount / 50f)
+      x = 0,
+      y = 0,
+      z = -width * 16 + frameCount * 5
     )
   }
 
@@ -61,17 +60,18 @@ class RingTunnel extends ThreeDimPApplet {
   class Ring(idx: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
-        fill = colors.Hsb(h = (frameCount + idx) / 4f % 100),
-        stroke = colors.Empty
+        fill = colors.Empty,
+        stroke = colors.Hsb(h = (frameCount + idx) / 4f % 100),
+        strokeWeight = 10
       )
       translate(
         x = 0,
         y = 0,
-        z = -idx * 5
+        z = -idx * width / 6
       )
       ellipse(
         center = V(x = 0, y = 0),
-        radii = V(x = width / 2 / (idx + 1), y = width / 2 / (idx + 1))
+        radii = V(x = width / 2, y = width / 2)
       )
     }
   }
