@@ -23,8 +23,10 @@ trait ThreeDimPApplet extends MyPApplet {
   override def drawFrame(): Unit = {
     blackBackground()
     assert(is3D, s"Class ${ getClass.getName } must be defined to be 3-Dimensional.")
-    moveCamera()
     translate(width / 2, height / 2, -height / 2)
+    beginCamera()
+    moveCamera()
+    endCamera()
     for (gameObj <- gameObjects) {
       withPushedMatrix {
         gameObj.drawFromCenter()

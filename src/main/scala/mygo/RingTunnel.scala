@@ -1,16 +1,14 @@
 package mygo
 import geometry.V
 import helpers.{Runner, ThreeDimPApplet}
-import processing.core.PConstants
+import processing.core.{PApplet, PConstants}
 
 /** Created 4/12/20 1:00 PM
  */
 class RingTunnel extends ThreeDimPApplet {
 
-  override protected val gifLength = 120
-
   // Create the rings at different z-values.
-  gameObjects ++= 0 until 30 map (new Ring(_))
+  gameObjects ++= 0 until 100 map (new Ring(_))
 
   // TODO move this to the base class to create those sliders that move the camera around.
   def lookAt(
@@ -31,25 +29,23 @@ class RingTunnel extends ThreeDimPApplet {
     )
   }
 
-  /* TODO this part is not working at all.
-  private val vantagePoint = geometry.Vector(
-    x = width / 2.0,
-    y = height / 2.0,
-    z = -1000
+  private def vantagePoint = geometry.Vector(
+    x = 0,
+    y = 0,
+    z = (height / 2) / PApplet.tan(PConstants.PI / 6)
   )
 
   //noinspection RedundantDefaultArgument
   private val focusPoint = geometry.Vector(
-    x = width / 2.0,
-    y = height / 2.0,
+    x = 0,
+    y = 0,
     z = 0
   )
 
-    override def moveCamera(): Unit = lookAt(
-      vantagePoint = vantagePoint,
-      focusPoint = focusPoint,
-    )
-  */
+  override def moveCamera(): Unit = lookAt(
+    vantagePoint = vantagePoint,
+    focusPoint = focusPoint,
+  )
 
   // NB: Ellipses (and other 2D shapes when in 3D mode)
   // are only drawn on the x-y plane (at z=0).
@@ -62,7 +58,7 @@ class RingTunnel extends ThreeDimPApplet {
   class Ring(idx: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
-        fill = colors.Hsb(h = (frameCount + idx * 3) / 4f % 100),
+        fill = colors.Hsb(h = (frameCount + idx) / 4f % 100),
         stroke = colors.Empty
       )
       translate(
@@ -72,7 +68,7 @@ class RingTunnel extends ThreeDimPApplet {
       )
       ellipse(
         center = V(x = 0, y = 0),
-        radii = V(x = 500, y = 500)
+        radii = V(x = width / 2, y = width / 2)
       )
     }
   }
