@@ -30,10 +30,11 @@ class RingTunnel extends ThreeDimPApplet {
   }
 
   private def vantagePoint = {
+    val camDist = (height / 2) / PApplet.tan(PConstants.PI / 6) * 5
     geometry.Vector(
-      x = PApplet.map(mouseX, 0, width, -width, width),
+      x = camDist * PApplet.cos(frameCount / 50f),
       y = PApplet.map(mouseY, 0, height, -height, height),
-      z = (height / 2) / PApplet.tan(PConstants.PI / 6)
+      z = camDist * PApplet.sin(frameCount / 50f)
     )
   }
 
@@ -66,11 +67,11 @@ class RingTunnel extends ThreeDimPApplet {
       translate(
         x = 0,
         y = 0,
-        z = -idx * 50
+        z = -idx * 5
       )
       ellipse(
         center = V(x = 0, y = 0),
-        radii = V(x = width / 2, y = width / 2)
+        radii = V(x = width / 2 / (idx + 1), y = width / 2 / (idx + 1))
       )
     }
   }
