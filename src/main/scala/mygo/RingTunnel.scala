@@ -10,6 +10,10 @@ class RingTunnel extends ThreeDimPApplet {
   // Create the rings at different z-values.
   gameObjects ++= 0 until 100 map (new Ring(_))
 
+  // For creating the gif:
+  //  override val gifLength = 100
+  //  override def settings(): Unit = size(500, 500, PConstants.P3)
+
   // TODO move this to the base class to create those sliders that move the camera around.
   def lookAt(
     vantagePoint: geometry.Vector,

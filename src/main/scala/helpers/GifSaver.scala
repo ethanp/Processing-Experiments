@@ -42,7 +42,7 @@ class GifSaver(className: String, gifLength: Int) {
 
     // Thought: we could probably parallelize this by making it async
     val frameFile = reflect.io.File(gifFramesDir / f"Frame-$frameCount%03d.png")
-    println(s"CREATING GIF: saving frame $frameCount as png")
+    println(s"CREATING GIF: saving frame $frameCount of $gifLength as png")
     saveFrame(frameFile.toString)
 
     if (frameCount == gifLength) {
