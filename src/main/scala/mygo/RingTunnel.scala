@@ -29,11 +29,13 @@ class RingTunnel extends ThreeDimPApplet {
     )
   }
 
-  private def vantagePoint = geometry.Vector(
-    x = 0,
-    y = 0,
-    z = (height / 2) / PApplet.tan(PConstants.PI / 6)
-  )
+  private def vantagePoint = {
+    geometry.Vector(
+      x = PApplet.map(mouseX, 0, width, -width, width),
+      y = PApplet.map(mouseY, 0, height, -height, height),
+      z = (height / 2) / PApplet.tan(PConstants.PI / 6)
+    )
+  }
 
   //noinspection RedundantDefaultArgument
   private val focusPoint = geometry.Vector(
