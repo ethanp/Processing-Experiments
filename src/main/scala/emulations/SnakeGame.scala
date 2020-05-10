@@ -1,6 +1,7 @@
 package emulations
 import animation.Every
 import helpers.{MyPApplet, Runner}
+import processing.core.PConstants
 import processing.event.KeyEvent
 
 import scala.collection.mutable
@@ -20,9 +21,11 @@ class SnakeGame extends MyPApplet {
 
   import scala.concurrent.duration._
 
-  private val atFrameRate = Every(1.seconds)
+  private val atFrameRate = Every(200.millis)
   private var food = createFood()
   private var points = 0
+
+  override def settings(): Unit = size(800, 800)
 
   private def createFood(): FoodCell = {
     def randomCell() = FoodCell(
@@ -46,10 +49,19 @@ class SnakeGame extends MyPApplet {
     food.draw()
   }
 
+  private var direction = "right"
+
+  /** This thing prevents you from taking a u-turn over yourself. */
+  private var lastTurnsDirection = "right"
+
+
   override def keyPressed(event: KeyEvent): Unit = {
-    // TODO How do I match the up arrow in processing?
-    event.getKey match {
-      case ' ' => ???
+    direction = event.getKeyCode match {
+      case PConstants.UP if lastTurnsDirection != "down" => "up"
+      case PConstants.DOWN if lastTurnsDirection != "up" => "down"
+      case PConstants.LEFT if lastTurnsDirection != "right" => "left"
+      case PConstants.RIGHT if lastTurnsDirection != "left" => "right"
+      case _ => direction
     }
   }
 
@@ -61,26 +73,39 @@ class SnakeGame extends MyPApplet {
       )
     )
 
-    // TODO capture direction changes from the user
-    private var direction = "right"
+    private var growing = 0
+    def move(): Unit = {
+      direction match {
+        case "up" => body += body.last.copy(row = body.last.row - 1)
+        case "down" => body += body.last.copy(row = body.last.row + 1)
+        case "left" => body += body.last.copy(col = body.last.col - 1)
+        case "right" => body += body.last.copy(col = body.last.col + 1)
+      }
+      lastTurnsDirection = direction
 
-    def move(): Unit = direction match {
-      case "right" =>
-        println("moving right")
-        body += body.last.copy(col = body.last.col + 1)
-        body.dropInPlace(1)
+      if (growing == 0) {
+        body.removeHead()
+      } else {
+        growing -= 1
+      }
 
-        // Ate the food.
-        if (body.last == food) {
-          food = createFood()
-          points += 1
-          println(s"Points: $points")
-        }
+      // Ate the food.
+      if (body.last covers food) {
+        food = createFood()
+        points += 1
+        growing += 2
+      }
+      textSize(height / 25)
+      text(s"Points: $points", width / 20, height / 10)
 
-        // Hit a wall.
-        if (body.last.isOutOfBounds) {
-          println("You died!")
-        }
+      if (body.init contains body.last) {
+        println("DEAD: Ran over self")
+      }
+
+      // Hit a wall.
+      if (body.last.isOutOfBounds) {
+        println("DEAD: Out of bounds")
+      }
     }
 
     def draw(): Unit = {
@@ -88,12 +113,12 @@ class SnakeGame extends MyPApplet {
         cell.draw()
     }
 
-    def covers(cell: Cell): Boolean = body contains cell
+    def covers(cell: Cell): Boolean = body exists (_ covers cell)
   }
 
   case class SnakeCell(row: Int, col: Int) extends Cell {
     // TODO each snake cell should be part of a color scheme, not always the same color
-    override val color = colors.ColorState(
+    override val color: colors.ColorState = colors.ColorState(
       fill = colors.Solarized.Orange,
       stroke = colors.Solarized.Black,
       strokeWeight = 3
@@ -102,7 +127,7 @@ class SnakeGame extends MyPApplet {
 
   case class FoodCell(row: Int, col: Int) extends Cell {
     // TODO each food should be generated from a color scheme, not always the same color
-    override val color = colors.ColorState(
+    override val color: colors.ColorState = colors.ColorState(
       fill = colors.Solarized.White,
       stroke = colors.Solarized.Red,
       strokeWeight = 3
@@ -128,16 +153,9 @@ class SnakeGame extends MyPApplet {
       ).draw()
     }
 
-
-    final override def equals(obj: Any): Boolean = obj match {
-      case Cell(r, c, _) => row == r && col == c
-      case _ => false
-    }
-  }
-  object Cell {
-    def unapply(arg: Cell): Option[(Int, Int, colors.ColorState)] = Option(
-      (arg.row, arg.col, arg.color)
-    )
+    def covers(cell: Cell): Boolean =
+      row == cell.row &&
+        col == cell.col
   }
 }
 
