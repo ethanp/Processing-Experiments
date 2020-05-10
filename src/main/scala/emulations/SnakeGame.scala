@@ -5,6 +5,7 @@ import processing.core.PConstants
 import processing.event.KeyEvent
 
 import scala.collection.mutable
+import scala.concurrent.duration._
 import scala.util.Random
 
 /** Created 5/9/20 7:26 PM
@@ -14,16 +15,14 @@ class SnakeGame extends MyPApplet {
   private val NumRows = 10
   private val NumCols = 10
 
-  private val snake = new Snake
+  private var snake = new Snake
 
   private def rowHeight = height / NumRows
   private def colWidth = width / NumCols
 
-  import scala.concurrent.duration._
 
   private val atFrameRate = Every(200.millis)
   private var food = createFood()
-  private var points = 0
 
   override def settings(): Unit = size(800, 800)
 
@@ -43,17 +42,18 @@ class SnakeGame extends MyPApplet {
   }
 
   override protected def drawFrame(): Unit = atFrameRate.run {
-    blackBackground()
-    snake.move()
-    snake.draw()
-    food.draw()
+    if (!snake.dead) {
+      blackBackground()
+      snake.move()
+      snake.draw()
+      food.draw()
+    }
   }
 
   private var direction = "right"
 
   /** This thing prevents you from taking a u-turn over yourself. */
   private var lastTurnsDirection = "right"
-
 
   override def keyPressed(event: KeyEvent): Unit = {
     direction = event.getKeyCode match {
@@ -63,9 +63,13 @@ class SnakeGame extends MyPApplet {
       case PConstants.RIGHT if lastTurnsDirection != "left" => "right"
       case _ => direction
     }
+    event.getKey match {
+      case 'r' => snake = new Snake
+      case _ =>
+    }
   }
 
-  class Snake {
+  class Snake(var dead: Boolean = false, var points: Int = 0) {
     private val body = mutable.ArrayDeque[SnakeCell](
       elems = SnakeCell(
         Random nextInt NumRows,
@@ -74,6 +78,7 @@ class SnakeGame extends MyPApplet {
     )
 
     private var growing = 0
+
     def move(): Unit = {
       direction match {
         case "up" => body += body.last.copy(row = body.last.row - 1)
@@ -95,17 +100,28 @@ class SnakeGame extends MyPApplet {
         points += 1
         growing += 2
       }
+
       textSize(height / 25)
       text(s"Points: $points", width / 20, height / 10)
 
       if (body.init contains body.last) {
-        println("DEAD: Ran over self")
+        died("DEAD: Ran over self")
       }
 
-      // Hit a wall.
       if (body.last.isOutOfBounds) {
-        println("DEAD: Out of bounds")
+        died("DEAD: Hit the wall")
       }
+    }
+
+    private def died(deathString: String): Unit = {
+      colors.Current.update(
+        fill = colors.Pure.Red,
+        stroke = colors.Pure.Black
+      )
+      textSize(width / 10)
+      val txtWidth = textWidth(deathString)
+      val txtHeight = textAscent() + textDescent()
+      text(deathString, width / 2 - txtWidth / 2, height / 2 - txtHeight / 2)
     }
 
     def draw(): Unit = {
