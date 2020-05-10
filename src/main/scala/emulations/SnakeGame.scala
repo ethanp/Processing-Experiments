@@ -96,16 +96,18 @@ class SnakeGame extends MyPApplet {
         case "right" => body.last.copy(col = body.last.col + 1)
       }
 
-      newLoc match {
-        case _ if body contains newLoc =>
-          dead = true
-          return Option("Dead: ran over self")
-        case _ if newLoc.isOutOfBounds =>
-          dead = true
-          return Option("Dead: hit the wall")
-        case _ =>
-          body += newLoc
+      val died: Option[String] = newLoc match {
+        case _ if body contains newLoc => Option("Dead: ran over self")
+        case _ if newLoc.isOutOfBounds => Option("Dead: hit the wall")
+        case _ => None
       }
+
+      if (died.nonEmpty) {
+        dead = true
+        return died
+      }
+
+      body += newLoc
 
       growing match {
         case 0 => body.removeHead()
