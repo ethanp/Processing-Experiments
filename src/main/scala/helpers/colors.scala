@@ -78,7 +78,11 @@ package object colors {
       throw new NotImplementedError("What is an empty background supposed to look like?")
   }
 
+  case class ColorState(fill: Color, stroke: Color, strokeWeight: Int = 1)
   object Current {
+    def update(colorState: ColorState)(implicit pApplet: MyPApplet): Unit =
+      update(colorState.fill, colorState.stroke, colorState.strokeWeight)
+
     def update(fill: Color, stroke: Color, strokeWeight: Int = 1)(implicit pApplet: MyPApplet): Unit = {
       pApplet.strokeWeight(strokeWeight)
       fill.fill()
