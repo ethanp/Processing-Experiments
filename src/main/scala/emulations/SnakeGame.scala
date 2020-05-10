@@ -44,32 +44,38 @@ class SnakeGame extends MyPApplet {
   override protected def drawFrame(): Unit = atFrameRate.run {
     if (!snake.dead) {
       blackBackground()
-      snake.move()
+      val deathCertificate: Option[String] = snake.move()
       snake.draw()
       food.draw()
+      deathCertificate foreach snake.showDeathCertificate
     }
   }
 
   private var direction = "right"
 
   /** This thing prevents you from taking a u-turn over yourself. */
-  private var lastTurnsDirection = "right"
+  private var lastDirectionMoved = "right"
 
   override def keyPressed(event: KeyEvent): Unit = {
     direction = event.getKeyCode match {
-      case PConstants.UP if lastTurnsDirection != "down" => "up"
-      case PConstants.DOWN if lastTurnsDirection != "up" => "down"
-      case PConstants.LEFT if lastTurnsDirection != "right" => "left"
-      case PConstants.RIGHT if lastTurnsDirection != "left" => "right"
+      case PConstants.UP if lastDirectionMoved != "down" => "up"
+      case PConstants.DOWN if lastDirectionMoved != "up" => "down"
+      case PConstants.LEFT if lastDirectionMoved != "right" => "left"
+      case PConstants.RIGHT if lastDirectionMoved != "left" => "right"
       case _ => direction
     }
     event.getKey match {
-      case 'r' => snake = new Snake
+      case 'r' =>
+        snake = new Snake
+        food = createFood()
       case _ =>
     }
   }
 
-  class Snake(var dead: Boolean = false, var points: Int = 0) {
+  class Snake(var dead: Boolean = false) {
+
+    private var points: Int = 0
+
     private val body = mutable.ArrayDeque[SnakeCell](
       elems = SnakeCell(
         Random nextInt NumRows,
@@ -79,19 +85,31 @@ class SnakeGame extends MyPApplet {
 
     private var growing = 0
 
-    def move(): Unit = {
-      direction match {
-        case "up" => body += body.last.copy(row = body.last.row - 1)
-        case "down" => body += body.last.copy(row = body.last.row + 1)
-        case "left" => body += body.last.copy(col = body.last.col - 1)
-        case "right" => body += body.last.copy(col = body.last.col + 1)
-      }
-      lastTurnsDirection = direction
+    /** Returns cause of death if applicable. */
+    def move(): Option[String] = {
+      lastDirectionMoved = direction
 
-      if (growing == 0) {
-        body.removeHead()
-      } else {
-        growing -= 1
+      val newLoc = direction match {
+        case "up" => body.last.copy(row = body.last.row - 1)
+        case "down" => body.last.copy(row = body.last.row + 1)
+        case "left" => body.last.copy(col = body.last.col - 1)
+        case "right" => body.last.copy(col = body.last.col + 1)
+      }
+
+      newLoc match {
+        case _ if body contains newLoc =>
+          dead = true
+          return Option("Dead: ran over self")
+        case _ if newLoc.isOutOfBounds =>
+          dead = true
+          return Option("Dead: hit the wall")
+        case _ =>
+          body += newLoc
+      }
+
+      growing match {
+        case 0 => body.removeHead()
+        case _ => growing -= 1
       }
 
       // Ate the food.
@@ -102,18 +120,12 @@ class SnakeGame extends MyPApplet {
       }
 
       textSize(height / 25)
-      text(s"Points: $points", width / 20, height / 10)
+      text(s"Points: $points", width / 30, height / 20)
 
-      if (body.init contains body.last) {
-        died("DEAD: Ran over self")
-      }
-
-      if (body.last.isOutOfBounds) {
-        died("DEAD: Hit the wall")
-      }
+      None
     }
 
-    private def died(deathString: String): Unit = {
+    def showDeathCertificate(deathString: String): Unit = {
       colors.Current.update(
         fill = colors.Pure.Red,
         stroke = colors.Pure.Black
