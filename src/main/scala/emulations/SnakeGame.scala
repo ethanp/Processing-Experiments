@@ -21,7 +21,7 @@ class SnakeGame extends MyPApplet {
   private def colWidth = width / NumCols
 
 
-  private val atFrameRate = Every(200.millis)
+  private val atFrameRate = Every(400.millis)
   private var food = createFood()
 
   override def settings(): Unit = size(800, 800)
@@ -65,9 +65,15 @@ class SnakeGame extends MyPApplet {
       case _ => direction
     }
     event.getKey match {
-      case 'r' =>
+      case 'w' if lastDirectionMoved != "down" => direction = "up"
+      case 's' if lastDirectionMoved != "up" => direction = "down"
+      case 'a' if lastDirectionMoved != "right" => direction = "left"
+      case 'd' if lastDirectionMoved != "left" => direction = "right"
+
+      case 'r' => // restart game
         snake = new Snake
         food = createFood()
+
       case _ =>
     }
   }
@@ -97,8 +103,8 @@ class SnakeGame extends MyPApplet {
       }
 
       val died: Option[String] = newLoc match {
-        case _ if body contains newLoc => Option("Dead: ran over self")
-        case _ if newLoc.isOutOfBounds => Option("Dead: hit the wall")
+        case _ if body contains newLoc => Option("Ran over self and died")
+        case _ if newLoc.isOutOfBounds => Option("Hit the wall and died")
         case _ => None
       }
 
@@ -132,10 +138,11 @@ class SnakeGame extends MyPApplet {
         fill = colors.Pure.Red,
         stroke = colors.Pure.Black
       )
-      textSize(width / 10)
-      val txtWidth = textWidth(deathString)
+      val fullString = Seq(deathString, s"Points: $points") mkString "\n"
+      textSize(width / 15)
+      val txtWidth = textWidth(fullString)
       val txtHeight = textAscent() + textDescent()
-      text(deathString, width / 2 - txtWidth / 2, height / 2 - txtHeight / 2)
+      text(fullString, width / 2 - txtWidth / 2, height / 2 - txtHeight / 2)
     }
 
     def draw(): Unit = {
@@ -147,16 +154,16 @@ class SnakeGame extends MyPApplet {
   }
 
   case class SnakeCell(row: Int, col: Int) extends Cell {
-    // TODO each snake cell should be part of a color scheme, not always the same color
+    // Each snake cell could be part of a color scheme; not always the same color
     override val color: colors.ColorState = colors.ColorState(
-      fill = colors.Solarized.Orange,
+      fill = colors.Solarized.Yellow,
       stroke = colors.Solarized.Black,
       strokeWeight = 3
     )
   }
 
   case class FoodCell(row: Int, col: Int) extends Cell {
-    // TODO each food should be generated from a color scheme, not always the same color
+    // Each food cell could be part of a color scheme; not always the same color
     override val color: colors.ColorState = colors.ColorState(
       fill = colors.Solarized.White,
       stroke = colors.Solarized.Red,
