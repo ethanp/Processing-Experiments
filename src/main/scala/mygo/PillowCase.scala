@@ -39,7 +39,6 @@ class PillowCase extends MyPApplet {
     drawMidBar()
     drawOuterStrips()
     drawSpirals()
-    super.draw()
   }
 
   private def drawOuterBackground(): Unit = colors.Solarized.Violet.background()
