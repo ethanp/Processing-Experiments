@@ -30,11 +30,14 @@ abstract class Fader {
   protected def bounds: Rectangle
   protected def app: MyPApplet
   implicit val iApp: MyPApplet = app
+  app.faders += this
 
-  val floatProperty: SimpleFloatProperty =
+  protected val floatProperty: SimpleFloatProperty =
     new SimpleFloatProperty(initialValue) {
       addListener(changeListener)
     }
+
+  def apply(): Float = floatProperty.get()
 
   protected val slideTrackRect: Rectangle
   protected val handleRect: Rectangle
@@ -94,8 +97,8 @@ class HorizontalFader(
   override protected val initialValue: Float,
   override protected val minValue: Float,
   override protected val maxValue: Float,
-  override protected val changeListener: ChangeListener[Number],
   override protected val bounds: Rectangle,
+  override protected val changeListener: ChangeListener[Number] = (_, _, _) => (),
 )(implicit pApp: MyPApplet)
   extends Fader {
   override def app: MyPApplet = pApp

@@ -93,14 +93,14 @@ package object geometry {
     def -(vector: PVector): Vector = Vector(copy() sub vector)
 
     /** Creates a copy multiplied by `scale`. */
-    def *(scale: Double): Vector = elementwiseOperationCopy(_ * scale)
+    def *(scale: Double): Vector = elementwise(op = _ * scale)
 
     /** Creates a copy divided by `scale`. */
-    def /(scale: Double): Vector = elementwiseOperationCopy(_ / scale)
+    def /(scale: Double): Vector = elementwise(op = _ / scale)
 
     def length: Float = this dist Vector.Zero
 
-    private def elementwiseOperationCopy(op: Double => Double): Vector =
+    private def elementwise(op: Double => Double): Vector =
       Vector(op(x), op(y), op(z))
   }
 
