@@ -83,14 +83,22 @@ package object geometry {
         x < rectangle.right &&
         y < rectangle.bottom
 
+    /** Angle (radians) between this vector and straight horizontal. */
+    def radiansOffHorizontal: Float = math.acos(dot(Vector.X) / length).toFloat
+
     /** Creates a copy with `value = this + vector`. */
-    def +(vector: PVector): Vector = Vector(copy().add(vector))
+    def +(vector: PVector): Vector = Vector(copy() add vector)
+
+    /** Creates a copy with `value = this - vector`. */
+    def -(vector: PVector): Vector = Vector(copy() sub vector)
 
     /** Creates a copy multiplied by `scale`. */
     def *(scale: Double): Vector = elementwiseOperationCopy(_ * scale)
 
     /** Creates a copy divided by `scale`. */
     def /(scale: Double): Vector = elementwiseOperationCopy(_ / scale)
+
+    def length: Float = this dist Vector.Zero
 
     private def elementwiseOperationCopy(op: Double => Double): Vector =
       Vector(op(x), op(y), op(z))
@@ -137,8 +145,8 @@ package object geometry {
   final def sinRad(radians: Double): Float = math.sin(radians).toFloat
   final def cosRad(radians: Double): Float = math.cos(radians).toFloat
 
-  final def sinDeg(degrees: Double): Float = sinRad(math.toRadians(degrees))
-  final def cosDeg(degrees: Double): Float = cosRad(math.toRadians(degrees))
+  final def sinDeg(degrees: Double): Float = sinRad(degrees.toRadians)
+  final def cosDeg(degrees: Double): Float = cosRad(degrees.toRadians)
 
-  final def degreesToRadians(degrees: Double): Float = math.toRadians(degrees).toFloat
+  final def degreesToRadians(degrees: Double): Float = degrees.toRadians.toFloat
 }

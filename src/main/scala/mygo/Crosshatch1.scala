@@ -3,7 +3,7 @@ import helpers.{MyPApplet, Runner}
 
 /** Created 5/23/20 2:33 PM
  */
-class Crosshatch extends MyPApplet {
+class Crosshatch1 extends MyPApplet {
   override def settings(): Unit = {
     pixelDensity = 2 // This is better when displaying on retina
     size(700, 700)
@@ -46,6 +46,6 @@ class Crosshatch extends MyPApplet {
   }
 }
 
-object Crosshatch extends Runner {
-  override def pAppletClass: Class[_] = classOf[Crosshatch]
+object Crosshatch1 extends Runner {
+  override def pAppletClass: Class[_] = classOf[Crosshatch1]
 }
