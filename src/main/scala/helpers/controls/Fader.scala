@@ -13,15 +13,13 @@ import processing.event.MouseEvent
  *
  * {{{
  *
- * override def mousePressed(click: MouseEvent): Unit = scrollbar.mousePressed(click)
- * override def mouseDragged(event: MouseEvent): Unit = scrollbar.mouseDragged(event)
- * override def mouseReleased(event: MouseEvent): Unit = scrollbar.mouseReleased(event)
- * override def draw(): Unit = scrollbar.draw()
+ * override def mousePressed(click: MouseEvent): Unit = fader.mousePressed(click)
+ * override def mouseDragged(event: MouseEvent): Unit = fader.mouseDragged(event)
+ * override def mouseReleased(event: MouseEvent): Unit = fader.mouseReleased(event)
+ * override def draw(): Unit = fader.draw()
  *
  * }}}
  *
- * Admittedly this class didn't quite turn out that good lol. Any suggestions welcome :)
- * <p>
  * Created 3/29/20 11:23 PM
  */
 abstract class Fader {
@@ -37,9 +35,6 @@ abstract class Fader {
     new SimpleFloatProperty(initialValue) {
       addListener(changeListener)
     }
-
-  //noinspection NotImplementedCode
-  if (minValue != 0) ???
 
   protected val slideTrackRect: Rectangle
   protected val handleRect: Rectangle
@@ -129,7 +124,8 @@ class HorizontalFader(
     val extent: Float = handleRect.left - slideTrackRect.left
     val width: Float = slideTrackRect.width - handleRect.width
     val prop: Float = extent / width
-    floatProperty.setValue(prop * maxValue)
+    val range = maxValue - minValue
+    floatProperty.setValue(minValue + range * prop)
   }
 }
 
