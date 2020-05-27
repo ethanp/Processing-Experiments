@@ -9,7 +9,10 @@ import processing.core.PConstants
 import processing.event.MouseEvent
 
 /**
- * The following code is required when using this class
+ * The following code is required when using this class.
+ *
+ * It is enabled by default in [[MyPApplet]] unless these methods
+ * are overridden in a subclass.
  *
  * {{{
  *

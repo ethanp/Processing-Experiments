@@ -1,32 +1,68 @@
 package helpers
 import processing.core.PConstants
-import processing.event.MouseEvent
 
 import scala.collection.mutable
-import scala.concurrent.duration.FiniteDuration
 
 /** Created 3/25/20 12:08 AM
  */
 //noinspection TypeAnnotation
 trait ThreeDimPApplet extends MyPApplet {
 
-  val gameObjects = mutable.ArrayBuffer.empty[GameObject]
+  protected val gameObjects = mutable.ArrayBuffer.empty[GameObject]
 
-  trait GameObject {
-    def drawFromCenter(): Unit = ()
-    def tick(): Unit = ()
+  // TODO(big bug): click-to-save is not working properly for these.
+
+  //noinspection RedundantDefaultArgument
+  private val focusPoint = geometry.Vector(
+    x = 0,
+    y = 0,
+    z = 0
+  )
+
+  protected def vantagePoint: geometry.Vector = {
+    geometry.Vector(
+      x = 0,
+      y = 0,
+      z = -15
+    )
   }
 
-  def moveCamera(): Unit = ()
+  // TODO create those sliders that move the camera around.
+  def lookAt(
+    vantagePoint: geometry.Vector,
+    focusPoint: geometry.Vector,
+    upDir: geometry.Vector = geometry.Vector.Y
+  ): Unit = {
+    // NB: the camera() method is based on gluLookAt, which has a nice visual description:
+    //
+    //  https://stackoverflow.com/a/5721110/1959155
+    //
+    // In particular, note that the up-dir actually used will be "tilted forward or
+    // backward" based on the vector from vantage point to focus point.
+    camera(
+      vantagePoint.x, vantagePoint.y, vantagePoint.z,
+      focusPoint.x, focusPoint.y, focusPoint.z,
+      upDir.x, upDir.y, upDir.z
+    )
+  }
+
+  protected def moveCamera(): Unit = lookAt(
+    vantagePoint = vantagePoint,
+    focusPoint = focusPoint,
+  )
 
   /** Default implementation. Override as desired. */
   override def drawFrame(): Unit = {
-    blackBackground()
     assert(is3D, s"Class ${ getClass.getName } must be defined to be 3-Dimensional.")
+
+    blackBackground()
+
     translate(width / 2, height / 2, -height / 2)
+
     beginCamera()
     moveCamera()
     endCamera()
+
     for (gameObj <- gameObjects) {
       withPushedMatrix {
         gameObj.drawFromCenter()
@@ -55,46 +91,4 @@ trait ThreeDimPApplet extends MyPApplet {
 
   def translate(x: Double, y: Double, z: Double): Unit =
     ThreeDimPApplet.super.translate(x.toFloat, y.toFloat, z.toFloat)
-
-  // TODO this should be in its own file and get passed the context implicitly, like the
-  //  other utilities.
-  case class Rotation(period: FiniteDuration) extends GameObject {
-    private var rotationFraction = 0D
-    val millerPerPeriod = 1.0 / period.toMillis
-    private var lastTime = millis()
-    gameObjects += this
-
-    override def tick(): Unit = {
-      val elapsedTime = millis() - lastTime
-      // LowPriorityTodo is this right? can't think right now.
-      //  It should "work" (rotate) anyhow, just not necessarily at the desired period.
-      rotationFraction += elapsedTime.toDouble / period.toMillis
-      lastTime = millis()
-    }
-
-    def curRadians(): Float = angleFractionToRadians(rotationFraction)
-
-    private def angleFractionToRadians(angleFraction: Double): Float =
-      ((angleFraction - (math floor angleFraction)) * math.Pi * 2).toFloat
-  }
-
-  // TODO super useful feature:
-  //  Click and drag to move the camera across the different axes.
-  //  I should "bind" the loc to three of those [[Fader]] class I made.
-  //  It should all take place encapsulated within a utility class too.
-  val cameraLoc = geometry.Vector.Z * -10
-
-  var mouseDown = false
-  override def mousePressed(event: MouseEvent): Unit = {
-    event.getButton match {
-      case PConstants.LEFT =>
-        mouseDown = true
-      case _ => /* ignore. */
-    }
-  }
-
-  override def mouseDragged(event: MouseEvent): Unit = {
-  }
-  override def mouseReleased(event: MouseEvent): Unit = {
-  }
 }

@@ -1,7 +1,7 @@
 package mygo
 import animation.Every
 import colors.Hsb
-import helpers.{Runner, ThreeDimPApplet}
+import helpers.{GameObject, Runner, ThreeDimPApplet}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps

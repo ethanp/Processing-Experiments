@@ -16,8 +16,7 @@ object ImageSaver {
       preExistingFiles
         .map(_.name)
         .filter(Seq(".jpg", ".png") exists _.endsWith)
-        .map(_.filter(_.isDigit).mkString)
-        .map(_.toInt)
+        .map(_.filter(_.isDigit).mkString.toInt)
         .maxOption
         .getOrElse(0) + 1
 

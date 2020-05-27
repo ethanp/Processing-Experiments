@@ -2,7 +2,7 @@ package mygo
 
 import colors.{Color, Rgb, Solarized}
 import geometry.V
-import helpers.{Runner, ThreeDimPApplet}
+import helpers.{GameObject, Rotation, Runner, ThreeDimPApplet}
 import processing.core.PConstants
 
 import scala.concurrent.duration._
@@ -45,6 +45,7 @@ class VennColors extends ThreeDimPApplet {
 
   case class SpinningCircle(color: Color) extends VennCircle {
     private val rotation = Rotation(period = 3.seconds)
+    gameObjects += rotation
     override def curRadians: Double = rotation.curRadians()
   }
 }

@@ -1,10 +1,12 @@
 package mygo
 
 import colors.Rgb
-import helpers.{Runner, ThreeDimPApplet}
+import helpers.{GameObject, Runner, ThreeDimPApplet}
 
 /**
  * This is based on [[emulations.CubesDrawing]]
+ *
+ * I'm not sure if it ever worked, but it sure ain't working now.
  *
  * Created Saturday March 28, 2020 9:22 PM
  */
@@ -22,7 +24,7 @@ class CubesDrawing3D extends ThreeDimPApplet {
 
   private class Cube(r: Int, c: Int, t: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
-      ortho()
+      ortho(-width / 2, width / 2, -height / 2, height / 2, -frameCount / 2, frameCount / 2)
       val factor = 8
       rotateX(4f)
       rotateY(7f)

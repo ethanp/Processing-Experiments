@@ -1,6 +1,6 @@
 package emulations
 import colors.Rgb
-import helpers.{Runner, ThreeDimPApplet}
+import helpers.{GameObject, Runner, ThreeDimPApplet}
 
 
 /**
@@ -24,7 +24,7 @@ class CubesDrawing extends ThreeDimPApplet {
 
   private case class Cube(r: Int, c: Int) extends GameObject {
     override def drawFromCenter(): Unit = {
-      ortho()
+      ortho(-width / 2, width / 2, -height / 2, height / 2, -frameCount / 2, frameCount / 2)
       val factor = 10
       translate(c * colWidth * factor, r * rowHeight * factor)
       rotateY((r + Span) * rowHeight)
