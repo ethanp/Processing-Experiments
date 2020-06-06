@@ -6,11 +6,12 @@ import helpers.{GameObject, Runner, ThreeDimPApplet}
 /**
  * This is based on [[emulations.CubesDrawing]]
  *
- * I'm not sure if it ever worked, but it sure ain't working now.
- *
  * Created Saturday March 28, 2020 9:22 PM
  */
 class CubesDrawing3D extends ThreeDimPApplet {
+
+  // TODO this did used-to work, but it doesn't work now.
+
   private val Span = 2
   private val range = -Span to Span
   private val colWidth = width / range.length
