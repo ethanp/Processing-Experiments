@@ -2,6 +2,7 @@ package mygo
 import animation.Every
 import colors.Hsb
 import helpers.{GameObject, Runner, ThreeDimPApplet}
+import processing.core.PApplet.{cos, sin}
 
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -37,8 +38,8 @@ class Gummiworms extends ThreeDimPApplet {
       Hsb(h = curZ % 81, b = 50, a = 60).fill()
       Hsb(h = curZ % 100, a = 70).stroke()
       translate(
-        x = geometry.sinRad(radians = curZ / 100.0) * 100,
-        y = geometry.cosRad(radians = curZ / 100.0) * 100,
+        x = sin(curZ / 100f) * 100,
+        y = cos(curZ / 100f) * 100,
         z = curZ
       )
       sphere(55)

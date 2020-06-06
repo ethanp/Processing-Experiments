@@ -1,6 +1,7 @@
 package emulations
 
 import helpers.{GameObject, Runner, ThreeDimPApplet}
+import processing.core.PApplet.{cos, sin}
 
 /** Created 6/6/20 12:44 PM
  *
@@ -40,18 +41,18 @@ class WilsonsTarget extends ThreeDimPApplet {
         stroke = colors.Empty
       )
       val radius: Float = 100
-      val z: Float = -10
+      val z: Float = 0
       beginShape()
       vertex(0, 0, z)
-      for (i <- 0 until NumStripes) {
+      for (idx <- 0 until NumStripes) {
         vertex(
-          Math.cos(widthRadians * i).toFloat * radius,
-          Math.sin(widthRadians * i).toFloat * radius,
+          cos(widthRadians * idx) * radius,
+          sin(widthRadians * idx) * radius,
           z
         )
         vertex(
-          Math.cos(widthRadians * (i + 1)).toFloat * radius,
-          Math.sin(widthRadians * (i + 1)).toFloat * radius,
+          cos(widthRadians * (idx + 1)) * radius,
+          sin(widthRadians * (idx + 1)) * radius,
           z
         )
         vertex(0, 0, z)

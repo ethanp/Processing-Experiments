@@ -14,13 +14,11 @@ class RingTunnel extends ThreeDimPApplet {
   //  override val gifLength = 100
   //  override def settings(): Unit = size(500, 500, PConstants.P3)
 
-  override protected def vantagePoint: geometry.Vector = {
-    geometry.Vector(
-      x = 0,
-      y = 0,
-      z = -width * 16 + frameCount * 5
-    )
-  }
+  override protected def vantagePoint = geometry.Vector(
+    x = 0,
+    y = 0,
+    z = -width * 16 + frameCount * 5
+  )
 
   // NB: Ellipses (and other 2D shapes when in 3D mode)
   // are only drawn on the x-y plane (at z=0).

@@ -1,4 +1,5 @@
 import helpers.MyPApplet
+import processing.core.PApplet.{cos, sin}
 import processing.core.{PConstants, PVector}
 
 /** Created 3/29/20 11:17 PM
@@ -132,8 +133,8 @@ package object geometry {
           )
           val radius = 1f + (degrees * radiusIncrement)
           myPApplet.ellipse(
-            /*x*/ cosDeg(degrees = degrees) * radius,
-            /*y*/ sinDeg(degrees = degrees) * radius,
+            /*x*/ cos(degrees.toRadians) * radius,
+            /*y*/ sin(degrees.toRadians) * radius,
             /*w*/ width,
             /*h*/ width
           )
@@ -141,12 +142,4 @@ package object geometry {
       }
     }
   }
-
-  final def sinRad(radians: Double): Float = math.sin(radians).toFloat
-  final def cosRad(radians: Double): Float = math.cos(radians).toFloat
-
-  final def sinDeg(degrees: Double): Float = sinRad(degrees.toRadians)
-  final def cosDeg(degrees: Double): Float = cosRad(degrees.toRadians)
-
-  final def degreesToRadians(degrees: Double): Float = degrees.toRadians.toFloat
 }

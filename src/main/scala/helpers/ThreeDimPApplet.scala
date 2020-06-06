@@ -19,13 +19,11 @@ trait ThreeDimPApplet extends MyPApplet {
     z = 0
   )
 
-  protected def vantagePoint: geometry.Vector = {
-    geometry.Vector(
-      x = 0,
-      y = 0,
-      z = -15
-    )
-  }
+  protected def vantagePoint = geometry.Vector(
+    x = 0,
+    y = 0,
+    z = -15
+  )
 
   // TODO create those sliders that move the camera around.
   def lookAt(

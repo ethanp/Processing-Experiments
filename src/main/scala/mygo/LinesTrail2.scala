@@ -2,6 +2,7 @@ package mygo
 
 import colors.Solarized
 import helpers.{MyPApplet, Runner}
+import processing.core.PApplet.{cos, sin}
 import processing.core.PConstants
 
 /** Created 3/29/20 11:24 AM
@@ -24,8 +25,8 @@ class LinesTrail2 extends MyPApplet {
         val x = lineLeft + step * stepWidth
         val rate = 110f
         val scale = pixelHeight / 10f
-        val y = (geometry.sinRad(x / rate) - 1) * scale
-        val y2 = (geometry.cosRad(x / rate) + 1) * scale
+        val y = (sin(x / rate) - 1) * scale
+        val y2 = (cos(x / rate) + 1) * scale
         line(x, 0, x, y)
         line(x, 0, x, y2)
       }
