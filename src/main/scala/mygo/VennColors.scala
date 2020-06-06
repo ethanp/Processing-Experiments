@@ -50,6 +50,4 @@ class VennColors extends ThreeDimPApplet {
   }
 }
 
-object VennColors extends Runner {
-  override def pAppletClass: Class[_] = classOf[VennColors]
-}
+object VennColors extends Runner[VennColors]

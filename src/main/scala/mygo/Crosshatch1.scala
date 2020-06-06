@@ -46,6 +46,4 @@ class Crosshatch1 extends MyPApplet {
   }
 }
 
-object Crosshatch1 extends Runner {
-  override def pAppletClass: Class[_] = classOf[Crosshatch1]
-}
+object Crosshatch1 extends Runner[Crosshatch1]

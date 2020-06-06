@@ -50,6 +50,4 @@ class RingTunnel extends ThreeDimPApplet {
   }
 }
 
-object RingTunnel extends Runner {
-  override def pAppletClass: Class[_] = classOf[RingTunnel]
-}
+object RingTunnel extends Runner[RingTunnel]

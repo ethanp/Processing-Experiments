@@ -109,6 +109,4 @@ class FrankStella extends MyPApplet {
   }
 }
 
-object FrankStella extends Runner {
-  override def pAppletClass: Class[_] = classOf[FrankStella]
-}
+object FrankStella extends Runner[FrankStella]

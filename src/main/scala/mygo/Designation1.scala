@@ -72,6 +72,4 @@ class Designation1 extends MyPApplet {
   }
 }
 
-object Designation1 extends Runner {
-  override def pAppletClass: Class[_] = classOf[Designation1]
-}
+object Designation1 extends Runner[Designation1]

@@ -51,6 +51,4 @@ class Gummiworms extends ThreeDimPApplet {
   }
 }
 
-object Gummiworms extends Runner {
-  override def pAppletClass: Class[_] = classOf[Gummiworms]
-}
+object Gummiworms extends Runner[Gummiworms]

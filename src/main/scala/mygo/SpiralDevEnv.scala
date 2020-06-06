@@ -23,7 +23,5 @@ class SpiralDevEnv extends MyPApplet {
 }
 
 
-object SpiralDevEnv extends Runner {
-  override def pAppletClass: Class[_] = classOf[SpiralDevEnv]
-}
+object SpiralDevEnv extends Runner[SpiralDevEnv]
 

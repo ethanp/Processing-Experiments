@@ -38,6 +38,4 @@ class LinesTrail2 extends MyPApplet {
   }
 }
 
-object LinesTrail2 extends Runner {
-  override def pAppletClass: Class[_] = classOf[LinesTrail2]
-}
+object LinesTrail2 extends Runner[LinesTrail2]

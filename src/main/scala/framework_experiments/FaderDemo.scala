@@ -45,6 +45,4 @@ class FaderDemo extends MyPApplet {
   }
 }
 
-object FaderDemo extends Runner {
-  override def pAppletClass: Class[_] = classOf[FaderDemo]
-}
+object FaderDemo extends Runner[FaderDemo]

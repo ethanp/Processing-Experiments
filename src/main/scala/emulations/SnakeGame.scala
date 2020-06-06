@@ -41,7 +41,7 @@ class SnakeGame extends MyPApplet {
     loc
   }
 
-  override protected def drawFrame(): Unit = atFrameRate.run {
+  override protected def drawFrame(): Unit = atFrameRate run {
     if (!snake.dead) {
       blackBackground()
       val deathCertificate: Option[String] = snake.move()
@@ -145,10 +145,7 @@ class SnakeGame extends MyPApplet {
       text(fullString, width / 2 - txtWidth / 2, height / 2 - txtHeight / 2)
     }
 
-    def draw(): Unit = {
-      for (cell <- body)
-        cell.draw()
-    }
+    def draw(): Unit = body foreach (_.draw())
 
     def covers(cell: Cell): Boolean = body exists (_ covers cell)
   }
@@ -196,6 +193,4 @@ class SnakeGame extends MyPApplet {
   }
 }
 
-object SnakeGame extends Runner {
-  override def pAppletClass: Class[_] = classOf[SnakeGame]
-}
+object SnakeGame extends Runner[SnakeGame]

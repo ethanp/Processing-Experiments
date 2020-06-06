@@ -231,6 +231,4 @@ class PillowCase extends MyPApplet {
   }
 }
 
-object PillowCase extends Runner {
-  override def pAppletClass: Class[_] = classOf[PillowCase]
-}
+object PillowCase extends Runner[PillowCase]

@@ -1,4 +1,6 @@
 package helpers
+import processing.core.PImage
+
 import scala.reflect.io.Directory
 
 /** Created 4/5/20 5:49 PM
@@ -33,10 +35,10 @@ object ImageSaver {
   ): Unit = {
     // Thought: we could make this more async in several different ways and that
     //  might make it faster. But I haven't had any performance issues with it.
-    val newImg = myPApplet.loadImage(newImage)
+    val newImg: PImage = myPApplet.loadImage(newImage)
     for (file <- bank) {
       if (PixelComparator.areEquivalent(aImg = newImg, bImg = myPApplet.loadImage(file))) {
-        println("WARNING: Deleting snapshot as duplicate")
+        println("WARNING: Deleting new snapshot as duplicate")
         reflect.io.File(newImage).delete()
         println("WARNING: Snapshot was deleted by deduplicator")
         return

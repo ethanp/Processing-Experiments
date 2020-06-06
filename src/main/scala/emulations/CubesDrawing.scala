@@ -37,6 +37,4 @@ class CubesDrawing extends ThreeDimPApplet {
   }
 }
 
-object CubesDrawing extends Runner {
-  override def pAppletClass: Class[_] = classOf[CubesDrawing]
-}
+object CubesDrawing extends Runner[CubesDrawing]

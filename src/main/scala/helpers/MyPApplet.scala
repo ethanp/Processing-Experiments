@@ -32,7 +32,7 @@ trait MyPApplet extends PApplet {
 
   /** ************* GEOMETRY ************* **/
 
-  protected final def withPushedMatrix(block: => Unit): Unit = {
+  final def withPushedMatrix(block: => Unit): Unit = {
     pushMatrix()
     block
     popMatrix()
