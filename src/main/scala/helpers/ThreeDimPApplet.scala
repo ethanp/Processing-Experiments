@@ -12,18 +12,16 @@ trait ThreeDimPApplet extends MyPApplet {
 
   // TODO(big bug): click-to-save is not working properly for these.
 
-  //noinspection RedundantDefaultArgument
-  private val focusPoint = geometry.Vector(
-    x = 0,
-    y = 0,
-    z = 0
-  )
-
   protected def vantagePoint = geometry.Vector(
     x = 0,
     y = 0,
-    z = -15
+    // This is roughly what the default is.
+    z = height
   )
+
+  //noinspection RedundantDefaultArgument
+  // This MUST be lazy otherwise it gets the wrong values.
+  private lazy val focusPoint = geometry.Vector.Zero
 
   // TODO create those sliders that move the camera around.
   def lookAt(
@@ -55,18 +53,20 @@ trait ThreeDimPApplet extends MyPApplet {
 
     blackBackground()
 
-    translate(width / 2, height / 2, -height / 2)
-
     beginCamera()
     moveCamera()
+    translate(-width / 2, -height / 2, 0)
     endCamera()
+    printCamera()
 
-    for (gameObj <- gameObjects) {
+    translate(width / 2, height / 2, 0)
+
+    gameObjects foreach (_.tick())
+    gameObjects foreach { obj =>
       withPushedMatrix {
-        gameObj.drawFromCenter()
+        obj.drawFromCenter()
       }
     }
-    gameObjects.foreach(_.tick())
   }
 
   override def settings(): Unit = {

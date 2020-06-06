@@ -2,6 +2,7 @@ package emulations
 
 import helpers.{GameObject, Runner, ThreeDimPApplet}
 import processing.core.PApplet.{cos, sin}
+import processing.core.PConstants
 
 /** Created 6/6/20 12:44 PM
  *
@@ -12,6 +13,8 @@ import processing.core.PApplet.{cos, sin}
  */
 class WilsonsTarget extends ThreeDimPApplet {
   /* ******************** Add the Stripes ************************* */
+
+  override def settings(): Unit = size(500, 500, PConstants.P3D)
 
   private val NumStripes: Int = 50
   private val widthRadians: Float = (2 * Math.PI / NumStripes).toFloat
@@ -33,7 +36,6 @@ class WilsonsTarget extends ThreeDimPApplet {
     }
   }
 
-  // TODO this is not working (yet!)
   gameObjects += new GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
@@ -41,10 +43,11 @@ class WilsonsTarget extends ThreeDimPApplet {
         stroke = colors.Empty
       )
       val radius: Float = 100
-      val z: Float = 0
+      val z: Float = 10
       beginShape()
       vertex(0, 0, z)
       for (idx <- 0 until NumStripes) {
+        // LowPriorityTodo(idea): Make each one a jittered color.
         vertex(
           cos(widthRadians * idx) * radius,
           sin(widthRadians * idx) * radius,
