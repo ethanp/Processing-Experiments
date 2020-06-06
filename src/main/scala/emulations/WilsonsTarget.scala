@@ -12,27 +12,39 @@ import processing.core.PConstants
  * coming out from the back. Let's get some lighting in here too.
  */
 class WilsonsTarget extends ThreeDimPApplet {
-  /* ******************** Add the Stripes ************************* */
-
   override def settings(): Unit = size(500, 500, PConstants.P3D)
-
   private val NumStripes: Int = 50
   private val widthRadians: Float = (2 * Math.PI / NumStripes).toFloat
 
-  // 0 until NumStripes foreach (idx => gameObjects += new Stripe(idx = idx))
+  /* ******************** Add the Stripes ************************* */
 
-  class Stripe(idx: Int) extends GameObject {
-    private val startAngle: Float = widthRadians * idx
-
+  gameObjects += new GameObject {
     override def drawFromCenter(): Unit = {
-      rotateZ(startAngle)
-      colors.Current.update(
-        fill = idx % 2 match {
-          case 0 => colors.Solarized.Black
-          case 1 => colors.Solarized.White
-        },
-        stroke = colors.Empty
-      )
+      val radius: Float = width max height
+      val z: Float = 15
+      for (idx <- 0 until NumStripes) {
+        colors.Current.update(
+          fill = idx % 2 match {
+            case 0 => colors.Solarized.Black
+            case 1 => colors.Solarized.White
+          },
+          stroke = colors.Empty
+        )
+        beginShape()
+        vertex(0, 0, z)
+        vertex(
+          cos(widthRadians * idx) * radius,
+          sin(widthRadians * idx) * radius,
+          z
+        )
+        vertex(
+          cos(widthRadians * (idx + 1)) * radius,
+          sin(widthRadians * (idx + 1)) * radius,
+          z
+        )
+        vertex(0, 0, z)
+        endShape()
+      }
     }
   }
 
@@ -42,7 +54,7 @@ class WilsonsTarget extends ThreeDimPApplet {
         fill = colors.Solarized.Red,
         stroke = colors.Empty
       )
-      val radius: Float = 100
+      val radius: Float = (width max height) / 5
       val z: Float = 10
       beginShape()
       vertex(0, 0, z)

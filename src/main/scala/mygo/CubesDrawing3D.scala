@@ -11,6 +11,7 @@ import helpers.{GameObject, Runner, ThreeDimPApplet}
 class CubesDrawing3D extends ThreeDimPApplet {
 
   // TODO this did used-to work, but it doesn't work now.
+  //  Probably, something is wrong with the camera.
 
   private val Span = 2
   private val range = -Span to Span
