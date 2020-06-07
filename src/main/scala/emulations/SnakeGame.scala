@@ -1,11 +1,10 @@
 package emulations
-import animation.Every
+import animation.SlowFrameRate
 import helpers.{MyPApplet, Runner}
 import processing.core.PConstants
 import processing.event.KeyEvent
 
 import scala.collection.mutable
-import scala.concurrent.duration._
 import scala.util.Random
 
 /** Created 5/9/20 7:26 PM
@@ -21,7 +20,7 @@ class SnakeGame extends MyPApplet {
   private def colWidth = width / NumCols
 
 
-  private val atFrameRate = Every(400.millis)
+  private val atFrameRate = SlowFrameRate(framesPerSec = 3)
   private var food = createFood()
 
   override def settings(): Unit = size(800, 800)

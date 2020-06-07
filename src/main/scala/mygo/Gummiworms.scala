@@ -1,5 +1,5 @@
 package mygo
-import animation.Every
+import animation.{Every, SlowFrameRate}
 import colors.Hsb
 import helpers.{GameObject, Runner, ThreeDimPApplet}
 import processing.core.PApplet.{cos, sin}
@@ -14,8 +14,8 @@ class Gummiworms extends ThreeDimPApplet {
 
   // LowPriorityTodo this one doesn't work anymore.
 
-  private val atGenerationRate = Every(300 milliseconds)
-  private val onOff = Every(7 seconds)
+  private val atGenerationRate = SlowFrameRate(framesPerSec = 3)
+  private val onOff = new Every(7 seconds)
   private var isGenerating = true
   private var increment = 1f
 

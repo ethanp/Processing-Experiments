@@ -22,7 +22,7 @@ class FrankStella extends MyPApplet {
   private def colWidth = width / NumCols
   private def rowHeight = height / NumRows
 
-  private val atFrameRate = Every(4.seconds)
+  private val atFrameRate = new Every(4.seconds)
 
   override def settings(): Unit = {
     pixelDensity = 2
