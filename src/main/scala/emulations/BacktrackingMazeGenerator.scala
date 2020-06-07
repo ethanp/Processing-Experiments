@@ -2,6 +2,7 @@ package emulations
 import animation.SlowFrameRate
 import helpers.{MyPApplet, Runner}
 
+import scala.collection.mutable
 import scala.util.Random
 
 /** Created 6/7/20 11:04 AM
@@ -17,13 +18,21 @@ class BacktrackingMazeGenerator extends MyPApplet {
       .map(r => (0 until NumCols)
         .map(c => Cell(r, c)))
 
-  private val atFrameRate = SlowFrameRate(framesPerSec = 4)
+  private val atFrameRate = SlowFrameRate(framesPerSec = 60)
 
   override protected def drawFrame(): Unit =
     atFrameRate run {
-      gotoNextCell()
+      if (rows exists (_ exists (!_.wasVisited))) {
+        gotoNextCell()
+      } else {
+        println("Done!")
+        current.isCurrent = false
+        atFrameRate.cancel()
+      }
       renderGrid()
     }
+
+  private val stack = mutable.Stack.empty[Cell]
 
   private var current: Cell = _
   private def setCurrent(cell: Cell): Unit = {
@@ -33,20 +42,24 @@ class BacktrackingMazeGenerator extends MyPApplet {
     current = cell
     current.isCurrent = true
     current.wasVisited = true
+    stack push current
   }
 
   private def gotoNextCell(): Unit = {
     if (current == null) {
       setCurrent(rows.head.head)
-    } else {
-      val next = current.randomAvailableNeighbor
-      if (next.nonEmpty) {
-        current removeWallTo next.get
-        setCurrent(next.get)
-      } else {
-        println("truck got stuck! (time to backtrack)")
-      }
+      return
     }
+
+    val next = current.randomAvailableNeighbor
+    if (next.nonEmpty) {
+      current removeWallTo next.get
+      setCurrent(next.get)
+      return
+    }
+
+    stack.pop()
+    setCurrent(stack.pop())
   }
 
   private def renderGrid(): Unit = rows foreach (_ foreach (_.draw()))

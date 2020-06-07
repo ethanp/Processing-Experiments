@@ -7,12 +7,14 @@ import scala.concurrent.duration._
 package object animation {
   class Every(duration: FiniteDuration)(implicit myPApplet: MyPApplet) {
     private var lastTime = 0L
+    private var cancelled = false
     def run(block: => Unit): Unit = {
-      if (myPApplet.millis() / duration.toMillis > lastTime) {
+      if (!cancelled && myPApplet.millis() / duration.toMillis > lastTime) {
         block
         lastTime = myPApplet.millis() / duration.toMillis
       }
     }
+    def cancel(): Unit = cancelled = true
   }
 
   case class SlowFrameRate(framesPerSec: Int)(implicit myPApplet: MyPApplet)
