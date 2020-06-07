@@ -24,6 +24,7 @@ trait ThreeDimPApplet extends MyPApplet {
   private lazy val focusPoint = geometry.Vector.Zero
 
   // TODO create those sliders that move the camera around.
+  //  Or install PeasyCam like The Coding Train guy does.
   def lookAt(
     vantagePoint: geometry.Vector,
     focusPoint: geometry.Vector,

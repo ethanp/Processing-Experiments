@@ -8,10 +8,13 @@ import processing.core.PConstants
  *
  * Something like Wilson's target.
  *
- * Radial stripes coming out from the back. And then a few 3D rings also
- * coming out from the back. Let's get some lighting in here too.
+ * Radial stripes coming out from the back. And then a few toroids also
+ * coming out from the back.
  */
 class WilsonsTarget extends ThreeDimPApplet {
+
+  // MedPriorityTodo(look & feel): Let's get some lighting in here too.
+
   override def settings(): Unit = size(500, 500, PConstants.P3D)
   private val NumStripes: Int = 50
   private val widthRadians: Float = (2 * Math.PI / NumStripes).toFloat
@@ -42,8 +45,7 @@ class WilsonsTarget extends ThreeDimPApplet {
           sin(widthRadians * (idx + 1)) * radius,
           z
         )
-        vertex(0, 0, z)
-        endShape()
+        endShape(PConstants.CLOSE)
       }
     }
   }
@@ -69,10 +71,11 @@ class WilsonsTarget extends ThreeDimPApplet {
     }
   }
 
-  /* ******************** Add the Rings ************************* */
+  /* ******************** Add the toroids ************************* */
 
-  /* The actual 3D rings are box-shaped, which is a case of
-    https://processing.org/examples/toroid.html with few key pts & segments.
+  /* The actual toroids are pentagonal in cross-section, which is a case of
+    https://processing.org/examples/toroid.html, or maybe
+    https://github.com/firmread/Processing/blob/master/libraries/shapes3d/src/shapes3d/Toroid.java
    */
 
   // Not implemented yet....
