@@ -48,6 +48,8 @@ class WilsonsTarget extends ThreeDimPApplet {
     }
   }
 
+  /* ******************** Add the Inner Circle ************************* */
+
   gameObjects += new GameObject {
     override def drawFromCenter(): Unit = {
       colors.Current.update(
@@ -55,22 +57,13 @@ class WilsonsTarget extends ThreeDimPApplet {
         stroke = colors.Empty
       )
       val radius: Float = (width max height) / 5
-      val z: Float = 10
       beginShape()
-      vertex(0, 0, z)
-      for (idx <- 0 until NumStripes) {
-        // LowPriorityTodo(idea): Make each one a jittered color.
+      for (idx <- 0 to NumStripes) {
         vertex(
-          cos(widthRadians * idx) * radius,
-          sin(widthRadians * idx) * radius,
-          z
+          /* x */ cos(widthRadians * idx) * radius,
+          /* y */ sin(widthRadians * idx) * radius,
+          /* z */ 10
         )
-        vertex(
-          cos(widthRadians * (idx + 1)) * radius,
-          sin(widthRadians * (idx + 1)) * radius,
-          z
-        )
-        vertex(0, 0, z)
       }
       endShape()
     }

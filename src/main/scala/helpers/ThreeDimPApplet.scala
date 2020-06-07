@@ -57,7 +57,6 @@ trait ThreeDimPApplet extends MyPApplet {
     moveCamera()
     translate(-width / 2, -height / 2, 0)
     endCamera()
-    printCamera()
 
     translate(width / 2, height / 2, 0)
 

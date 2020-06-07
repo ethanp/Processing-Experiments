@@ -27,6 +27,10 @@ object ImageSaver {
     deduplicate(preExistingFiles.map(_.path), newFileName)
   }
 
+  // TODO this is clearly not working.
+  //  One can see this by clicking twice on the same image.
+  //   Expected: Only one click actually saves.
+  //   Actual:   Both save.
   private def deduplicate(
     bank: Iterator[String],
     newImage: String
