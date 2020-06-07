@@ -30,13 +30,16 @@ package object geometry {
 
     def left: Float = leftTop.x
     def top: Float = leftTop.y
-    def right: Float = bottomRight.x
-    def bottom: Float = bottomRight.y
+    def right: Float = rightBottom.x
+    def bottom: Float = rightBottom.y
+
+    def leftBottom: Vector = V(left, bottom)
+    def rightTop: Vector = V(right, top)
 
     def width: Float = widthHeight.x
     def height: Float = widthHeight.y
 
-    def bottomRight: Vector = Vector(leftTop.copy() add widthHeight)
+    def rightBottom: Vector = Vector(leftTop.copy() add widthHeight)
 
     def draw()(implicit myPApplet: MyPApplet): Unit =
       myPApplet.rect(left, top, widthHeight.x, widthHeight.y)

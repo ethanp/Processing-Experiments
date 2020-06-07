@@ -17,6 +17,7 @@ import scala.collection.mutable
 trait MyPApplet extends PApplet {
   implicit val app: MyPApplet = this
 
+  override def settings(): Unit = size(800, 800)
 
   /** ************* RENAMINGS ************* **/
 
